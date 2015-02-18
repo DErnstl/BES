@@ -1,29 +1,3 @@
-
-do_file(const char * file_name, const char * const * parms);
-do_dir(const char * dir_name, const char * const * parms);
-
-
-Usage: myfind <directory> [ <options> ] ...
-
-
-myfind is a simple command line toll for getting files and folders
-under the specified path matching the given options.
-
-Options:
-	-user	<name>/<uid>	find directories of a user
-	-nouser					find directories without user
-	-path	<pattern>		find directories with matchin path (incl. name)
-	-name	<pattern>		find directories with matching name
-	-type	[bcdpfls]		find directories with matching type
-	-print					print name of directory to console
-	-ls						print number of inode, number of blocks, permissions, etc...
-
-user XOR nouser
-name XOR path
-
-myfind . -user xyz -name 123
-
-
 /* =================== */
 /* === PSEUDO CODE === */
 /* =================== */
@@ -35,15 +9,23 @@ myfind . -user xyz -name 123
 #include <sys/stat.h>	/* lstat() -> -print(), -ls() */
 #include <dirent.h>		/* DIR *opendir(const char* dirname) //full of relative path */
 
+/* Contant Definitions */
+#define PRINT	0
+#define LS		1 
+#define USER	2
+#define NOUSER	3
+#define PATH	4
+#define NAME	5
+#define TYPE	6
 #define MAXNAMELENGHT 256
 
-enum PARAM {PRINT, LS, USER, NOUSER, PATH, NAME, TYPE};
-
+/* Function Prototypes */
 void do_file(const char * file_name, const char * const * parms);	/* return type void as none was given */
 void do_dir(const char * dir_name, const char * const * parms);		/* return type void as none was given */
 int check_parameters();	/* MISSING: add parameters */
 void prepare_path();	/* MISSING: add parameters */
 
+/* Main Function */
 int main(int argc, conts char *argv[]) {
 
 	/* Declare variables */
@@ -66,18 +48,19 @@ int main(int argc, conts char *argv[]) {
 
 	/* Go through all files */
 
-	/* MISSING: implement recursive function */
+	/* Main function below this point not checkd */
 	while ((files = readdir(stream)) != NULL) {
 		fprintf("%s\n", files->d_name);
 	}
 
 	closedir(stream);
-	
 
 
 	exit(EXIT_SUCCESS);
 }
 
+
+/* Function Definitions */
 void check_parameters() {
 	/* NOTE: Consider what errors to check for */
 }
