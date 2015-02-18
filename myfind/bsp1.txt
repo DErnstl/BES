@@ -1,0 +1,87 @@
+
+do_file(const char * file_name, const char * const * parms);
+do_dir(const char * dir_name, const char * const * parms);
+
+
+Usage: myfind <directory> [ <options> ] ...
+
+
+myfind is a simple command line toll for getting files and folders
+under the specified path matching the given options.
+
+Options:
+	-user	<name>/<uid>	find directories of a user
+	-nouser					find directories without user
+	-path	<pattern>		find directories with matchin path (incl. name)
+	-name	<pattern>		find directories with matching name
+	-type	[bcdpfls]		find directories with matching type
+	-print					print name of directory to console
+	-ls						print number of inode, number of blocks, permissions, etc...
+
+user XOR nouser
+name XOR path
+
+myfind . -user xyz -name 123
+
+
+/* =================== */
+/* === PSEUDO CODE === */
+/* =================== */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <pwd.h>		/* getpwnam("username") || getpwuid(uid_t uid) */
+#include <sys/stat.h>	/* lstat() -> -print(), -ls() */
+#include <dirent.h>		/* DIR *opendir(const char* dirname) //full of relative path */
+
+#define MAXNAMELENGHT 256
+
+enum PARAM {PRINT, LS, USER, NOUSER, PATH, NAME, TYPE};
+
+void do_file(const char * file_name, const char * const * parms);	/* return type void as none was given */
+void do_dir(const char * dir_name, const char * const * parms);		/* return type void as none was given */
+int check_parameters();	/* MISSING: add parameters */
+void prepare_path();	/* MISSING: add parameters */
+
+int main(int argc, conts char *argv[]) {
+
+	/* Declare variables */
+	DIR *stream = NULL;
+	struct dirent * files = NULL;
+	int arg_pos = 0;
+	char * path;
+
+	/* Check if parameters are correct */
+	check_parameters();
+
+	/* Check and prepare path if necessary */
+	prepare_path(char * path);
+	stream = opendir(path);
+	if (stream == NULL) {
+		fprintf(stderr, "[ERROR] myfind: %3d: %s\n", errno, strerror(errno));
+		/* or without erro number: perror ("[ERROR] myfind"); */
+		exit(EXIT_FAILURE);
+	}
+
+	/* Go through all files */
+
+	/* MISSING: implement recursive function */
+	while ((files = readdir(stream)) != NULL) {
+		fprintf("%s\n", files->d_name);
+	}
+
+	closedir(stream);
+	
+
+
+	exit(EXIT_SUCCESS);
+}
+
+void check_parameters() {
+	/* NOTE: Consider what errors to check for */
+}
+
+void prepare_path(char * path) {
+	/* Check if path argv[1] is set and if it is a directory */
+}
