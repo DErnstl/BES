@@ -81,8 +81,8 @@ int print_ls(/*TODO*/);
 int print(/*TODO*/);
 
 /*TODO: Tom */
-int check_name(/*TODO*/);
-int check_path(/*TODO*/);
+int check_name(char file_name, const char * const * parms, int position /*TODO*/) {
+int check_path(char file_name, const char * const * parms, int position /*TODO*/) {
 
 
 /**
@@ -168,7 +168,7 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	closedir(dir_name);
 }
 int check(char file_name, const char * const * parms, int position) {
-	switch(parms[position] {
+	switch(parms[position]) {
 			case NAME:	( (check_name(/*TODO*/)) && position=position+2 ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
 			case PATH:	( (check_path(/*TODO*/)) && position=position+2 ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
 			case USER:	( (check_user(/*TODO*/)) && position=position+2 ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
@@ -179,6 +179,26 @@ int check(char file_name, const char * const * parms, int position) {
 			default: return EXIT_FAILURE;
 
 	}
+}
+
+int check_name(char file_name, const char * const * parms, int position /*TODO*/) {
+
+	if(fnmatch(parms[position+1],file_name,FNM_NOESCAPE) == 0) {
+		return EXIT_SUCCESS;
+	} else {
+		return EXIT_FAILURE;
+	}
+
+}
+
+int check_path(char file_name, const char * const * parms, int position /*TODO*/) {
+
+	if(fnmatch(parms[position+1],file_name,FNM_NOESCAPE) == 0) {
+		return EXIT_SUCCESS;
+	} else {
+		return EXIT_FAILURE;
+	}
+
 }
 
 /*
