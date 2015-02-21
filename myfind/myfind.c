@@ -71,3 +71,36 @@ void check_parameters() {
 void prepare_path(char * path) {
 	/* Check if path argv[1] is set and if it is a directory */
 }
+
+
+void do_file(const char * file_name, const char * const * parms) {
+	/* create filedescriptor */
+	struct stat fd_in;
+
+	/* lstat file and write content to struct 
+	 * throw error if failed with Filename */
+	if (lstat(file_name, &fd_in) == -1) {
+		perror(parms[0]);
+		exit(EXIT_FAILURE);
+	}
+
+	/* TODO */
+	match(file_name, parms, argv_position);
+}
+
+void do_dir(const char * dir_name, const char * const * parms) {
+	/* Create DIR Struct */
+	DIR *dir;
+	struct dirent *d;
+
+	/* opendir an throw error with exename if error */
+	if ((dir = opendir(dir_name) == NULL ) {
+			perror(parms[0]);
+			exit(EXIT_FAILURE);
+	}
+
+	/* readdir until NULL */
+	while ((d = readdir(dir)) != NULL ) {
+		/* TODO */	
+	}
+}
