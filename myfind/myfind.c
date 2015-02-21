@@ -24,6 +24,7 @@ void do_file(const char * file_name, const char * const * parms);	/* return type
 void do_dir(const char * dir_name, const char * const * parms);		/* return type void as none was given */
 int check_parameters();	/* MISSING: add parameters */
 int prepare_path();	/* MISSING: add parameters */
+int check(char file_name, const char * const * parms, int position);
 
 /* Main Function */
 int main(int argc, char *argv[]) {
@@ -68,7 +69,7 @@ void check_parameters() {
 	/* NOTE: Consider what errors to check for */
 }
 
-void prepare_path(char * path) {
+void prepare_path(const char * path) {
 	/* Check if path argv[1] is set and if it is a directory */
 }
 
@@ -85,7 +86,7 @@ void do_file(const char * file_name, const char * const * parms) {
 	}
 
 	/* TODO */
-	match(file_name, parms, argv_position);
+	check(file_name, parms, position);
 }
 
 void do_dir(const char * dir_name, const char * const * parms) {
@@ -94,13 +95,27 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	struct dirent *d;
 
 	/* opendir an throw error with exename if error */
-	if ((dir = opendir(dir_name) == NULL ) {
+	if (dir = opendir(dir_name) == NULL ) {
 			perror(parms[0]);
 			exit(EXIT_FAILURE);
 	}
 
 	/* readdir until NULL */
 	while ((d = readdir(dir)) != NULL ) {
-		/* TODO */	
+		/* TODO */
+		do_file((*d).d_name,parms);
+	}
+}
+int check(char file_name, const char * const * parms, int position) {
+	switch(parms[position] {
+			case NAME:	( (check_name(/*TODO*/)) && position=position+2 ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
+			case PATH:	( (check_path(/*TODO*/)) && position=position+2 ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
+			case USER:	( (check_user(/*TODO*/)) && position=position+2 ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
+			case NOUSER:	( (check_nouser(/*TODO*/)) && position++ ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
+			case TYPE:	( (check_type(/*TODO*/)) && position=position+2 ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
+			case LS:	( (print_ls(/*TODO*/)) && position=position+2 ) && (check(file_name,parms,position)); break;
+			case PRINT:	( (print(/*TODO*/)) && position=position+2 ) && (check(file_name,parms,position)); break;
+			default: return EXIT_FAILURE;
+
 	}
 }
