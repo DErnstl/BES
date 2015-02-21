@@ -87,7 +87,7 @@ int check_path(char file_name, const char * const * parms, int position /*TODO*/
 
 /**
  *
- * \brief The most minimalistic C program
+ * \brief The most unusful, but educational Linux program ;-)
  *
  * This is the main entry point for any C program.
  *
@@ -107,7 +107,6 @@ int main(int argc, char *argv[]) {
 	const char * const *paramlist  = (const char * const *)&argv[0];
 
 	/* Declare variables */
-	int position = 0;
 	char * path;
 
 	/* Check if parameters are correct */
@@ -134,6 +133,7 @@ void prepare_path(const char * path) {
 
 
 void do_file(const char * file_name, const char * const * parms) {
+	int position = 0;
 	/* create filedescriptor */
 	struct stat fd_in;
 
@@ -167,6 +167,7 @@ void do_dir(const char * dir_name, const char * const * parms) {
 
 	closedir(dir_name);
 }
+
 int check(char file_name, const char * const * parms, int position) {
 	switch(parms[position]) {
 			case NAME:	( (check_name(/*TODO*/)) && position=position+2 ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
