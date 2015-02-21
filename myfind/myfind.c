@@ -25,6 +25,13 @@ void do_dir(const char * dir_name, const char * const * parms);		/* return type 
 int check_parameters();	/* MISSING: add parameters */
 int prepare_path();	/* MISSING: add parameters */
 int check(char file_name, const char * const * parms, int position);
+int check_name(/*TODO*/);
+int check_path(/*TODO*/);
+int check_user(/*TODO*/);
+int check_nouser(/*TODO*/);
+int check_type(/*TODO*/);
+int print_ls(/*TODO*/);
+int print(/*TODO*/);
 
 /* Main Function */
 int main(int argc, char *argv[]) {
