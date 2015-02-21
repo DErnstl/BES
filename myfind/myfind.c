@@ -70,13 +70,19 @@ void do_dir(const char * dir_name, const char * const * parms);		/* return type 
 int check_parameters();	/* MISSING: add parameters */
 int prepare_path();	/* MISSING: add parameters */
 int check(char file_name, const char * const * parms, int position);
-int check_name(/*TODO*/);
-int check_path(/*TODO*/);
+
+/*TODO: Romeo */
 int check_user(/*TODO*/);
 int check_nouser(/*TODO*/);
+
+/*TODO: Adam */
 int check_type(/*TODO*/);
 int print_ls(/*TODO*/);
 int print(/*TODO*/);
+
+/*TODO: Tom */
+int check_name(/*TODO*/);
+int check_path(/*TODO*/);
 
 
 /**
@@ -101,32 +107,17 @@ int main(int argc, char *argv[]) {
 	const char * const *paramlist  = (const char * const *)&argv[0];
 
 	/* Declare variables */
-	DIR *stream = NULL;
-	struct dirent * files = NULL;
-	int arg_pos = 0;
+	int position = 0;
 	char * path;
 
 	/* Check if parameters are correct */
-	check_parameters();
+	check_parameters(/*TODO*/);
 
 	/* Check and prepare path if necessary */
-	prepare_path(char * path);
-	stream = opendir(path);
-	if (stream == NULL) {
-		fprintf(stderr, "[ERROR] myfind: %3d: %s\n", errno, strerror(errno));
-		/* or without erro number: perror ("[ERROR] myfind"); */
-		exit(EXIT_FAILURE);
-	}
+	prepare_path(/*TODO*/);
 
 	/* Go through all files */
-
-	/* Main function below this point not checkd */
-	while ((files = readdir(stream)) != NULL) {
-		fprintf("%s\n", files->d_name);
-	}
-
-	closedir(stream);
-
+	do_dir(/*TODO*/);
 
 	exit(EXIT_SUCCESS);
 }
@@ -173,6 +164,8 @@ void do_dir(const char * dir_name, const char * const * parms) {
 		/* TODO */
 		do_file((*d).d_name,parms);
 	}
+
+	closedir(dir_name);
 }
 int check(char file_name, const char * const * parms, int position) {
 	switch(parms[position] {
