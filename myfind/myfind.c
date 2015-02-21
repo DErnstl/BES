@@ -23,10 +23,13 @@
 void do_file(const char * file_name, const char * const * parms);	/* return type void as none was given */
 void do_dir(const char * dir_name, const char * const * parms);		/* return type void as none was given */
 int check_parameters();	/* MISSING: add parameters */
-void prepare_path();	/* MISSING: add parameters */
+int prepare_path();	/* MISSING: add parameters */
 
 /* Main Function */
-int main(int argc, conts char *argv[]) {
+int main(int argc, char *argv[]) {
+
+	/* We want argv as constant */
+	const char * const *paramlist  = (const char * const *)&argv[0];
 
 	/* Declare variables */
 	DIR *stream = NULL;
