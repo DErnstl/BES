@@ -1,13 +1,42 @@
-/* =================== */
-/* === PSEUDO CODE === */
-/* =================== */
+/**
+ * @file myFind.c
+ * Betriebssysteme myFind File
+ * Beispiel 1
+ *
+ * @author Adam Kerenyi <ic14b080@technikum-wien.at>
+ * @author Romeo Beck <ic14b037@technikum-wien.at>
+ * @author Thomas Zeitinger <ic14b033@technikum-wien.at>
+ * @date 2015/02/09
+ *
+ * @version 470
+ *
+ * @todo Test it more seriously and more complete.
+ * @todo Review it for missing error checks.
+ * @todo Review it and check the source against the rules at
+ *       https://cis.technikum-wien.at/documents/bic/2/bes/semesterplan/lu/c-rules.html
+ *
+ */
+
+/*
+ * -------------------------------------------------------------- includes --
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/unistd.h>
+#include <errno.h>
+#include <string.h>
+#include <fnmatch.h>
 #include <string.h>
 #include <pwd.h>		/* getpwnam("username") || getpwuid(uid_t uid) */
 #include <sys/stat.h>	/* lstat() -> -print(), -ls() */
 #include <dirent.h>		/* DIR *opendir(const char* dirname) //full of relative path */
+
+
+/*
+ * --------------------------------------------------------------- defines --
+ */
 
 /* Contant Definitions */
 #define PRINT	0
@@ -17,9 +46,25 @@
 #define PATH	4
 #define NAME	5
 #define TYPE	6
-#define MAXNAMELENGHT 256
+#define MAXNAMELENGHT 255
+
+/*
+ * -------------------------------------------------------------- typedefs --
+ */
+
+/*
+ * --------------------------------------------------------------- globals --
+ */
+
+extern int errno;
+
+/*
+ * ------------------------------------------------------------- functions --
+ */
+
 
 /* Function Prototypes */
+int usage (void);
 void do_file(const char * file_name, const char * const * parms);	/* return type void as none was given */
 void do_dir(const char * dir_name, const char * const * parms);		/* return type void as none was given */
 int check_parameters();	/* MISSING: add parameters */
@@ -32,6 +77,22 @@ int check_nouser(/*TODO*/);
 int check_type(/*TODO*/);
 int print_ls(/*TODO*/);
 int print(/*TODO*/);
+
+
+/**
+ *
+ * \brief The most minimalistic C program
+ *
+ * This is the main entry point for any C program.
+ *
+ * \param argc the number of arguments
+ * \param argv the arguments itselves (including the program name in argv[0])
+ *
+ * \return always "success"
+ * \retval 0 always
+ *
+ */
+
 
 /* Main Function */
 int main(int argc, char *argv[]) {
@@ -126,3 +187,8 @@ int check(char file_name, const char * const * parms, int position) {
 
 	}
 }
+
+/*
+ * =================================================================== eof ==
+ */
+
