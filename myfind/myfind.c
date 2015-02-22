@@ -69,7 +69,7 @@ void do_file(const char * file_name, const char * const * parms);	/* return type
 void do_dir(const char * dir_name, const char * const * parms);		/* return type void as none was given */
 int check_parameters();	/* MISSING: add parameters */
 int prepare_path();	/* MISSING: add parameters */
-int check(char file_name, const char * const * parms, int position);
+int check(char file_name, const char * const * parms, int argv_pos);
 
 /*TODO: Romeo */
 int check_user(/*TODO*/);
@@ -81,8 +81,8 @@ int print_ls(/*TODO*/);
 int print(/*TODO*/);
 
 /*TODO: Tom */
-int check_name(char file_name, const char * const * parms, int position /*TODO*/) {
-int check_path(char file_name, const char * const * parms, int position /*TODO*/) {
+int check_name(char file_name, const char * const * parms, int argv_pos /*TODO*/) {
+int check_path(char file_name, const char * const * parms, int argv_pos /*TODO*/) {
 
 
 /**
@@ -133,7 +133,7 @@ void prepare_path(const char * path) {
 
 
 void do_file(const char * file_name, const char * const * parms) {
-	int position = 0;
+	int argv_pos = 0;
 	/* create filedescriptor */
 	struct stat fd_in;
 
@@ -145,7 +145,7 @@ void do_file(const char * file_name, const char * const * parms) {
 	}
 
 	/* TODO */
-	check(file_name, parms, position);
+	check(file_name, parms, argv_pos);
 }
 
 void do_dir(const char * dir_name, const char * const * parms) {
@@ -168,23 +168,23 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	closedir(dir_name);
 }
 
-int check(char file_name, const char * const * parms, int position) {
-	switch(parms[position]) {
-			case NAME:	( (check_name(/*TODO*/)) && position=position+2 ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
-			case PATH:	( (check_path(/*TODO*/)) && position=position+2 ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
-			case USER:	( (check_user(/*TODO*/)) && position=position+2 ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
-			case NOUSER:	( (check_nouser(/*TODO*/)) && position++ ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
-			case TYPE:	( (check_type(/*TODO*/)) && position=position+2 ) && ( (check(file_name,parms,position)) || print(/*TODO*/) ); break;
-			case LS:	( (print_ls(/*TODO*/)) && position=position+2 ) && (check(file_name,parms,position)); break;
-			case PRINT:	( (print(/*TODO*/)) && position=position+2 ) && (check(file_name,parms,position)); break;
+int check(char file_name, const char * const * parms, int argv_pos) {
+	switch(parms[argv_pos]) {
+			case NAME:	( (check_name(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( (check(file_name,parms,argv_pos)) || print(/*TODO*/) ); break;
+			case PATH:	( (check_path(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( (check(file_name,parms,argv_pos)) || print(/*TODO*/) ); break;
+			case USER:	( (check_user(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( (check(file_name,parms,argv_pos)) || print(/*TODO*/) ); break;
+			case NOUSER:	( (check_nouser(/*TODO*/)) && argv_pos++ ) && ( (check(file_name,parms,argv_pos)) || print(/*TODO*/) ); break;
+			case TYPE:	( (check_type(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( (check(file_name,parms,argv_pos)) || print(/*TODO*/) ); break;
+			case LS:	( (print_ls(/*TODO*/)) && argv_pos=argv_pos+2 ) && (check(file_name,parms,argv_pos)); break;
+			case PRINT:	( (print(/*TODO*/)) && argv_pos=argv_pos+2 ) && (check(file_name,parms,argv_pos)); break;
 			default: return EXIT_FAILURE;
 
 	}
 }
 
-int check_name(char file_name, const char * const * parms, int position /*TODO*/) {
+int check_name(char file_name, const char * const * parms, int argv_pos /*TODO*/) {
 
-	if(fnmatch(parms[position+1],file_name,FNM_NOESCAPE) == 0) {
+	if(fnmatch(parms[argv_pos+1],file_name,FNM_NOESCAPE) == 0) {
 		return EXIT_SUCCESS;
 	} else {
 		return EXIT_FAILURE;
@@ -192,9 +192,9 @@ int check_name(char file_name, const char * const * parms, int position /*TODO*/
 
 }
 
-int check_path(char file_name, const char * const * parms, int position /*TODO*/) {
+int check_path(char file_name, const char * const * parms, int argv_pos /*TODO*/) {
 
-	if(fnmatch(parms[position+1],file_name,FNM_NOESCAPE) == 0) {
+	if(fnmatch(parms[argv_pos+1],file_name,FNM_NOESCAPE) == 0) {
 		return EXIT_SUCCESS;
 	} else {
 		return EXIT_FAILURE;
