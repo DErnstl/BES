@@ -49,7 +49,7 @@
 #define LS (strcmp(*parms[argv_pos], "-ls") == NULL)
 #define PRINT (strcmp(*parms[argv_pos], "-print") == NULL)
 
-#define CHECK (check(file_name,parms,argv_pos))
+#define CHECK (check(fd_in,&parms,argv_pos))
 
 /*
  * -------------------------------------------------------------- typedefs --
@@ -149,7 +149,7 @@ void do_file(const char * file_name, const char * const * parms) {
 	}
 
 	/* TODO */
-	check(file_name, &parms, argv_pos);
+	check(fd_in, &parms, argv_pos);
 }
 
 void do_dir(const char * dir_name, const char * const * parms) {
