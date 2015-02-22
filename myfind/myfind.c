@@ -41,13 +41,13 @@
 /* Contant Definitions */
 #define MAXNAMELENGHT 255
 
-#define NAME (strcmp(parms[argv_pos], -name) == NULL)
-#define PATH (strcmp(parms[argv_pos], -path) == NULL)
-#define USER (strcmp(parms[argv_pos], -user) == NULL)
-#define NOUSER (strcmp(parms[argv_pos], -nouser) == NULL)
-#define TYPE (strcmp(parms[argv_pos], -type) == NULL)
-#define LS (strcmp(parms[argv_pos], -ls) == NULL)
-#define PRINT (strcmp(parms[argv_pos], -print) == NULL)
+#define NAME (strcmp(parms[argv_pos], "-name") == NULL)
+#define PATH (strcmp(parms[argv_pos], "-path") == NULL)
+#define USER (strcmp(parms[argv_pos], "-user") == NULL)
+#define NOUSER (strcmp(parms[argv_pos], "-nouser") == NULL)
+#define TYPE (strcmp(parms[argv_pos], "-type") == NULL)
+#define LS (strcmp(parms[argv_pos], "-ls") == NULL)
+#define PRINT (strcmp(parms[argv_pos], "-print") == NULL)
 
 #define CHECK (check(file_name,parms,argv_pos))
 
