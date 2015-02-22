@@ -41,13 +41,13 @@
 /* Contant Definitions */
 #define MAXNAMELENGHT 255
 
-#define NAME (strcmp(parms[argv_pos], "-name") == NULL)
-#define PATH (strcmp(parms[argv_pos], "-path") == NULL)
-#define USER (strcmp(parms[argv_pos], "-user") == NULL)
-#define NOUSER (strcmp(parms[argv_pos], "-nouser") == NULL)
-#define TYPE (strcmp(parms[argv_pos], "-type") == NULL)
-#define LS (strcmp(parms[argv_pos], "-ls") == NULL)
-#define PRINT (strcmp(parms[argv_pos], "-print") == NULL)
+#define NAME (strcmp(*parms[argv_pos], "-name") == NULL)
+#define PATH (strcmp(*parms[argv_pos], "-path") == NULL)
+#define USER (strcmp(*parms[argv_pos], "-user") == NULL)
+#define NOUSER (strcmp(*parms[argv_pos], "-nouser") == NULL)
+#define TYPE (strcmp(*parms[argv_pos], "-type") == NULL)
+#define LS (strcmp(*parms[argv_pos], "-ls") == NULL)
+#define PRINT (strcmp(*parms[argv_pos], "-print") == NULL)
 
 #define CHECK (check(file_name,parms,argv_pos))
 
@@ -72,7 +72,7 @@ void do_file(const char * file_name, const char * const * parms);	/* return type
 void do_dir(const char * dir_name, const char * const * parms);		/* return type void as none was given */
 int check_parameters();	/* MISSING: add parameters */
 int prepare_path();	/* MISSING: add parameters */
-int check(char file_name, const char * const * parms, int argv_pos);
+int check(struct stat file, const char * const * parms, int argv_pos);
 
 /*TODO: Romeo */
 int check_user(/*TODO*/);
@@ -106,8 +106,9 @@ int check_path(char file_name, const char * const * parms, int argv_pos /*TODO*/
 /* Main Function */
 int main(int argc, char *argv[]) {
 
-	/* We want argv as constant */
-	const char * const *paramlist  = (const char * const *)&argv[0];
+	/* We want argv as constant
+	 * Really? 
+	const char * const *paramlist  = (const char * const *)&argv[0]; */
 
 	/* Declare variables */
 	char * path;
@@ -148,7 +149,7 @@ void do_file(const char * file_name, const char * const * parms) {
 	}
 
 	/* TODO */
-	check(file_name, parms, argv_pos);
+	check(file_name, &parms, argv_pos);
 }
 
 void do_dir(const char * dir_name, const char * const * parms) {
@@ -171,7 +172,7 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	closedir(dir_name);
 }
 
-int check(char file_name, const char * const * parms, int argv_pos) {
+int check(struct stat file, const char * const * parms, int argv_pos) {
 	if NAME {( (check_name(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ) }
 	else if PATH {( (check_path(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ) }
 	else if USER {( (check_user(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ) }
