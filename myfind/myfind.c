@@ -49,6 +49,8 @@
 #define LS (strcmp(parms[argv_pos], -ls) == NULL)
 #define PRINT (strcmp(parms[argv_pos], -print) == NULL)
 
+#define CHECK (check(file_name,parms,argv_pos))
+
 /*
  * -------------------------------------------------------------- typedefs --
  */
@@ -170,13 +172,13 @@ void do_dir(const char * dir_name, const char * const * parms) {
 }
 
 int check(char file_name, const char * const * parms, int argv_pos) {
-	if NAME {( (check_name(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( (check(file_name,parms,argv_pos)) || print(/*TODO*/) ) }
-	else if PATH {( (check_path(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( (check(file_name,parms,argv_pos)) || print(/*TODO*/) ) }
-	else if USER {( (check_user(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( (check(file_name,parms,argv_pos)) || print(/*TODO*/) ) }
-	else if NOUSER {( (check_nouser(/*TODO*/)) && argv_pos++ ) && ( (check(file_name,parms,argv_pos)) || print(/*TODO*/) ) }
-	else if TYPE {( (check_type(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( (check(file_name,parms,argv_pos)) || print(/*TODO*/) ) }
-	else if LS {( (print_ls(/*TODO*/)) && argv_pos=argv_pos+2 ) && (check(file_name,parms,argv_pos)) }
-	else if PRINT {( (print(/*TODO*/)) && argv_pos=argv_pos+2 ) && (check(file_name,parms,argv_pos)) }
+	if NAME {( (check_name(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ) }
+	else if PATH {( (check_path(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ) }
+	else if USER {( (check_user(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ) }
+	else if NOUSER {( (check_nouser(/*TODO*/)) && argv_pos++ ) && ( CHECK || print(/*TODO*/) ) }
+	else if TYPE {( (check_type(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ) }
+	else if LS {( (print_ls(/*TODO*/)) && argv_pos=argv_pos+2 ) && CHECK }
+	else if PRINT {( (print(/*TODO*/)) && argv_pos=argv_pos+2 ) && CHECK }
 	else return EXIT_FAILURE;
 	}
 }
