@@ -107,14 +107,14 @@ int check_path(char file_name, const char * const * parms, int argv_pos);
 int main(int argc, const char *argv[]) {
 
 	/* Declare variables */
-	const char * const *paramlist  = (const char * const *)&argv[0];
-	char * path;
+	const char * const *paramlist = (const char * const *)&argv[0];
+	const char *filename = (const char *)&argv[1];
 
 	/* Check if parameters are correct */
 	check_parameters(/*TODO*/);
 
 	/* Go through all files */
-	do_dir(argv[1],paramlist);
+	do_dir(filename,paramlist);
 
 	exit(EXIT_SUCCESS);
 }
