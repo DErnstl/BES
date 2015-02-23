@@ -121,13 +121,13 @@ int main(int argc, const char *argv[]) {
 
 
 /* Function Definitions */
-void check_parameters() {
+int check_parameters() {
 	/* NOTE: Consider what errors to check for */
 }
 
 
 void do_file(const char * file_name, const char * const * parms) {
-	int argv_pos = 0;
+	int argv_pos = 2;
 	/* create filedescriptor */
 	struct stat fd_in;
 
@@ -149,7 +149,7 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	struct dirent *d;
 
 	/* opendir an throw error with exename if error */
-	if (dir = opendir(dir_name) == NULL ) {
+	if ((dir = opendir(dir_name)) == NULL ) {
 			perror(parms[0]);
 			exit(EXIT_FAILURE);
 	}
@@ -160,7 +160,7 @@ void do_dir(const char * dir_name, const char * const * parms) {
 		do_file((*d).d_name,parms);
 	}
 
-	closedir(dir_name);
+	closedir(dir);
 }
 
 int check(struct stat file, const char * const * parms, int argv_pos) {
