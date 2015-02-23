@@ -67,25 +67,25 @@ extern int errno;
 
 
 /* Function Prototypes */
-int usage (void);
 void do_file(const char * file_name, const char * const * parms);	/* return type void as none was given */
 void do_dir(const char * dir_name, const char * const * parms);		/* return type void as none was given */
-int check_parameters();	/* MISSING: add parameters */
-int prepare_path();	/* MISSING: add parameters */
 int check(struct stat file, const char * const * parms, int argv_pos);
 
 /*TODO: Romeo */
 int check_user(/*TODO*/);
 int check_nouser(/*TODO*/);
+int check_parameters();	/* MISSING: add parameters */
 
 /*TODO: Adam */
 int check_type(/*TODO*/);
 int print_ls(/*TODO*/);
 int print(/*TODO*/);
+int usage (void); /*Adam*/
 
 /*TODO: Tom */
 int check_name(char file_name, const char * const * parms, int argv_pos /*TODO*/) {
 int check_path(char file_name, const char * const * parms, int argv_pos /*TODO*/) {
+/* Check-FUnktion und Rekursion für dodir*/
 
 
 /**
@@ -106,18 +106,11 @@ int check_path(char file_name, const char * const * parms, int argv_pos /*TODO*/
 /* Main Function */
 int main(int argc, const char *argv[]) {
 
-	/* We want argv as constant
-	 * Really? 
-	const char * const *paramlist  = (const char * const *)&argv[0]; */
-
 	/* Declare variables */
 	char * path;
 
 	/* Check if parameters are correct */
 	check_parameters(/*TODO*/);
-
-	/* Check and prepare path if necessary */
-	prepare_path(/*TODO*/);
 
 	/* Go through all files */
 	do_dir(/*TODO*/);
@@ -129,10 +122,6 @@ int main(int argc, const char *argv[]) {
 /* Function Definitions */
 void check_parameters() {
 	/* NOTE: Consider what errors to check for */
-}
-
-void prepare_path(const char * path) {
-	/* Check if path argv[1] is set and if it is a directory */
 }
 
 
@@ -165,7 +154,7 @@ void do_dir(const char * dir_name, const char * const * parms) {
 
 	/* readdir until NULL */
 	while ((d = readdir(dir)) != NULL ) {
-		/* TODO */
+		/* TODO: . und .. weg*/
 		do_file((*d).d_name,parms);
 	}
 
