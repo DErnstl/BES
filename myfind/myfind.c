@@ -139,7 +139,7 @@ void do_file(const char * file_name, const char * const * parms) {
 
 	/* TODO */
 	check(fd_in, &parms, argv_pos);
-	if (S_ISDIR(fd_in.st_mode)) { do_dir(file_name,parms) }
+	if (S_ISDIR(fd_in.st_mode)) { do_dir(file_name,parms); }
 }
 
 void do_dir(const char * dir_name, const char * const * parms) {
