@@ -104,7 +104,7 @@ int check_path(char file_name, const char * const * parms, int argv_pos /*TODO*/
 
 
 /* Main Function */
-int main(int argc, char *argv[]) {
+int main(int argc, const char *argv[]) {
 
 	/* We want argv as constant
 	 * Really? 
