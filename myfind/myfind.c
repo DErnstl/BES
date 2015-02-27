@@ -85,7 +85,6 @@ int usage (void); /*Adam*/
 /*TODO: Tom */
 int check_name(const char * file_name, const char * const * parms, int argv_pos);
 int check_path(const char * file_name, const char * const * parms, int argv_pos);
-/* Check-FUnktion und Rekursion für dodir*/
 
 
 /**
@@ -155,8 +154,8 @@ void do_dir(const char * dir_name, const char * const * parms) {
 
 	/* readdir until NULL */
 	while ((d = readdir(dir)) != NULL ) {
-		/* TODO: . und .. weg*/
-		do_file((*d).d_name,parms);
+		if (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0) continue;
+ 		else do_file(d->d_name,parms);
 	}
 
 	closedir(dir);
