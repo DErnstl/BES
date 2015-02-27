@@ -1,7 +1,7 @@
 ##
 ## @file Makefile
 ## Betriebssysteme myfind Makefile
-## Beispiel 0
+## Beispiel 1
 ##
 ## @author Adam Kerenyi <ic14b080@technikum-wien.at>
 ## @author Romeo Beck <ic14b037@technikum-wien.at>
@@ -10,11 +10,6 @@
 ##
 ## @version $Revision: 972 $
 ##
-## @todo
-##
-## URL: $HeadURL: https://svn.petrovitsch.priv.at/ICSS-BES/trunk/2015/CIS/lu/myfind/Makefile $
-##
-## Last Modified: $Author: tom $
 ##
 
 ##
