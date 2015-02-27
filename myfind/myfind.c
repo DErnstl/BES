@@ -41,15 +41,15 @@
 /* Contant Definitions */
 #define MAXNAMELENGHT 255
 
-#define NAME (strcmp(*parms[argv_pos], "-name") == NULL)
-#define PATH (strcmp(*parms[argv_pos], "-path") == NULL)
-#define USER (strcmp(*parms[argv_pos], "-user") == NULL)
-#define NOUSER (strcmp(*parms[argv_pos], "-nouser") == NULL)
-#define TYPE (strcmp(*parms[argv_pos], "-type") == NULL)
-#define LS (strcmp(*parms[argv_pos], "-ls") == NULL)
-#define PRINT (strcmp(*parms[argv_pos], "-print") == NULL)
+#define NAME (strcmp(parms[argv_pos], "-name") == 0)
+#define PATH (strcmp(parms[argv_pos], "-path") == 0)
+#define USER (strcmp(parms[argv_pos], "-user") == 0)
+#define NOUSER (strcmp(parms[argv_pos], "-nouser") == 0)
+#define TYPE (strcmp(parms[argv_pos], "-type") == 0)
+#define LS (strcmp(parms[argv_pos], "-ls") == 0)
+#define PRINT (strcmp(parms[argv_pos], "-print") == 0)
 
-#define CHECK (check(fd_in,&parms,argv_pos))
+#define CHECK (check(file_name,fd_in,parms,argv_pos))
 
 /*
  * -------------------------------------------------------------- typedefs --
@@ -69,7 +69,7 @@ extern int errno;
 /* Function Prototypes */
 void do_file(const char * file_name, const char * const * parms);	/* return type void as none was given */
 void do_dir(const char * dir_name, const char * const * parms);		/* return type void as none was given */
-int check(struct stat file, const char * const * parms, int argv_pos);
+int check(const char * file_name, struct stat file, const char * const * parms, int argv_pos);
 
 /*TODO: Romeo */
 int check_user(struct stat fd_in, char *parms[], int arg_pos);
@@ -83,9 +83,8 @@ int print(/*TODO*/);
 int usage (void); /*Adam*/
 
 /*TODO: Tom */
-int check_name(char file_name, const char * const * parms, int argv_pos);
-int check_path(char file_name, const char * const * parms, int argv_pos);
-/* Check-FUnktion und Rekursion für dodir*/
+int check_name(const char * file_name, const char * const * parms, int argv_pos);
+int check_path(const char * file_name, const char * const * parms, int argv_pos);
 
 
 /**
@@ -138,8 +137,7 @@ void do_file(const char * file_name, const char * const * parms) {
 		exit(EXIT_FAILURE);
 	}
 
-	/* TODO */
-	check(fd_in, parms, argv_pos);
+	check(file_name, fd_in, parms, argv_pos);
 	if (S_ISDIR(fd_in.st_mode)) { do_dir(file_name,parms); }
 }
 
@@ -156,13 +154,14 @@ void do_dir(const char * dir_name, const char * const * parms) {
 
 	/* readdir until NULL */
 	while ((d = readdir(dir)) != NULL ) {
-		/* TODO: . und .. weg*/
-		do_file((*d).d_name,parms);
+		if (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0) continue;
+ 		else do_file(d->d_name,parms);
 	}
 
 	closedir(dir);
 }
 
+<<<<<<< HEAD
 int check(struct stat file, const char * const * parms, int argv_pos) {
 	if NAME {( (check_name(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
 	else if PATH {( (check_path(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
@@ -171,11 +170,20 @@ int check(struct stat file, const char * const * parms, int argv_pos) {
 	else if TYPE {( (check_type(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
 	else if LS {( (print_ls(/*TODO*/)) && argv_pos=argv_pos+2 ) && CHECK; }
 	else if PRINT {( (print(/*TODO*/)) && argv_pos=argv_pos+2 ) && CHECK; }
+=======
+int check(const char * dir_name, struct stat file, const char * const * parms, int argv_pos) {
+	if NAME {( (check_name(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
+	else if PATH {( (check_path(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
+	else if USER {( (check_user(/*TODO*/)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
+	else if NOUSER {( (check_nouser(/*TODO*/)) && (argv_pos++) ) && ( CHECK || print(/*TODO*/) ); }
+	else if TYPE {( (check_type(/*TODO*/)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
+	else if LS {( (print_ls(/*TODO*/)) && (argv_pos=argv_pos+2) ) && CHECK; }
+	else if PRINT {( (print(/*TODO*/)) && (argv_pos=argv_pos+2) ) && CHECK; }
+>>>>>>> ef1f3c9da477ad2bde1b74476eb439c21330f4e2
 	else return EXIT_FAILURE;
-	}
 }
 
-int check_name(char file_name, const char * const * parms, int argv_pos /*TODO*/) {
+int check_name(const char * file_name, const char * const * parms, int argv_pos) {
 
 	if(fnmatch(parms[argv_pos+1],file_name,FNM_NOESCAPE) == 0) {
 		return EXIT_SUCCESS;
@@ -185,9 +193,9 @@ int check_name(char file_name, const char * const * parms, int argv_pos /*TODO*/
 
 }
 
-int check_path(char file_name, const char * const * parms, int argv_pos /*TODO*/) {
+int check_path(const char * file_name, const char * const * parms, int argv_pos) {
 
-	if(fnmatch(parms[argv_pos+1],file_name,FNM_NOESCAPE) == 0) {
+	if(fnmatch(parms[argv_pos+1],file_name,FNM_PATHNAME) == 0) {
 		return EXIT_SUCCESS;
 	} else {
 		return EXIT_FAILURE;
