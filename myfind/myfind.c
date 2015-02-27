@@ -163,13 +163,13 @@ void do_dir(const char * dir_name, const char * const * parms) {
 }
 
 int check(const char * dir_name, struct stat file, const char * const * parms, int argv_pos) {
-	if NAME {( (check_name(dir_name,parms,argv_pos)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
-	else if PATH {( (check_path(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
-	else if USER {( (check_user(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
-	else if NOUSER {( (check_nouser(/*TODO*/)) && argv_pos++ ) && ( CHECK || print(/*TODO*/) ); }
-	else if TYPE {( (check_type(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
-	else if LS {( (print_ls(/*TODO*/)) && argv_pos=argv_pos+2 ) && CHECK; }
-	else if PRINT {( (print(/*TODO*/)) && argv_pos=argv_pos+2 ) && CHECK; }
+	if NAME {( (check_name(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
+	else if PATH {( (check_path(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
+	else if USER {( (check_user(/*TODO*/)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
+	else if NOUSER {( (check_nouser(/*TODO*/)) && (argv_pos++) ) && ( CHECK || print(/*TODO*/) ); }
+	else if TYPE {( (check_type(/*TODO*/)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
+	else if LS {( (print_ls(/*TODO*/)) && (argv_pos=argv_pos+2) ) && CHECK; }
+	else if PRINT {( (print(/*TODO*/)) && (argv_pos=argv_pos+2) ) && CHECK; }
 	else return EXIT_FAILURE;
 	}
 }
