@@ -171,7 +171,6 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 	else if LS {( (print_ls(/*TODO*/)) && (argv_pos=argv_pos+2) ) && CHECK; }
 	else if PRINT {( (print(/*TODO*/)) && (argv_pos=argv_pos+2) ) && CHECK; }
 	else return EXIT_FAILURE;
-	}
 }
 
 int check_name(const char * file_name, const char * const * parms, int argv_pos) {
