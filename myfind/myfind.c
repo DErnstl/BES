@@ -83,8 +83,8 @@ int print(/*TODO*/);
 int usage (void); /*Adam*/
 
 /*TODO: Tom */
-int check_name(char file_name, const char * const * parms, int argv_pos);
-int check_path(char file_name, const char * const * parms, int argv_pos);
+int check_name(const char * file_name, const char * const * parms, int argv_pos);
+int check_path(const char * file_name, const char * const * parms, int argv_pos);
 /* Check-FUnktion und Rekursion für dodir*/
 
 
@@ -138,7 +138,6 @@ void do_file(const char * file_name, const char * const * parms) {
 		exit(EXIT_FAILURE);
 	}
 
-	/* TODO */
 	check(file_name, fd_in, parms, argv_pos);
 	if (S_ISDIR(fd_in.st_mode)) { do_dir(file_name,parms); }
 }
@@ -175,7 +174,7 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 	}
 }
 
-int check_name(char file_name, const char * const * parms, int argv_pos) {
+int check_name(const char * file_name, const char * const * parms, int argv_pos) {
 
 	if(fnmatch(parms[argv_pos+1],file_name,FNM_NOESCAPE) == 0) {
 		return EXIT_SUCCESS;
@@ -185,7 +184,7 @@ int check_name(char file_name, const char * const * parms, int argv_pos) {
 
 }
 
-int check_path(char file_name, const char * const * parms, int argv_pos /*TODO*/) {
+int check_path(const char * file_name, const char * const * parms, int argv_pos) {
 
 	if(fnmatch(parms[argv_pos+1],file_name,FNM_PATHNAME) == 0) {
 		return EXIT_SUCCESS;
