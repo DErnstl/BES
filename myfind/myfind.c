@@ -1,6 +1,6 @@
 /**
- * @file myFind.c
- * Betriebssysteme myFind File
+ * @file myfind.c
+ * Betriebssysteme myfind
  * Beispiel 1
  *
  * @author Adam Kerenyi <ic14b080@technikum-wien.at>
@@ -9,11 +9,6 @@
  * @date 2015/02/09
  *
  * @version 470
- *
- * @todo Test it more seriously and more complete.
- * @todo Review it for missing error checks.
- * @todo Review it and check the source against the rules at
- *       https://cis.technikum-wien.at/documents/bic/2/bes/semesterplan/lu/c-rules.html
  *
  */
 
