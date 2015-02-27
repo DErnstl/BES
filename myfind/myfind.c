@@ -24,9 +24,9 @@
 #include <string.h>
 #include <fnmatch.h>
 #include <string.h>
-#include <pwd.h>		/* getpwnam("username") || getpwuid(uid_t uid) */
-#include <sys/stat.h>	/* lstat() -> -print(), -ls() */
-#include <dirent.h>		/* DIR *opendir(const char* dirname) //full of relative path */
+#include <pwd.h>
+#include <sys/stat.h>
+#include <dirent.h>
 
 
 /*
@@ -118,23 +118,6 @@ int check_parameters() {
 	/* NOTE: Consider what errors to check for */
 }
 
-
-void do_file(const char * file_name, const char * const * parms) {
-	int argv_pos = 2;
-	/* create filedescriptor */
-	struct stat fd_in;
-
-	/* lstat file and write content to struct 
-	 * throw error if failed with Filename */
-	if (lstat(file_name, &fd_in) == -1) {
-		perror(parms[0]);
-		exit(EXIT_FAILURE);
-	}
-
-	check(file_name, fd_in, parms, argv_pos);
-	if (S_ISDIR(fd_in.st_mode)) { do_dir(file_name,parms); }
-}
-
 void do_dir(const char * dir_name, const char * const * parms) {
 	/* Create DIR Struct */
 	DIR *dir;
@@ -155,6 +138,22 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	closedir(dir);
 }
 
+void do_file(const char * file_name, const char * const * parms) {
+	int argv_pos = 2;
+	/* create filedescriptor */
+	struct stat fd_in;
+
+	/* lstat file and write content to struct 
+	 * throw error if failed with Filename */
+	if (lstat(file_name, &fd_in) == -1) {
+		perror(parms[0]);
+		exit(EXIT_FAILURE);
+	}
+
+	check(file_name, fd_in, parms, argv_pos);
+	if (S_ISDIR(fd_in.st_mode)) { do_dir(file_name,parms); }
+}
+
 int check(const char * dir_name, struct stat file, const char * const * parms, int argv_pos) {
 	if NAME {( (check_name(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if PATH {( (check_path(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
@@ -167,7 +166,6 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 }
 
 int check_name(const char * file_name, const char * const * parms, int argv_pos) {
-
 	if(fnmatch(parms[argv_pos+1],file_name,FNM_NOESCAPE) == 0) {
 		return EXIT_SUCCESS;
 	} else {
@@ -177,7 +175,6 @@ int check_name(const char * file_name, const char * const * parms, int argv_pos)
 }
 
 int check_path(const char * file_name, const char * const * parms, int argv_pos) {
-
 	if(fnmatch(parms[argv_pos+1],file_name,FNM_PATHNAME) == 0) {
 		return EXIT_SUCCESS;
 	} else {
