@@ -69,7 +69,7 @@ extern int errno;
 /* Function Prototypes */
 void do_file(const char * file_name, const char * const * parms);	/* return type void as none was given */
 void do_dir(const char * dir_name, const char * const * parms);		/* return type void as none was given */
-int check(struct stat file, const char * const * parms, int argv_pos);
+int check(const char * file_name, struct stat file, const char * const * parms, int argv_pos);
 
 /*TODO: Romeo */
 int check_user(/*TODO*/);
