@@ -72,7 +72,7 @@ void do_dir(const char * dir_name, const char * const * parms);		/* return type 
 int check(struct stat file, const char * const * parms, int argv_pos);
 
 /*TODO: Romeo */
-int check_user(/*TODO*/);
+int check_user(struct stat fd_in, char *parms[], int arg_pos);
 int check_nouser(/*TODO*/);
 int check_parameters();	/* MISSING: add parameters */
 
@@ -194,7 +194,15 @@ int check_path(char file_name, const char * const * parms, int argv_pos /*TODO*/
 	}
 
 }
-
+int check_user(struct stat fd_in, char *parms[], int argv_pos);
+{
+	struct passwd *userdet = NULL;
+	userdet = getpwuid(fd_in.stuid);
+	if(userdet == NULL) fprintf(stderr,"%s\n", strerror(errno));
+	if((userdet->name == parms(argv_pos + 1)) || (userdet->uid == parms(argv_pos)) return EXIT_SUCCESS;
+	else return EXIT_FAILURE;
+	
+}
 /*
  * =================================================================== eof ==
  */
