@@ -54,8 +54,6 @@
  * --------------------------------------------------------------- globals --
  */
 
-extern int errno;
-
 /*
  * ------------------------------------------------------------- functions --
  */
@@ -103,6 +101,7 @@ int main(int argc, const char *argv[]) {
 	/* Declare variables, need as const array of all parameters */
 	const char * const *paramlist = (const char * const *)&argv[0];
 	const char *filename = (const char *)&argv[1];
+	argc = argc;
 
 	/* Check if parameters are correct */
 	check_parameters(/*TODO*/);
@@ -160,7 +159,7 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 	if NAME {( (check_name(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if PATH {( (check_path(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if USER {( (check_user(file,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
-	else if NOUSER {( (check_nouser(/*TODO*/)) && (argv_pos++) ) && ( CHECK || print(/*TODO*/) ); }
+	else if NOUSER {( (check_nouser(file,parms,argv_pos)) && (argv_pos++) ) && ( CHECK || print(/*TODO*/) ); }
 	else if TYPE {( (check_type(/*TODO*/)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if LS {( (print_ls(/*TODO*/)) && (argv_pos=argv_pos+2) ) && CHECK; }
 	else if PRINT {( (print(/*TODO*/)) && (argv_pos=argv_pos+2) ) && CHECK; }
