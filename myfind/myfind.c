@@ -49,7 +49,7 @@
 #define LS (strcmp(parms[argv_pos], "-ls") == 0)
 #define PRINT (strcmp(parms[argv_pos], "-print") == 0)
 
-#define CHECK (check(fd_in,parms,argv_pos))
+#define CHECK (check(file_name,fd_in,parms,argv_pos))
 
 /*
  * -------------------------------------------------------------- typedefs --
@@ -139,7 +139,7 @@ void do_file(const char * file_name, const char * const * parms) {
 	}
 
 	/* TODO */
-	check(fd_in, parms, argv_pos);
+	check(file_name, fd_in, parms, argv_pos);
 	if (S_ISDIR(fd_in.st_mode)) { do_dir(file_name,parms); }
 }
 
@@ -163,7 +163,7 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	closedir(dir);
 }
 
-int check(struct stat file, const char * const * parms, int argv_pos) {
+int check(const char * dir_name, struct stat file, const char * const * parms, int argv_pos) {
 	if NAME {( (check_name(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
 	else if PATH {( (check_path(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
 	else if USER {( (check_user(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
@@ -175,7 +175,7 @@ int check(struct stat file, const char * const * parms, int argv_pos) {
 	}
 }
 
-int check_name(char file_name, const char * const * parms, int argv_pos /*TODO*/) {
+int check_name(char file_name, const char * const * parms, int argv_pos) {
 
 	if(fnmatch(parms[argv_pos+1],file_name,FNM_NOESCAPE) == 0) {
 		return EXIT_SUCCESS;
@@ -187,7 +187,7 @@ int check_name(char file_name, const char * const * parms, int argv_pos /*TODO*/
 
 int check_path(char file_name, const char * const * parms, int argv_pos /*TODO*/) {
 
-	if(fnmatch(parms[argv_pos+1],file_name,FNM_NOESCAPE) == 0) {
+	if(fnmatch(parms[argv_pos+1],file_name,FNM_PATHNAME) == 0) {
 		return EXIT_SUCCESS;
 	} else {
 		return EXIT_FAILURE;
