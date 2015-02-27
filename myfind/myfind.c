@@ -1,6 +1,6 @@
 /**
- * @file myFind.c
- * Betriebssysteme myFind File
+ * @file myfind.c
+ * Betriebssysteme myfind File
  * Beispiel 1
  *
  * @author Adam Kerenyi <ic14b080@technikum-wien.at>
