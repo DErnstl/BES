@@ -67,8 +67,8 @@ void do_dir(const char * dir_name, const char * const * parms);		/* return type 
 int check(const char * file_name, struct stat file, const char * const * parms, int argv_pos);
 
 /*TODO: Romeo */
-int check_user(struct stat fd_in, char *parms[], int arg_pos);
-int check_nouser(struct stat fd_in, char *parms[], int arg_pos);
+int check_user(struct stat fd_in, const char * const * parms, int argv_pos);
+int check_nouser(struct stat fd_in, const char * const * parms, int argv_pos);
 int check_parameters();	/* MISSING: add parameters */
 
 /*TODO: Adam */
@@ -156,25 +156,14 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	closedir(dir);
 }
 
-<<<<<<< HEAD
-int check(struct stat file, const char * const * parms, int argv_pos) {
-	if NAME {( (check_name(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
-	else if PATH {( (check_path(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
-	else if USER {( (check_user(file, parms, argv_pos) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
-	else if NOUSER {( (check_nouser(file, parms, argv_pos) && argv_pos++ ) && ( CHECK || print(/*TODO*/) ); }
-	else if TYPE {( (check_type(/*TODO*/)) && argv_pos=argv_pos+2 ) && ( CHECK || print(/*TODO*/) ); }
-	else if LS {( (print_ls(/*TODO*/)) && argv_pos=argv_pos+2 ) && CHECK; }
-	else if PRINT {( (print(/*TODO*/)) && argv_pos=argv_pos+2 ) && CHECK; }
-=======
 int check(const char * dir_name, struct stat file, const char * const * parms, int argv_pos) {
 	if NAME {( (check_name(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if PATH {( (check_path(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
-	else if USER {( (check_user(/*TODO*/)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
+	else if USER {( (check_user(file,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if NOUSER {( (check_nouser(/*TODO*/)) && (argv_pos++) ) && ( CHECK || print(/*TODO*/) ); }
 	else if TYPE {( (check_type(/*TODO*/)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if LS {( (print_ls(/*TODO*/)) && (argv_pos=argv_pos+2) ) && CHECK; }
 	else if PRINT {( (print(/*TODO*/)) && (argv_pos=argv_pos+2) ) && CHECK; }
->>>>>>> ef1f3c9da477ad2bde1b74476eb439c21330f4e2
 	else return EXIT_FAILURE;
 }
 
@@ -198,19 +187,19 @@ int check_path(const char * file_name, const char * const * parms, int argv_pos)
 
 }
 
-int check_user(struct stat fd_in, char *parms[], int argv_pos)
+int check_user(struct stat fd_in, const char * const * parms, int argv_pos)
 {
 	struct passwd *userdet = NULL;
-	userdet = getpwuid(fd_in.stuid);		
-	if((userdet->name == parms[argv_pos + 1]) || (userdet->uid == parms[argv_pos])) return EXIT_SUCCESS;
+	userdet = getpwuid(fd_in.st_uid);		
+	if(((userdet->pw_name) == (parms[argv_pos + 1])) || (userdet->pw_uid == parms[argv_pos])) return EXIT_SUCCESS;
 	else return EXIT_FAILURE;
 	
 }
 
-int check_nouser(struct stat fd_in, char *parms[], int arg_pos)
+int check_nouser(struct stat fd_in, const char * const * parms, int arg_pos)
 {
 	struct passwd *userdet = NULL;
-	userdet = getpwuid(fd_in.stuid);
+	userdet = getpwuid(fd_in.st_uid);
 	if(userdet == NULL) return EXIT_SUCCESS;
 	else return EXIT_FAILURE;
 
