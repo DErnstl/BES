@@ -34,7 +34,7 @@ EXCLUDE_PATTERN=footrulewidth
 ##
 
 %.o: %.c
-        $(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 ##
 ## --------------------------------------------------------------- targets --
