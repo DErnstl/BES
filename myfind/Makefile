@@ -1,6 +1,6 @@
 ##
 ## @file Makefile
-## Betriebssysteme myFind Makefile
+## Betriebssysteme myfind Makefile
 ## Beispiel 0
 ##
 ## @author Adam Kerenyi <ic14b080@technikum-wien.at>
@@ -12,7 +12,7 @@
 ##
 ## @todo
 ##
-## URL: $HeadURL: https://svn.petrovitsch.priv.at/ICSS-BES/trunk/2015/CIS/lu/myFind/Makefile $
+## URL: $HeadURL: https://svn.petrovitsch.priv.at/ICSS-BES/trunk/2015/CIS/lu/myfind/Makefile $
 ##
 ## Last Modified: $Author: tom $
 ##
@@ -26,10 +26,11 @@ CFLAGS=-DDEBUG -Wall -pedantic -Werror -Wextra -Wstrict-prototypes -fno-common -
 CP=cp
 CD=cd
 MV=mv
+RM=rm
 GREP=grep
 DOXYGEN=doxygen
 
-OBJECTS=myFind.o
+OBJECTS=myfind.o
 
 EXCLUDE_PATTERN=footrulewidth
 
@@ -44,32 +45,32 @@ EXCLUDE_PATTERN=footrulewidth
 ## --------------------------------------------------------------- targets --
 ##
 
-all: myFind
+all: myfind
 
-myFind: $(OBJECTS)
-        $(CC) $(CFLAGS) -o $@ $^
+myfind: $(OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
-        $(RM) *.o *~ myFind
+	$(RM) *.o *~ myfind
 
 distclean: clean
-        $(RM) -r doc
+	$(RM) -r doc
 
 doc: html pdf
 
 html:
-        $(DOXYGEN) doxygen.dcf
+	$(DOXYGEN) doxygen.dcf
 
 pdf: html
-        $(CD) doc/pdf && \
-        $(MV) refman.tex refman_save.tex && \
-        $(GREP) -v $(EXCLUDE_PATTERN) refman_save.tex > refman.tex && \
-        $(RM) refman_save.tex && \
-        make && \
-        $(MV) refman.pdf refman.save && \
-        $(RM) *.pdf *.html *.tex *.aux *.sty *.log *.eps *.out *.ind *.idx \
-              *.ilg *.toc *.tps Makefile && \
-        $(MV) refman.save refman.pdf
+	$(CD) doc/pdf && \
+	$(MV) refman.tex refman_save.tex && \
+	$(GREP) -v $(EXCLUDE_PATTERN) refman_save.tex > refman.tex && \
+	$(RM) refman_save.tex && \
+	make && \
+	$(MV) refman.pdf refman.save && \
+	$(RM) *.pdf *.html *.tex *.aux *.sty *.log *.eps *.out *.ind *.idx \
+		*.ilg *.toc *.tps Makefile && \
+	$(MV) refman.save refman.pdf
 
 ##
 ## ---------------------------------------------------------- dependencies --
