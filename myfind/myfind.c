@@ -303,7 +303,7 @@ int print(const char * file_name) {
 	return MATCH;
 }
 
-int check_arg(const int argc, const char * argv[]) {
+int check_arg(const int argc, const char * argv) {
     int arg_i = 2;
 
     if (argc < 2) {
