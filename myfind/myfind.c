@@ -184,18 +184,18 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 
 int check_name(const char * file_name, const char * const * parms, int argv_pos) {
 	if(fnmatch(parms[argv_pos+1],file_name,FNM_NOESCAPE) == 0) {
-		return EXIT_SUCCESS;
+		return MATCH;
 	} else {
-		return EXIT_FAILURE;
+		return MISMATCH;
 	}
 
 }
 
 int check_path(const char * file_name, const char * const * parms, int argv_pos) {
 	if(fnmatch(parms[argv_pos+1],file_name,FNM_PATHNAME) == 0) {
-		return EXIT_SUCCESS;
+		return MATCH;
 	} else {
-		return EXIT_FAILURE;
+		return MISMATCH;
 	}
 
 }
