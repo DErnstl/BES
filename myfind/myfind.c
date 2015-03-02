@@ -111,7 +111,7 @@ int main(const int argc, const char *argv[]) {
 	const char *filename = (const char *)&argv[1];
 
 	/* Check if parameters are correct */
-	check_arg(argc, argv) && exit(EXIT_FAILURE);
+	check_arg(argc, &argv) && exit(EXIT_FAILURE);
 
 	/* Go through all files */
 	do_dir(filename, paramlist);
