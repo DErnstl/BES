@@ -71,9 +71,8 @@ int check(const char * file_name, struct stat file, const char * const * parms, 
 /*TODO: Romeo */
 int check_user(struct stat fd_in, const char * const * parms, int argv_pos);
 int check_nouser(struct stat fd_in, const char * const * parms, int argv_pos);
-/*int check_parameters();*/	/* replaced by arg_check() */
-void arg_check(int argc, const char * argv[]);
-int arg_type(const char * argv);
+int check_arg(argc, argv);(int argc, const char * argv[]);
+int check_arg_type(const char * argv);
 
 
 /*TODO: Adam */
@@ -111,7 +110,7 @@ int main(int argc, const char *argv[]) {
 	argc = argc;
 
 	/* Check if parameters are correct */
-	check_parameters(/*TODO*/);
+	check_arg(argc, argv) && exit(EXIT_FAILURE);
 
 	/* Go through all files */
 	do_dir(filename,paramlist);
@@ -172,13 +171,13 @@ void do_file(const char * file_name, const char * const * parms) {
 
 int check(const char * dir_name, struct stat file, const char * const * parms, int argv_pos) {
 	if NOPARAMETER return MISMATCH;
-	else if NAME {( (check_name(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) ); }
-	else if PATH {( (check_path(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) ); }
-	else if USER {( (check_user(file,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) ); }
-	else if NOUSER {( (check_nouser(file,parms,argv_pos)) && (argv_pos++) ) && ( CHECK || print(dir_name) ); }
-	else if TYPE {( (check_type(file, parms, argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) ); }
-	else if LS {( (print_ls(dir_name, file)) && (argv_pos=argv_pos+2) ) && CHECK; }
-	else if PRINT {( (print(dir_name)) && (argv_pos=argv_pos+2) ) && CHECK; }
+	else if NAME 	{( check_name(dir_name,parms,argv_pos) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) );}
+	else if PATH 	{( check_path(dir_name,parms,argv_pos) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) );}
+	else if USER 	{( check_user(file,parms,argv_pos) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) );}
+	else if NOUSER 	{( check_nouser(file,parms,argv_pos) && (argv_pos++) ) && ( CHECK || print(dir_name) );}
+	else if TYPE	{( check_type(file, parms, argv_pos) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) );}
+	else if LS		{( print_ls(dir_name, file) && (argv_pos=argv_pos+2) ) && CHECK; }
+	else if PRINT	{( print(dir_name) && (argv_pos=argv_pos+2) ) && CHECK; }
 	else return MISMATCH;
 }
 
@@ -307,13 +306,13 @@ int print(const char * file_name) {
 	return MATCH;
 }
 
-void arg_check(int argc, const char * argv[]) {
+int check_arg(int argc, const char * argv[]) {
     int arg_i = 2;
 
     if (argc < 2) {
         error(1, 0, "Insufficient arguments");
         usage();
-        exit (EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
     while (arg_i < argc) {
@@ -326,12 +325,12 @@ void arg_check(int argc, const char * argv[]) {
         } else if (!(strcmp(argv[arg_i], "-nouser"))) {
             arg_i++;
         } else if ((strcmp(argv[arg_i], "-type") == 0) && (arg_i + 1 < argc)) {
-            if (arg_type(argv[arg_i + 1])) {
+            if (check_arg_type(argv[arg_i + 1])) {
                 arg_i += 2;
             } else {
                 error(1, 0, "Invalid arguments");
                 usage();
-                exit(EXIT_FAILURE);
+                return EXIT_FAILURE;
             }
         } else if (!(strcmp(argv[arg_i], "-print"))) {
             arg_i++;
@@ -340,12 +339,12 @@ void arg_check(int argc, const char * argv[]) {
         } else {
             error(1, 0, "Invalid arguments");
             usage();
-            exit(EXIT_FAILURE);
+            return EXIT_FAILURE;
         }
     }
 }
 
-int arg_type(const char * argv) {
+int check_arg_type(const char * argv) {
     switch ((char) * argv) {
         case 'b':
         case 'c':
