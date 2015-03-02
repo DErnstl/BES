@@ -48,7 +48,7 @@
 #define LS (strcmp(parms[argv_pos], "-ls") == 0)
 #define PRINT (strcmp(parms[argv_pos], "-print") == 0)
 
-#define CHECK (check(file_name,fd_in,parms,argv_pos))
+#define CHECK (check(dir_name,fd_in,parms,argv_pos))
 
 /*
  * -------------------------------------------------------------- typedefs --
