@@ -145,7 +145,13 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	while ((d = readdir(dir)) != NULL ) {
 		/* if dir_name == ".", then do_file, else cut "." and ".." out */
 		if ((!strcmp(dir_name, ".")) && (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0)) continue;
- 		else do_file(d->d_name,parms);
+		else {  
+			strcpy(filename, dir_name);
+			strcat(filename, "/");
+			strcat(filename, d->d_name);
+			do_file(filename,parms);
+		}
+
 	}
 
 	closedir(dir);
