@@ -50,7 +50,7 @@
 #define LS (strcmp(parms[parm_pos], "-ls") == 0)
 #define PRINT (strcmp(parms[parm_pos], "-print") == 0)
 
-#define CHECK (check(dir_name,fd_in,parms,parm_pos))
+#define CHECK (check(dir_name,file,parms,parm_pos))
 
 /*
  * -------------------------------------------------------------- typedefs --
