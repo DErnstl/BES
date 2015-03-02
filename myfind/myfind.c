@@ -132,16 +132,19 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	/* Create DIR Struct */
 	DIR *dir;
 	struct dirent *d;
+	char filename[MAXNAMELENGHT];
 
 	/* opendir an throw error with exename if error */
 	if ((dir = opendir(dir_name)) == NULL ) {
+		/*TODO, filename ist nicht mehr perms[0] */
 			perror(parms[0]);
 			exit(EXIT_FAILURE);
 	}
 
 	/* readdir until NULL */
 	while ((d = readdir(dir)) != NULL ) {
-		if (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0) continue;
+		/* if dir_name == ".", then do_file, else cut "." and ".." out */
+		if ((!strcmp(dir_name, ".")) && (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0)) continue;
  		else do_file(d->d_name,parms);
 	}
 
@@ -197,8 +200,11 @@ int check_path(const char * file_name, const char * const * parms, int argv_pos)
 int check_user(struct stat fd_in, const char * const * parms, int argv_pos)
 {
 	struct passwd *userdet = NULL;
-	userdet = getpwuid(fd_in.st_uid);		
-	if(((userdet->pw_name) == (parms[argv_pos + 1])) || (userdet->pw_uid == parms[argv_pos])) return EXIT_SUCCESS;
+	userdet = getpwuid(fd_in.st_uid);
+	char *endptr = NULL;
+	int parmsint = 0;
+	parmsint = strtol(parms[argv_pos], &endptr, 10);		
+	if(((userdet->pw_name) == (parms[argv_pos + 1])) || (userdet->pw_uid == parmsint)) return EXIT_SUCCESS;
 	else return EXIT_FAILURE;
 	
 }
