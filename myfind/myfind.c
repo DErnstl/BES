@@ -48,7 +48,7 @@
 #define LS (strcmp(parms[argv_pos], "-ls") == 0)
 #define PRINT (strcmp(parms[argv_pos], "-print") == 0)
 
-#define CHECK (check(file_name,fd_in,parms,argv_pos))
+#define CHECK (check(dir_name,fd_in,parms,argv_pos))
 
 /*
  * -------------------------------------------------------------- typedefs --
@@ -70,9 +70,16 @@ int check(const char * file_name, struct stat file, const char * const * parms, 
 
 /*TODO: Romeo */
 int check_user(struct stat fd_in, const char * const * parms, int argv_pos);
+<<<<<<< HEAD
 int check_nouser(struct stat fd_in, const char * const * parms, int argv_pos);
 int check_arg(argc, argv);(int argc, const char * argv[]);
 int check_arg_type(const char * argv);
+=======
+int check_nouser(struct stat fd_in);
+/*int check_parameters();*/	/* replaced by arg_check() */
+void arg_check(int argc, const char * argv[]);
+int arg_type(const char * argv);
+>>>>>>> c0f0d50d1bd3753c50ea1697ef9d404a1165f891
 
 
 /*TODO: Adam */
@@ -171,6 +178,7 @@ void do_file(const char * file_name, const char * const * parms) {
 
 int check(const char * dir_name, struct stat file, const char * const * parms, int argv_pos) {
 	if NOPARAMETER return MISMATCH;
+<<<<<<< HEAD
 	else if NAME 	{( check_name(dir_name,parms,argv_pos) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) );}
 	else if PATH 	{( check_path(dir_name,parms,argv_pos) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) );}
 	else if USER 	{( check_user(file,parms,argv_pos) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) );}
@@ -178,6 +186,15 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 	else if TYPE	{( check_type(file, parms, argv_pos) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) );}
 	else if LS		{( print_ls(dir_name, file) && (argv_pos=argv_pos+2) ) && CHECK; }
 	else if PRINT	{( print(dir_name) && (argv_pos=argv_pos+2) ) && CHECK; }
+=======
+	else if NAME {( (check_name(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) ); }
+	else if PATH {( (check_path(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) ); }
+	else if USER {( (check_user(file,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) ); }
+	else if NOUSER {( (check_nouser(file)) && (argv_pos++) ) && ( CHECK || print(dir_name) ); }
+	else if TYPE {( (check_type(file, parms, argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) ); }
+	else if LS {( (print_ls(dir_name, file)) && (argv_pos=argv_pos+2) ) && CHECK; }
+	else if PRINT {( (print(dir_name)) && (argv_pos=argv_pos+2) ) && CHECK; }
+>>>>>>> c0f0d50d1bd3753c50ea1697ef9d404a1165f891
 	else return MISMATCH;
 }
 
@@ -202,16 +219,16 @@ int check_path(const char * file_name, const char * const * parms, int argv_pos)
 int check_user(struct stat fd_in, const char * const * parms, int argv_pos)
 {
 	struct passwd *userdet = NULL;
+        char *endptr = NULL;
+        int parmsint = 0;
 	userdet = getpwuid(fd_in.st_uid);
-	char *endptr = NULL;
-	int parmsint = 0;
 	parmsint = strtol(parms[argv_pos + 1], &endptr, 10);		
-	if(((userdet->pw_name) == (parms[argv_pos + 1])) || (userdet->pw_uid == parmsint)) return EXIT_SUCCESS;
+	if(((userdet->pw_name) == (parms[argv_pos + 1])) || (userdet->pw_uid == (uid_t)parmsint)) return EXIT_SUCCESS;
 	else return EXIT_FAILURE;
 	
 }
 
-int check_nouser(struct stat fd_in, const char * const * parms, int arg_pos)
+int check_nouser(struct stat fd_in)
 {
 	struct passwd *userdet = NULL;
 	userdet = getpwuid(fd_in.st_uid);
