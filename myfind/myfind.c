@@ -104,7 +104,7 @@ int check_path(const char * file_name, const char * const * parms, int parm_pos)
 
 
 /* Main Function */
-int main(int argc, const char *argv[]) {
+int main(const int argc, const char *argv[]) {
 
 	/* Declare variables, need as const array of all parameters */
 	const char * const *paramlist = (const char * const *)&argv[2];
