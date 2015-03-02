@@ -36,6 +36,9 @@
 /* Contant Definitions */
 #define MAXNAMELENGHT 255
 
+#define MATCH		1
+#define MISMATCH	0
+
 #define NAME (strcmp(parms[argv_pos], "-name") == 0)
 #define PATH (strcmp(parms[argv_pos], "-path") == 0)
 #define USER (strcmp(parms[argv_pos], "-user") == 0)
@@ -67,7 +70,10 @@ int check(const char * file_name, struct stat file, const char * const * parms, 
 /*TODO: Romeo */
 int check_user(struct stat fd_in, const char * const * parms, int argv_pos);
 int check_nouser(struct stat fd_in, const char * const * parms, int argv_pos);
-int check_parameters();	/* MISSING: add parameters */
+/*int check_parameters();*/	/* replaced by arg_check() */
+void arg_check(int argc, const char * argv[]);
+int arg_type(const char * argv);
+
 
 /*TODO: Adam */
 int check_type(/*TODO*/);
@@ -199,6 +205,60 @@ int check_nouser(struct stat fd_in, const char * const * parms, int arg_pos)
 	if(userdet == NULL) return EXIT_SUCCESS;
 	else return EXIT_FAILURE;
 
+}
+
+void arg_check(int argc, const char * argv[]) {
+    int arg_i = 2;
+
+    if (argc < 2) {
+        error(1, 0, "Insufficient arguments");
+        print_usage();
+        exit (EXIT_FAILURE);
+    }
+
+    while (arg_i < argc) {
+        if ((strcmp(argv[arg_i], "-name") == 0) && (arg_i + 1 < argc)) {
+            arg_i += 2;
+        } else if (!(strcmp(argv[arg_i], "-path")) && (arg_i + 1 < argc)) {
+            arg_i += 2;
+        } else if (!(strcmp(argv[arg_i], "-user")) && (arg_i + 1 < argc)) {
+            arg_i += 2;
+        } else if (!(strcmp(argv[arg_i], "-nouser"))) {
+            arg_i++;
+        } else if ((strcmp(argv[arg_i], "-type") == 0) && (arg_i + 1 < argc)) {
+            if (arg_type(argv[arg_i + 1])) {
+                arg_i += 2;
+            } else {
+                error(1, 0, "Invalid arguments");
+                print_usage();
+                exit(EXIT_FAILURE);
+            }
+        } else if (!(strcmp(argv[arg_i], "-print"))) {
+            arg_i++;
+        } else if (!(strcmp(argv[arg_i], "-ls"))) {
+            arg_i++;
+        } else {
+            error(1, 0, "Invalid arguments");
+            print_usage();
+            exit(EXIT_FAILURE);
+        }
+    }
+}
+
+int arg_type(const char * argv) {
+    switch ((char) * argv) {
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'p':
+        case 'f':
+        case 'l':
+        case 's':
+            return MATCH;
+            break;
+        default:
+            return MISMATCH;
+    }
 }
 
 /*
