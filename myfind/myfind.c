@@ -77,10 +77,10 @@ int arg_type(const char * argv);
 
 
 /*TODO: Adam */
-int check_type(/*TODO*/);
+int check_type(struct stat file, const char * const * parms, int argv_pos);
 int print_ls(const char * file_name, struct stat file);
 int print(const char * file_name);
-int usage (void); /*Adam*/
+void usage (void); /*Adam*/
 
 /*TODO: Tom */
 int check_name(const char * file_name, const char * const * parms, int argv_pos);
@@ -176,7 +176,7 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 	else if PATH {( (check_path(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) ); }
 	else if USER {( (check_user(file,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) ); }
 	else if NOUSER {( (check_nouser(file,parms,argv_pos)) && (argv_pos++) ) && ( CHECK || print(dir_name) ); }
-	else if TYPE {( (check_type(/*TODO*/)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) ); }
+	else if TYPE {( (check_type(file, parms, argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(dir_name) ); }
 	else if LS {( (print_ls(dir_name, file)) && (argv_pos=argv_pos+2) ) && CHECK; }
 	else if PRINT {( (print(dir_name)) && (argv_pos=argv_pos+2) ) && CHECK; }
 	else return MISMATCH;
@@ -219,6 +219,65 @@ int check_nouser(struct stat fd_in, const char * const * parms, int arg_pos)
 	if(userdet == NULL) return EXIT_SUCCESS;
 	else return EXIT_FAILURE;
 
+}
+
+int check_type(struct stat file, const char * const * parms, int argv_pos) {
+    char type = (char) *parms[argv_pos];
+
+    switch (type) {
+        case 'b':
+            if (S_ISBLK(file_info.st_mode)) {
+                    return MATCH;
+            } else {
+                return MISMATCH;
+            }
+            break;
+        case 'c':
+            if (S_ISCHR(file_info.st_mode)) {
+                    return MATCH;
+            } else {
+                return MISMATCH;
+            }
+            break;
+        case 'd':
+            if (S_ISDIR(file_info.st_mode)) {
+                    return MATCH;
+            } else {
+                return MISMATCH;
+            }
+            break;
+        case 'p':
+            if (S_ISFIFO(file_info.st_mode)) {
+                    return MATCH;
+            } else {
+                return MISMATCH;
+            }
+            break;
+        case 'f':
+            if (S_ISREG(file_info.st_mode)) {
+                    return MATCH;
+            } else {
+                return MISMATCH;
+            }
+            break;
+        case 'l':
+            if (S_ISLNK(file_info.st_mode)) {
+                    return MATCH;
+            } else {
+                return MISMATCH;
+            }
+            break;
+        case 's':
+            if (S_ISSOCK(file_info.st_mode)) {
+                    return MATCH;
+            } else {
+                return MISMATCH;
+            }
+            break;
+        default:
+            error(1, 0, "Uknown error");
+            return MISMATCH;
+    }
 }
 
 int print_ls(const char * file_name, struct stat file) {
