@@ -72,7 +72,7 @@ int check(const char * file_name, struct stat file, const char * const * parms, 
 
 /*TODO: Romeo */
 int check_user(struct stat fd_in, const char * const * parms, int parm_pos);
-int check_arg(int argc, const char * argv);
+int check_arg(const int argc, const char * argv);
 int check_arg_type(const char * argv);
 int check_nouser(struct stat fd_in);
 
@@ -107,14 +107,14 @@ int check_path(const char * file_name, const char * const * parms, int parm_pos)
 int main(int argc, const char *argv[]) {
 
 	/* Declare variables, need as const array of all parameters */
-	const char * const *paramlist = (const char * const *)&argv[0];
+	const char * const *paramlist = (const char * const *)&argv[2];
 	const char *filename = (const char *)&argv[1];
 
 	/* Check if parameters are correct */
 	check_arg(argc, argv) && exit(EXIT_FAILURE);
 
 	/* Go through all files */
-	do_dir(filename,paramlist);
+	do_dir(filename, paramlist);
 
 	exit(EXIT_SUCCESS);
 }
