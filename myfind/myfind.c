@@ -78,7 +78,7 @@ int arg_type(const char * argv);
 
 /*TODO: Adam */
 int check_type(/*TODO*/);
-int ls(const char * file_name, struct stat file);
+int print_ls(const char * file_name, struct stat file);
 int print(const char * file_name);
 int usage (void); /*Adam*/
 
@@ -221,18 +221,26 @@ int check_nouser(struct stat fd_in, const char * const * parms, int arg_pos)
 
 }
 
-int ls(const char * file_name, struct stat file) {
+int print_ls(const char * file_name, struct stat file) {
 	/*20696685        8 -rw-r--r--    1 akerenyi         staff                1453 Mar  2 18:19 ./Makefile*/
 	/*indoe			???	permissions	 link	user		group				  size last mod. date	file name*/
 
-	struct passwd * user = NULL;
-	user = getpwuid(file_info.st_uid);
-
+	struct passwd * passwd = getpwuid(file_info.st_uid);
+	struct group * group = getgrgid(file_info.st_gid);
 	/*getgrgid*/
 
-	fprintf(stdout, "%8ld\t???\t%.0f %s %s\n", (long) file_info.st_ino, (long) file_info.st_nlink), user->pw_name, (double) file_info.st_size, ctime(&file_info.st_mtime), file_name);
+	fprintf(stdout, "%8ld\t???\t%ld\t%s\t%s\t%.0f %s %s\n",
+		(long) file_info.st_ino,		/* inode */
+		/* MISSING! size in blocks ??? */
+		(long) file_info.st_nlink),		/* number of links */
+		user->pw_name,					/* user name */
+		gourp->gr_name,					/* group name */
+		(double) file_info.st_size,		/* file size */
+		ctime(&file_info.st_mtime),		/* last modification date */
+		file_name						/* file name */
+	);
+	
 	return MATCH;
-
 }
 
 int print(const char * file_name) {
@@ -245,7 +253,7 @@ void arg_check(int argc, const char * argv[]) {
 
     if (argc < 2) {
         error(1, 0, "Insufficient arguments");
-        print_usage();
+        usage();
         exit (EXIT_FAILURE);
     }
 
@@ -263,7 +271,7 @@ void arg_check(int argc, const char * argv[]) {
                 arg_i += 2;
             } else {
                 error(1, 0, "Invalid arguments");
-                print_usage();
+                usage();
                 exit(EXIT_FAILURE);
             }
         } else if (!(strcmp(argv[arg_i], "-print"))) {
@@ -272,7 +280,7 @@ void arg_check(int argc, const char * argv[]) {
             arg_i++;
         } else {
             error(1, 0, "Invalid arguments");
-            print_usage();
+            usage();
             exit(EXIT_FAILURE);
         }
     }
