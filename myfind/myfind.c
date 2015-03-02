@@ -121,10 +121,6 @@ int main(int argc, const char *argv[]) {
 
 
 /* Function Definitions */
-int check_parameters() {
-	/* NOTE: Consider what errors to check for */
-}
-
 void do_dir(const char * dir_name, const char * const * parms) {
 	/* Create DIR Struct */
 	DIR *dir;
