@@ -21,13 +21,15 @@
 #include <sys/types.h>
 #include <sys/unistd.h>
 #include <errno.h>
+#include <error.h>
 #include <string.h>
 #include <fnmatch.h>
 #include <string.h>
 #include <pwd.h>
 #include <sys/stat.h>
 #include <dirent.h>
-
+#include <grp.h>
+#include <time.h>
 
 /*
  * --------------------------------------------------------------- defines --
@@ -70,7 +72,7 @@ int check(const char * file_name, struct stat file, const char * const * parms, 
 
 /*TODO: Romeo */
 int check_user(struct stat fd_in, const char * const * parms, int parm_pos);
-int check_arg(argc, argv);(int argc, const char * argv[]);
+int check_arg(int argc, const char * argv);
 int check_arg_type(const char * argv);
 int check_nouser(struct stat fd_in);
 
@@ -107,7 +109,6 @@ int main(int argc, const char *argv[]) {
 	/* Declare variables, need as const array of all parameters */
 	const char * const *paramlist = (const char * const *)&argv[0];
 	const char *filename = (const char *)&argv[1];
-	argc = argc;
 
 	/* Check if parameters are correct */
 	check_arg(argc, argv) && exit(EXIT_FAILURE);
@@ -225,56 +226,56 @@ int check_type(struct stat file, const char * const * parms, int parm_pos) {
 
     switch (type) {
         case 'b':
-            if (S_ISBLK(file_info.st_mode)) {
+            if (S_ISBLK(file.st_mode)) {
                     return MATCH;
             } else {
                 return MISMATCH;
             }
             break;
         case 'c':
-            if (S_ISCHR(file_info.st_mode)) {
+            if (S_ISCHR(file.st_mode)) {
                     return MATCH;
             } else {
                 return MISMATCH;
             }
             break;
         case 'd':
-            if (S_ISDIR(file_info.st_mode)) {
+            if (S_ISDIR(file.st_mode)) {
                     return MATCH;
             } else {
                 return MISMATCH;
             }
             break;
         case 'p':
-            if (S_ISFIFO(file_info.st_mode)) {
+            if (S_ISFIFO(file.st_mode)) {
                     return MATCH;
             } else {
                 return MISMATCH;
             }
             break;
         case 'f':
-            if (S_ISREG(file_info.st_mode)) {
+            if (S_ISREG(file.st_mode)) {
                     return MATCH;
             } else {
                 return MISMATCH;
             }
             break;
         case 'l':
-            if (S_ISLNK(file_info.st_mode)) {
+            if (S_ISLNK(file.st_mode)) {
                     return MATCH;
             } else {
                 return MISMATCH;
             }
             break;
         case 's':
-            if (S_ISSOCK(file_info.st_mode)) {
+            if (S_ISSOCK(file.st_mode)) {
                     return MATCH;
             } else {
                 return MISMATCH;
             }
             break;
         default:
-            error(1, 0, "Uknown error");
+            error(1, 0, "Unknown error");
             return MISMATCH;
     }
 }
@@ -283,18 +284,18 @@ int print_ls(const char * file_name, struct stat file) {
 	/*20696685        8 -rw-r--r--    1 akerenyi         staff                1453 Mar  2 18:19 ./Makefile*/
 	/*indoe			???	permissions	 link	user		group				  size last mod. date	file name*/
 
-	struct passwd * passwd = getpwuid(file_info.st_uid);
-	struct group * group = getgrgid(file_info.st_gid);
+	struct passwd * passwd = getpwuid(file.st_uid);
+	struct group * group = getgrgid(file.st_gid);
 	/*getgrgid*/
 
 	fprintf(stdout, "%8ld\t???\t%ld\t%s\t%s\t%.0f %s %s\n",
-		(long) file_info.st_ino,		/* inode */
+		(long) file.st_ino,		/* inode */
 		/* MISSING! size in blocks ??? */
-		(long) file_info.st_nlink),		/* number of links */
-		user->pw_name,					/* user name */
-		gourp->gr_name,					/* group name */
-		(double) file_info.st_size,		/* file size */
-		ctime(&file_info.st_mtime),		/* last modification date */
+		(long) file.st_nlink,		/* number of links */
+		passwd->pw_name,					/* user name */
+		group->gr_name,					/* group name */
+		(double) file.st_size,		/* file size */
+		ctime(&file.st_mtime),		/* last modification date */
 		file_name						/* file name */
 	);
 	
