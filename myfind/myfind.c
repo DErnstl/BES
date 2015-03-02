@@ -36,13 +36,10 @@
 /* Contant Definitions */
 #define MAXNAMELENGHT 255
 
-<<<<<<< HEAD
 #define MATCH		1
 #define MISMATCH	0
 
-=======
 #define NOPARAMETER (strcmp(parms[argv_pos], "\0") == 0)
->>>>>>> 0b9bae69d0d44972606ce2aee9a8791f4fb8b879
 #define NAME (strcmp(parms[argv_pos], "-name") == 0)
 #define PATH (strcmp(parms[argv_pos], "-path") == 0)
 #define USER (strcmp(parms[argv_pos], "-user") == 0)
@@ -145,7 +142,13 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	while ((d = readdir(dir)) != NULL ) {
 		/* if dir_name == ".", then do_file, else cut "." and ".." out */
 		if ((!strcmp(dir_name, ".")) && (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0)) continue;
- 		else do_file(d->d_name,parms);
+		else {  
+			strcpy(filename, dir_name);
+			strcat(filename, "/");
+			strcat(filename, d->d_name);
+			do_file(filename,parms);
+		}
+
 	}
 
 	closedir(dir);
@@ -181,18 +184,18 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 
 int check_name(const char * file_name, const char * const * parms, int argv_pos) {
 	if(fnmatch(parms[argv_pos+1],file_name,FNM_NOESCAPE) == 0) {
-		return EXIT_SUCCESS;
+		return MATCH;
 	} else {
-		return EXIT_FAILURE;
+		return MISMATCH;
 	}
 
 }
 
 int check_path(const char * file_name, const char * const * parms, int argv_pos) {
 	if(fnmatch(parms[argv_pos+1],file_name,FNM_PATHNAME) == 0) {
-		return EXIT_SUCCESS;
+		return MATCH;
 	} else {
-		return EXIT_FAILURE;
+		return MISMATCH;
 	}
 
 }
