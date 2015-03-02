@@ -36,6 +36,7 @@
 /* Contant Definitions */
 #define MAXNAMELENGHT 255
 
+#define NOPARAMETER (strcmp(parms[argv_pos], "\0") == 0)
 #define NAME (strcmp(parms[argv_pos], "-name") == 0)
 #define PATH (strcmp(parms[argv_pos], "-path") == 0)
 #define USER (strcmp(parms[argv_pos], "-user") == 0)
@@ -155,7 +156,8 @@ void do_file(const char * file_name, const char * const * parms) {
 }
 
 int check(const char * dir_name, struct stat file, const char * const * parms, int argv_pos) {
-	if NAME {( (check_name(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
+	if NOPARAMETER return EXIT_FAILURE;
+	else if NAME {( (check_name(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if PATH {( (check_path(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if USER {( (check_user(file,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if NOUSER {( (check_nouser(file,parms,argv_pos)) && (argv_pos++) ) && ( CHECK || print(/*TODO*/) ); }
