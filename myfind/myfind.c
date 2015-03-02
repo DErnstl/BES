@@ -81,8 +81,8 @@ int arg_type(const char * argv);
 
 /*TODO: Adam */
 int check_type(/*TODO*/);
-int print_ls(/*TODO*/);
-int print(/*TODO*/);
+int ls(const char * file_name, struct stat file);
+int print(const char * file_name);
 int usage (void); /*Adam*/
 
 /*TODO: Tom */
@@ -171,8 +171,8 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 	else if USER {( (check_user(file,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if NOUSER {( (check_nouser(file,parms,argv_pos)) && (argv_pos++) ) && ( CHECK || print(/*TODO*/) ); }
 	else if TYPE {( (check_type(/*TODO*/)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
-	else if LS {( (print_ls(/*TODO*/)) && (argv_pos=argv_pos+2) ) && CHECK; }
-	else if PRINT {( (print(/*TODO*/)) && (argv_pos=argv_pos+2) ) && CHECK; }
+	else if LS {( (print_ls(dir_name, file)) && (argv_pos=argv_pos+2) ) && CHECK; }
+	else if PRINT {( (print(dir_name)) && (argv_pos=argv_pos+2) ) && CHECK; }
 	else return EXIT_FAILURE;
 }
 
