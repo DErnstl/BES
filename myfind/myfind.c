@@ -206,7 +206,7 @@ int check_user(struct stat fd_in, const char * const * parms, int argv_pos)
 	userdet = getpwuid(fd_in.st_uid);
 	char *endptr = NULL;
 	int parmsint = 0;
-	parmsint = strtol(parms[argv_pos], &endptr, 10);		
+	parmsint = strtol(parms[argv_pos + 1], &endptr, 10);		
 	if(((userdet->pw_name) == (parms[argv_pos + 1])) || (userdet->pw_uid == parmsint)) return EXIT_SUCCESS;
 	else return EXIT_FAILURE;
 	
