@@ -171,7 +171,7 @@ void do_file(const char * file_name, const char * const * parms) {
 }
 
 int check(const char * dir_name, struct stat file, const char * const * parms, int argv_pos) {
-	if NOPARAMETER return EXIT_FAILURE;
+	if NOPARAMETER return MISMATCH;
 	else if NAME {( (check_name(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if PATH {( (check_path(dir_name,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if USER {( (check_user(file,parms,argv_pos)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
@@ -179,7 +179,7 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 	else if TYPE {( (check_type(/*TODO*/)) && (argv_pos=argv_pos+2) ) && ( CHECK || print(/*TODO*/) ); }
 	else if LS {( (print_ls(dir_name, file)) && (argv_pos=argv_pos+2) ) && CHECK; }
 	else if PRINT {( (print(dir_name)) && (argv_pos=argv_pos+2) ) && CHECK; }
-	else return EXIT_FAILURE;
+	else return MISMATCH;
 }
 
 int check_name(const char * file_name, const char * const * parms, int argv_pos) {
