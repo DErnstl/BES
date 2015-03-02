@@ -304,7 +304,8 @@ int print(const char * file_name) {
 }
 
 int check_arg(const int argc, const char * argv[]) {
-    int arg_i = 2;
+    const char * const * parms = argv;
+    int parm_pos = 2
 
     if (argc < 2) {
         error(1, 0, "Insufficient arguments");
@@ -312,16 +313,12 @@ int check_arg(const int argc, const char * argv[]) {
         return EXIT_FAILURE;
     }
 
-    while (arg_i < argc) {
-        if ((strcmp(argv[arg_i], "-name") == 0) && (arg_i + 1 < argc)) {
-            arg_i += 2;
-        } else if (!(strcmp(argv[arg_i], "-path")) && (arg_i + 1 < argc)) {
-            arg_i += 2;
-        } else if (!(strcmp(argv[arg_i], "-user")) && (arg_i + 1 < argc)) {
-            arg_i += 2;
-        } else if (!(strcmp(argv[arg_i], "-nouser"))) {
-            arg_i++;
-        } else if ((strcmp(argv[arg_i], "-type") == 0) && (arg_i + 1 < argc)) {
+    while (parm_pos < argc) {
+        if((!NAME || !PATH || !USER) && (arg_i + 1 < argc)) {
+            parm_pos += 2;
+        } else if(!NOUSER || !PRINT || !LS) {
+            parm_pos++;
+        } else if (!TYPE && (arg_i + 1 < argc)) {
             if (check_arg_type(argv[arg_i + 1])) {
                 arg_i += 2;
             } else {
@@ -329,15 +326,12 @@ int check_arg(const int argc, const char * argv[]) {
                 usage();
                 return EXIT_FAILURE;
             }
-        } else if (!(strcmp(argv[arg_i], "-print"))) {
-            arg_i++;
-        } else if (!(strcmp(argv[arg_i], "-ls"))) {
-            arg_i++;
         } else {
             error(1, 0, "Invalid arguments");
             usage();
             return EXIT_FAILURE;
         }
+        return EXIT_SUCCESS;
     }
 }
 
