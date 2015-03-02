@@ -72,7 +72,7 @@ int check(const char * file_name, struct stat file, const char * const * parms, 
 
 /*TODO: Romeo */
 int check_user(struct stat fd_in, const char * const * parms, int parm_pos);
-int check_arg(const int argc, const char * argv);
+int check_arg(const int argc, const char * argv[]);
 int check_arg_type(const char * argv);
 int check_nouser(struct stat fd_in);
 
@@ -303,7 +303,7 @@ int print(const char * file_name) {
 	return MATCH;
 }
 
-int check_arg(const int argc, const char * argv) {
+int check_arg(const int argc, const char * argv[]) {
     int arg_i = 2;
 
     if (argc < 2) {
