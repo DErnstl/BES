@@ -222,12 +222,42 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 			if (!CHECK) print(dir_name);
 		}
 	}
-	else if PATH {( (check_path(dir_name,parms,parm_pos)) && (parm_pos=parm_pos+2) ) && ( CHECK || print(dir_name) ); }
-	else if USER {( (check_user(file,parms,parm_pos)) && (parm_pos=parm_pos+2) ) && ( CHECK || print(dir_name) ); }
-	else if NOUSER {( (check_nouser(file)) && (parm_pos++) ) && ( CHECK || print(dir_name) ); }
-	else if TYPE {( (check_type(file, parms, parm_pos)) && (parm_pos=parm_pos+2) ) && ( CHECK || print(dir_name) ); }
-	else if LS {( (print_ls(dir_name, file)) && (parm_pos=parm_pos+2) ) && CHECK; }
-	else if PRINT {( (print(dir_name)) && (parm_pos=parm_pos+2) ) && CHECK; }
+	else if PATH {
+		if (check_path(dir_name,parms,parm_pos)) {
+			parm_pos=parm_pos+2;
+			if (!CHECK) print(dir_name);
+		}
+	}
+	else if USER {
+		if (check_user(file,parms,parm_pos)) {
+			parm_pos=parm_pos+2;
+			if (!CHECK) print(dir_name);
+		}
+	}
+	else if NOUSER {
+		if (check_nouser(file)) {
+		       parm_pos++;
+		       if (!CHECK) print(dir_name);
+		}
+	}
+	else if TYPE {
+		if (check_type(file, parms, parm_pos)) {
+			parm_pos=parm_pos+2;
+			if (!CHECK) print(dir_name);
+		}
+	}
+	else if LS {
+		if (print_ls(dir_name, file)) {
+			parm_pos=parm_pos+2;
+			CHECK;
+		}
+	}
+	else if PRINT {
+		if (print(dir_name)) {
+			parm_pos=parm_pos+2;
+			CHECK;
+		}
+	}
 
 	return MISMATCH;
 }
