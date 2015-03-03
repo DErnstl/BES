@@ -186,7 +186,7 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	/* opendir an throw error with exename if error */
 	if ((dir = opendir(dir_name)) == NULL) {
 		/*TODO, filename ist nicht mehr perms[0] */
-			error(1, 1, "%d", errno);
+			error(1, 1, "%d dir:%s", errno, dir_name);
 			exit(EXIT_FAILURE);
 	}
 
