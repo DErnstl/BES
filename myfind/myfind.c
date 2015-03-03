@@ -127,7 +127,7 @@ int check_arg(const int argc, const char * argv[]) {
     int parm_pos = 2;
 
     if (argc < 2) {
-        error(1, 1, "%d", errno);
+        error(1, 1, "%d\n", errno);
         usage();
         return EXIT_FAILURE;
     }
@@ -141,12 +141,12 @@ int check_arg(const int argc, const char * argv[]) {
             if (check_arg_type(argv[parm_pos + 1])) {
                 parm_pos += 2;
             } else {
-                error(1, 1, "%d", errno);
+                error(1, 1, "%d\n", errno);
                 usage();
                 return EXIT_FAILURE;
             }
         } else {
-            error(1, 1, "%d", errno);
+            error(1, 1, "%d\n", errno);
             usage();
             return EXIT_FAILURE;
         }
@@ -186,7 +186,7 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	/* opendir an throw error with exename if error */
 	if ((dir = opendir(dir_name)) == NULL) {
 		/*TODO, filename ist nicht mehr perms[0] */
-			error(1, 1, "%d [dir_name:%s]", errno, dir_name);
+			error(1, 1, "%d\n", errno);
 			exit(EXIT_FAILURE);
 	}
 
@@ -214,7 +214,7 @@ void do_file(const char * file_name, const char * const * parms) {
 	/* lstat file and write content to struct
 	 * throw error if failed with Filename */
 	if (lstat(file_name, &fd_in) == -1) {
-		error(1, 1, "%d [file_name:%s]", errno, file_name);
+		error(1, 1, "%d\n", errno);
 		exit(EXIT_FAILURE);
 	}
 
@@ -370,7 +370,7 @@ int check_type(struct stat file, const char * const * parms, int parm_pos) {
             }
             break;
         default:
-            error(1, 1, "%d", errno);
+            error(1, 1, "%d\n", errno);
             return MISMATCH;
     }
 }
