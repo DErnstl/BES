@@ -123,7 +123,7 @@ int main(const int argc, const char *argv[]) {
 /* Function Definitions */
 int check_arg(const int argc, const char * argv[]) {
     const char * const * parms = argv;
-    int parm_pos = 2
+    int parm_pos = 2;
 
     if (argc < 2) {
         error(1, 0, "Insufficient arguments");
