@@ -149,8 +149,8 @@ int check_arg(const int argc, const char * argv[]) {
             usage();
             return EXIT_FAILURE;
         }
-        return EXIT_SUCCESS;
     }
+    return EXIT_SUCCESS;
 }
 
 int check_arg_type(const char * argv) {
