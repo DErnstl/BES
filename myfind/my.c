@@ -62,13 +62,13 @@ void do_dir(const char * dir_name, const char * const * parms) {
     char fname[MAX_NAME];
 
     if ( !(dir = opendir(dir_name)) ) {
-        fprintf(stderr, "[ERROR] : opendir : %s\n", strerror(errno));
+        error(1, 1, "%d", errno);
         exit (EXIT_FAILURE);
     }
 
     if ( !(dir_entry = readdir(dir)) ) {
         closedir(dir);
-        fprintf(stderr, "[ERROR] : readdir : %s\n", strerror(errno));
+        error(1, 1, "%d", errno);
         exit (EXIT_FAILURE);
     }
 
@@ -81,7 +81,7 @@ void do_dir(const char * dir_name, const char * const * parms) {
             do_file(fname, parms);
         }
     } while ((dir_entry = readdir(dir)));
-    
+
     closedir(dir);
 }
 
@@ -97,14 +97,14 @@ void do_file(const char * file_name, const char * const * parms) {
     lstat(file_name, &file_info);
 
     if (lstat(file_name, &file_info) == -1) {
-        error(1, 0, " do_file : lstat");
+        error(1, 1, "%d", errno);
         exit(EXIT_FAILURE);
     }
 
     /* WORK START */
     /*fprintf(stdout, "[LISTING] : do_dir : %s\n", file_name);*/
 
-    
+
     check_result = check(file_name, file_info, parms, parms_p, print_p, parms_lenght);
     if (check_result && !print_counter) {
         fprintf(stdout, "[INFO] do_file : printing because of no print/ls argument\n");
@@ -267,7 +267,7 @@ int check_type(const char * file_name, struct stat file_info, const char * const
             }
             break;
         default:
-            error(1, 0, "check : default error");
+            error(1, 1, "%d", errno);
             return MISMATCH;
     }
 }
@@ -277,7 +277,7 @@ void arg_check(int argc, const char * argv[]) {
     int arg_i = 2;
 
     if (argc < 2) {
-        error(1, 0, "parms_check : Insufficient arguments");
+        error(1, 1, "%d", errno);
         print_usage();
         exit (EXIT_FAILURE);
     }
@@ -291,7 +291,7 @@ void arg_check(int argc, const char * argv[]) {
                 arg_i += 2;
                 fprintf(stderr, "[INFO] : parms_check : TYPE OK\n");
             } else {
-                error(1, 0, "parms_check : Invalid arguments");
+                error(1, 1, "%d", errno);
                 print_usage();
                 exit(EXIT_FAILURE);
             }
@@ -299,7 +299,7 @@ void arg_check(int argc, const char * argv[]) {
             arg_i++;
             fprintf(stderr, "[INFO] : parms_check : PRINT OK\n");
         } else {
-            error(1, 0, "parms_check : Invalid arguments");
+            error(1, 1, "%d", errno);
             print_usage();
             exit(EXIT_FAILURE);
         }
