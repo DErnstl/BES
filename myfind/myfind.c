@@ -121,6 +121,54 @@ int main(const int argc, const char *argv[]) {
 
 
 /* Function Definitions */
+int check_arg(const int argc, const char * argv[]) {
+    const char * const * parms = argv;
+    int parm_pos = 2
+
+    if (argc < 2) {
+        error(1, 0, "Insufficient arguments");
+        usage();
+        return EXIT_FAILURE;
+    }
+
+    while (parm_pos < argc) {
+        if((!NAME || !PATH || !USER) && (arg_i + 1 < argc)) {
+            parm_pos += 2;
+        } else if(!NOUSER || !PRINT || !LS) {
+            parm_pos++;
+        } else if (!TYPE && (arg_i + 1 < argc)) {
+            if (check_arg_type(argv[arg_i + 1])) {
+                arg_i += 2;
+            } else {
+                error(1, 0, "Invalid arguments");
+                usage();
+                return EXIT_FAILURE;
+            }
+        } else {
+            error(1, 0, "Invalid arguments");
+            usage();
+            return EXIT_FAILURE;
+        }
+        return EXIT_SUCCESS;
+    }
+}
+
+int check_arg_type(const char * argv) {
+    switch ((char) * argv) {
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'p':
+        case 'f':
+        case 'l':
+        case 's':
+            return MATCH;
+            break;
+        default:
+            return MISMATCH;
+    }
+}
+
 void do_dir(const char * dir_name, const char * const * parms) {
 	/* Create DIR Struct */
 	DIR *dir;
@@ -303,53 +351,6 @@ int print(const char * file_name) {
 	return MATCH;
 }
 
-int check_arg(const int argc, const char * argv[]) {
-    const char * const * parms = argv;
-    int parm_pos = 2
-
-    if (argc < 2) {
-        error(1, 0, "Insufficient arguments");
-        usage();
-        return EXIT_FAILURE;
-    }
-
-    while (parm_pos < argc) {
-        if((!NAME || !PATH || !USER) && (arg_i + 1 < argc)) {
-            parm_pos += 2;
-        } else if(!NOUSER || !PRINT || !LS) {
-            parm_pos++;
-        } else if (!TYPE && (arg_i + 1 < argc)) {
-            if (check_arg_type(argv[arg_i + 1])) {
-                arg_i += 2;
-            } else {
-                error(1, 0, "Invalid arguments");
-                usage();
-                return EXIT_FAILURE;
-            }
-        } else {
-            error(1, 0, "Invalid arguments");
-            usage();
-            return EXIT_FAILURE;
-        }
-        return EXIT_SUCCESS;
-    }
-}
-
-int check_arg_type(const char * argv) {
-    switch ((char) * argv) {
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'p':
-        case 'f':
-        case 'l':
-        case 's':
-            return MATCH;
-            break;
-        default:
-            return MISMATCH;
-    }
-}
 
 /*
  * =================================================================== eof ==
