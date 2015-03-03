@@ -231,6 +231,9 @@ void do_file(const char * file_name, const char * const * parms) {
 }
 
 int check(const char * dir_name, struct stat file, const char * const * parms, int parm_pos) {
+
+printf("in check()\n");
+
 	if NOPARAMETER return MISMATCH;
 	else if NAME {
 		if (check_name(dir_name,parms,parm_pos)) {
