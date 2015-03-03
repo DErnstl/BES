@@ -178,7 +178,7 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	/* opendir an throw error with exename if error */
 	if ((dir = opendir(dir_name)) == NULL ) {
 		/*TODO, filename ist nicht mehr perms[0] */
-			perror(parms[0]);
+			error(1, 0, "Error while trying to open directory");
 			exit(EXIT_FAILURE);
 	}
 
@@ -206,7 +206,7 @@ void do_file(const char * file_name, const char * const * parms) {
 	/* lstat file and write content to struct 
 	 * throw error if failed with Filename */
 	if (lstat(file_name, &fd_in) == -1) {
-		perror(parms[0]);
+		error(1, 0, "Error while trying to open file");
 		exit(EXIT_FAILURE);
 	}
 
