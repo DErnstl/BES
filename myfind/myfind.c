@@ -36,7 +36,8 @@
  */
 
 /* Contant Definitions */
-#define MAXNAMELENGHT 255
+#define NAME_MAX	255
+#define PATH_MAX	4096
 
 #define MATCH		1
 #define MISMATCH	0
@@ -173,17 +174,17 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	/* Create DIR Struct */
 	DIR *dir;
 	struct dirent *d;
-	char filename[MAXNAMELENGHT];
+	char filename[PATH_MAX];
 
 	/* opendir an throw error with exename if error */
-	if ((dir = opendir(dir_name)) == NULL ) {
+	if ((dir = opendir(dir_name)) == NULL) {
 		/*TODO, filename ist nicht mehr perms[0] */
 			error(1, 1, "%d", errno);
 			exit(EXIT_FAILURE);
 	}
 
 	/* readdir until NULL */
-	while ((d = readdir(dir)) != NULL ) {
+	while ((d = readdir(dir)) != NULL) {
 		/* if dir_name == ".", then do_file, else cut "." and ".." out */
 		if ((!strcmp(dir_name, ".")) && (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0)) continue;
 		else {
