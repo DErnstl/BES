@@ -180,24 +180,21 @@ int check_arg_type(const char * argv) {
 }
 
 void do_dir(const char * dir_name, const char * const * parms) {
-	/* Create DIR Struct */
 	DIR *dir;
 	struct dirent *d;
 	char filename[PATH_MAX];
 
 printf("do_dir from main(): dir_name: %s\n", dir_name);
-	/* opendir an throw error with exename if error */
 	if ((dir = opendir(dir_name)) == NULL) {
-		/*TODO, filename ist nicht mehr perms[0] */
 			error(1, 1, "%d", errno);
 			exit(EXIT_FAILURE);
 	}
 
 printf("do_dir after opendir: dir_name: %s\n", dir_name);
 	while ((d = readdir(dir)) != NULL) {
-		/* if dir_name == ".", then do_file, else cut "." and ".." out */
 printf("d->d_name: %s\n", d->d_name);
-		if ((!strcmp(dir_name, ".")) && (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0)) continue;
+		if (strcmp(dir_name, ".") == 0) continue;
+		else if (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0) continue;
 		else {
 printf("filename 1: %s\n", filename);
 			strcpy(filename, dir_name);
@@ -234,7 +231,11 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 
 printf("in check()\n");
 
-	if NOPARAMETER return MISMATCH;
+	if NOPARAMETER {
+printf("in check() noparameter\n");
+		print(dir_name);
+		return MISMATCH;
+	}
 	else if NAME {
 		if (check_name(dir_name,parms,parm_pos)) {
 			parm_pos=parm_pos+2;
