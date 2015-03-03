@@ -132,13 +132,13 @@ int check_arg(const int argc, const char * argv[]) {
     }
 
     while (parm_pos < argc) {
-        if((!NAME || !PATH || !USER) && (arg_i + 1 < argc)) {
+        if((!NAME || !PATH || !USER) && (parm_pos + 1 < argc)) {
             parm_pos += 2;
         } else if(!NOUSER || !PRINT || !LS) {
             parm_pos++;
-        } else if (!TYPE && (arg_i + 1 < argc)) {
-            if (check_arg_type(argv[arg_i + 1])) {
-                arg_i += 2;
+        } else if (!TYPE && (parm_pos + 1 < argc)) {
+            if (check_arg_type(argv[parm_pos + 1])) {
+                parm_pos += 2;
             } else {
                 error(1, 0, "Invalid arguments");
                 usage();
