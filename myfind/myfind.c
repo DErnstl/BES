@@ -123,58 +123,59 @@ int main(const int argc, const char *argv[]) {
 
 /* Function Definitions */
 int check_arg(const int argc, const char * argv[]) {
-    const char * const * parms = argv;
-    int parm_pos = 2;
+	const char * const * parms = argv;
+	int parm_pos = 2;
 
-    if (argc < 2) {
-        error(1, 1, "%d\n", errno);
-        usage();
-        return EXIT_FAILURE;
-    }
+	if (argc < 2) {
+	error(1, 1, "%d\n", errno);
+	usage();
+	return EXIT_FAILURE;
+}
 
-    while (parm_pos < argc) {
-        if((!NAME || !PATH || !USER) && (parm_pos + 1 < argc)) {
-            parm_pos += 2;
-        } else if(!NOUSER || !PRINT || !LS) {
-            parm_pos++;
-        } else if (!TYPE && (parm_pos + 1 < argc)) {
-            if (check_arg_type(argv[parm_pos + 1])) {
-                parm_pos += 2;
-            } else {
-                error(1, 1, "%d\n", errno);
-                usage();
-                return EXIT_FAILURE;
-            }
-        } else {
-            error(1, 1, "%d\n", errno);
-            usage();
-            return EXIT_FAILURE;
-        }
-    }
-    return EXIT_SUCCESS;
+	while (parm_pos < argc) {
+		if((!NAME || !PATH || !USER) && (parm_pos + 1 < argc)) {
+			parm_pos += 2;
+		} else if(!NOUSER || !PRINT || !LS) {
+			parm_pos++;
+		} else if (!TYPE && (parm_pos + 1 < argc)) {
+			if (check_arg_type(argv[parm_pos + 1])) {
+				parm_pos += 2;
+			} else {
+				error(1, 1, "%d\n", errno);
+				usage();
+				return EXIT_FAILURE;
+			}
+		} else {
+			error(1, 1, "%d\n", errno);
+			usage();
+			return EXIT_FAILURE;
+		}
+	}
+
+	return EXIT_SUCCESS;
 }
 
 int check_arg_type(const char * argv) {
-    switch ((char) * argv) {
-        case 'b':
-        case 'B':
-        case 'c':
-        case 'C':
-        case 'd':
-        case 'D':
-        case 'p':
-        case 'P':
-        case 'f':
-        case 'F':
-        case 'l':
-        case 'L':
-        case 's':
-        case 'S':
-            return MATCH;
-            break;
-        default:
-            return MISMATCH;
-    }
+   	switch ((char) * argv) {
+		case 'b':
+		case 'B':
+		case 'c':
+		case 'C':
+		case 'd':
+		case 'D':
+		case 'p':
+		case 'P':
+		case 'f':
+		case 'F':
+		case 'l':
+		case 'L':
+		case 's':
+		case 'S':
+			    return MATCH;
+			break;
+		default:
+			return MISMATCH;
+	}
 }
 
 void do_dir(const char * dir_name, const char * const * parms) {
@@ -291,8 +292,8 @@ int check_path(const char * file_name, const char * const * parms, int parm_pos)
 int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 {
 	struct passwd *userdet = NULL;
-        char *endptr = NULL;
-        int parmsint = 0;
+	char *endptr = NULL;
+	int parmsint = 0;
 	userdet = getpwuid(fd_in.st_uid);
 	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
 	if(((userdet->pw_name) == (parms[parm_pos + 1])) || (userdet->pw_uid == (uid_t)parmsint)) return EXIT_SUCCESS;
@@ -310,73 +311,73 @@ int check_nouser(struct stat fd_in)
 }
 
 int check_type(struct stat file, const char * const * parms, int parm_pos) {
-    char type = (char) *parms[parm_pos];
+	char type = (char) *parms[parm_pos];
 
-    switch (type) {
-        case 'b':
-        case 'B':
-            if (S_ISBLK(file.st_mode)) {
-                    return MATCH;
-            } else {
-                return MISMATCH;
-            }
-            break;
-        case 'c':
-        case 'C':
-            if (S_ISCHR(file.st_mode)) {
-                    return MATCH;
-            } else {
-                return MISMATCH;
-            }
-            break;
-        case 'd':
-        case 'D':
-            if (S_ISDIR(file.st_mode)) {
-                    return MATCH;
-            } else {
-                return MISMATCH;
-            }
-            break;
-        case 'p':
-        case 'P':
-            if (S_ISFIFO(file.st_mode)) {
-                    return MATCH;
-            } else {
-                return MISMATCH;
-            }
-            break;
-        case 'f':
-        case 'F':
-            if (S_ISREG(file.st_mode)) {
-                    return MATCH;
-            } else {
-                return MISMATCH;
-            }
-            break;
-        case 'l':
-        case 'L':
-            if (S_ISLNK(file.st_mode)) {
-                    return MATCH;
-            } else {
-                return MISMATCH;
-            }
-            break;
-        case 's':
-        case 'S':
-            if (S_ISSOCK(file.st_mode)) {
-                    return MATCH;
-            } else {
-                return MISMATCH;
-            }
-            break;
-        default:
-            error(1, 1, "%d\n", errno);
-            return MISMATCH;
-    }
+	switch (type) {
+		case 'b':
+		case 'B':
+			if (S_ISBLK(file.st_mode)) {
+				return MATCH;
+			} else {
+				return MISMATCH;
+			}
+			break;
+		case 'c':
+		case 'C':
+			if (S_ISCHR(file.st_mode)) {
+				return MATCH;
+			} else {
+				return MISMATCH;
+			}
+			break;
+		case 'd':
+		case 'D':
+			if (S_ISDIR(file.st_mode)) {
+				return MATCH;
+			} else {
+				return MISMATCH;
+			}
+			break;
+		case 'p':
+		case 'P':
+			if (S_ISFIFO(file.st_mode)) {
+				return MATCH;
+			} else {
+				return MISMATCH;
+			}
+			break;
+		case 'f':
+		case 'F':
+			if (S_ISREG(file.st_mode)) {
+				return MATCH;
+			} else {
+				return MISMATCH;
+			}
+			break;
+		case 'l':
+		case 'L':
+			if (S_ISLNK(file.st_mode)) {
+				return MATCH;
+			} else {
+				return MISMATCH;
+			}
+			break;
+		case 's':
+		case 'S':
+			if (S_ISSOCK(file.st_mode)) {
+				return MATCH;
+			} else {
+				return MISMATCH;
+			}
+			break;
+		default:
+			error(1, 1, "%d\n", errno);
+			return MISMATCH;
+	}
 }
 
 int print_ls(const char * file_name, struct stat file) {
-	/*20696685        8 -rw-r--r--    1 akerenyi         staff                1453 Mar  2 18:19 ./Makefile*/
+	/*20696685	8 -rw-r--r--	1 akerenyi	staff	1453 Mar  2 18:19 ./Makefile*/
 	/*indoe			???	permissions	 link	user		group				  size last mod. date	file name*/
 
 	struct passwd * passwd = getpwuid(file.st_uid);
@@ -406,4 +407,3 @@ int print(const char * file_name) {
 /*
  * =================================================================== eof ==
  */
-
