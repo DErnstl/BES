@@ -126,7 +126,7 @@ int check_arg(const int argc, const char * argv[]) {
     int parm_pos = 2;
 
     if (argc < 2) {
-        error(1, 0, "Insufficient arguments");
+        error(1, 1, "%d", errno);
         usage();
         return EXIT_FAILURE;
     }
@@ -140,12 +140,12 @@ int check_arg(const int argc, const char * argv[]) {
             if (check_arg_type(argv[parm_pos + 1])) {
                 parm_pos += 2;
             } else {
-                error(1, 0, "Invalid arguments");
+                error(1, 1, "%d", errno);
                 usage();
                 return EXIT_FAILURE;
             }
         } else {
-            error(1, 0, "Invalid arguments");
+            error(1, 1, "%d", errno);
             usage();
             return EXIT_FAILURE;
         }
@@ -178,7 +178,7 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	/* opendir an throw error with exename if error */
 	if ((dir = opendir(dir_name)) == NULL ) {
 		/*TODO, filename ist nicht mehr perms[0] */
-			error(1, 0, "Error while trying to open directory");
+			error(1, 1, "%d", errno);
 			exit(EXIT_FAILURE);
 	}
 
@@ -186,7 +186,7 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	while ((d = readdir(dir)) != NULL ) {
 		/* if dir_name == ".", then do_file, else cut "." and ".." out */
 		if ((!strcmp(dir_name, ".")) && (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0)) continue;
-		else {  
+		else {
 			strcpy(filename, dir_name);
 			strcat(filename, "/");
 			strcat(filename, d->d_name);
@@ -203,10 +203,10 @@ void do_file(const char * file_name, const char * const * parms) {
 	/* create filedescriptor */
 	struct stat fd_in;
 
-	/* lstat file and write content to struct 
+	/* lstat file and write content to struct
 	 * throw error if failed with Filename */
 	if (lstat(file_name, &fd_in) == -1) {
-		error(1, 0, "Error while trying to open file");
+		error(1, 1, "%d", errno);
 		exit(EXIT_FAILURE);
 	}
 
@@ -286,10 +286,10 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
         char *endptr = NULL;
         int parmsint = 0;
 	userdet = getpwuid(fd_in.st_uid);
-	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);		
+	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
 	if(((userdet->pw_name) == (parms[parm_pos + 1])) || (userdet->pw_uid == (uid_t)parmsint)) return EXIT_SUCCESS;
 	else return EXIT_FAILURE;
-	
+
 }
 
 int check_nouser(struct stat fd_in)
@@ -355,7 +355,7 @@ int check_type(struct stat file, const char * const * parms, int parm_pos) {
             }
             break;
         default:
-            error(1, 0, "Unknown error");
+            error(1, 1, "%d", errno);
             return MISMATCH;
     }
 }
@@ -378,7 +378,7 @@ int print_ls(const char * file_name, struct stat file) {
 		ctime(&file.st_mtime),		/* last modification date */
 		file_name						/* file name */
 	);
-	
+
 	return MATCH;
 }
 
