@@ -216,7 +216,12 @@ void do_file(const char * file_name, const char * const * parms) {
 
 int check(const char * dir_name, struct stat file, const char * const * parms, int parm_pos) {
 	if NOPARAMETER return MISMATCH;
-	else if NAME {( (check_name(dir_name,parms,parm_pos)) && (parm_pos=parm_pos+2) ) && ( CHECK || print(dir_name) ); }
+	else if NAME {
+		if (check_name(dir_name,parms,parm_pos)) {
+			parm_pos=parm_pos+2;
+			if (!CHECK) print(dir_name);
+		}
+	}
 	else if PATH {( (check_path(dir_name,parms,parm_pos)) && (parm_pos=parm_pos+2) ) && ( CHECK || print(dir_name) ); }
 	else if USER {( (check_user(file,parms,parm_pos)) && (parm_pos=parm_pos+2) ) && ( CHECK || print(dir_name) ); }
 	else if NOUSER {( (check_nouser(file)) && (parm_pos++) ) && ( CHECK || print(dir_name) ); }
