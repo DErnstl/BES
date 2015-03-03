@@ -105,7 +105,7 @@ int check_path(const char * file_name, const char * const * parms, int parm_pos)
 
 
 /* Main Function */
-int main(const int argc, const char *argv[]) {
+int main(int argc, const char *argv[]) {
 
 	/* Declare variables, need as const array of all parameters */
 	const char * const *paramlist = (const char * const *)&argv[2];
@@ -115,6 +115,7 @@ int main(const int argc, const char *argv[]) {
 	if (check_arg(argc, argv) == EXIT_FAILURE) exit(EXIT_FAILURE);
 
 	/* Go through all files */
+printf("main() filename: %s\n", filename);
 	do_dir(filename, paramlist);
 
 	exit(EXIT_SUCCESS);
@@ -127,7 +128,7 @@ int check_arg(const int argc, const char * argv[]) {
 	int parm_pos = 2;
 
 	if (argc < 2) {
-	error(1, 1, "%d\n", errno);
+	error(1, 1, "%d", errno);
 	usage();
 	return EXIT_FAILURE;
 }
@@ -141,12 +142,12 @@ int check_arg(const int argc, const char * argv[]) {
 			if (check_arg_type(argv[parm_pos + 1])) {
 				parm_pos += 2;
 			} else {
-				error(1, 1, "%d\n", errno);
+				error(1, 1, "%d", errno);
 				usage();
 				return EXIT_FAILURE;
 			}
 		} else {
-			error(1, 1, "%d\n", errno);
+			error(1, 1, "%d", errno);
 			usage();
 			return EXIT_FAILURE;
 		}
@@ -184,21 +185,27 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	struct dirent *d;
 	char filename[PATH_MAX];
 
+printf("do_dir from main(): dir_name: %s\n", dir_name);
 	/* opendir an throw error with exename if error */
 	if ((dir = opendir(dir_name)) == NULL) {
 		/*TODO, filename ist nicht mehr perms[0] */
-			error(1, 1, "%d\n", errno);
+			error(1, 1, "%d", errno);
 			exit(EXIT_FAILURE);
 	}
 
-	/* readdir until NULL */
+printf("do_dir after opendir: dir_name: %s\n", dir_name);
 	while ((d = readdir(dir)) != NULL) {
 		/* if dir_name == ".", then do_file, else cut "." and ".." out */
+printf("d->d_name: %s\n", d->d_name);
 		if ((!strcmp(dir_name, ".")) && (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0)) continue;
 		else {
+printf("filename 1: %s\n", filename);
 			strcpy(filename, dir_name);
+printf("filename 2: %s\n", filename);
 			strcat(filename, "/");
+printf("filename 3: %s\n", filename);
 			strcat(filename, d->d_name);
+printf("filename 4: %s\n", filename);
 			do_file(filename,parms);
 		}
 
@@ -215,7 +222,7 @@ void do_file(const char * file_name, const char * const * parms) {
 	/* lstat file and write content to struct
 	 * throw error if failed with Filename */
 	if (lstat(file_name, &fd_in) == -1) {
-		error(1, 1, "%d\n", errno);
+		error(1, 1, "%d", errno);
 		exit(EXIT_FAILURE);
 	}
 
@@ -371,7 +378,7 @@ int check_type(struct stat file, const char * const * parms, int parm_pos) {
 			}
 			break;
 		default:
-			error(1, 1, "%d\n", errno);
+			error(1, 1, "%d", errno);
 			return MISMATCH;
 	}
 }
