@@ -109,7 +109,7 @@ int main(const int argc, const char *argv[]) {
 
 	/* Declare variables, need as const array of all parameters */
 	const char * const *paramlist = (const char * const *)&argv[2];
-	const char *filename = (const char *)&argv[1];
+	const char *filename = (const char *)argv[1];
 
 	/* Check if parameters are correct */
 	if (check_arg(argc, argv) == EXIT_FAILURE) exit(EXIT_FAILURE);
