@@ -223,7 +223,8 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 	else if TYPE {( (check_type(file, parms, parm_pos)) && (parm_pos=parm_pos+2) ) && ( CHECK || print(dir_name) ); }
 	else if LS {( (print_ls(dir_name, file)) && (parm_pos=parm_pos+2) ) && CHECK; }
 	else if PRINT {( (print(dir_name)) && (parm_pos=parm_pos+2) ) && CHECK; }
-	else return MISMATCH;
+
+	return MISMATCH;
 }
 
 int check_name(const char * file_name, const char * const * parms, int parm_pos) {
