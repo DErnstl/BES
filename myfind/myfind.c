@@ -30,6 +30,7 @@
 #include <dirent.h>
 #include <grp.h>
 #include <time.h>
+ #include <unistd.h>
 
 /*
  * --------------------------------------------------------------- defines --
@@ -83,6 +84,7 @@ int check_type(struct stat file, const char * const * parms, int parm_pos);
 int print_ls(const char * file_name, struct stat file);
 int print(const char * file_name);
 void usage (void); /*Adam*/
+void check_stdout(void);
 
 /*TODO: Tom */
 int check_name(const char * file_name, const char * const * parms, int parm_pos);
@@ -111,6 +113,7 @@ int main(int argc, const char *argv[]) {
 	const char * const *paramlist = (const char * const *)&argv[2];
 	const char *filename = (const char *)argv[1];
 
+	check_stdout();
 	/* Check if parameters are correct */
 	if (check_arg(argc, argv) == EXIT_FAILURE) exit(EXIT_FAILURE);
 
@@ -422,6 +425,13 @@ int print(const char * file_name) {
 	return MATCH;
 }
 
+void check_stdout(void) {
+	if(!puts(isatty(fileno(stdout))) {
+		error(1, 0, "%d", errno);
+	}
+
+	return 0;
+}
 
 /*
  * =================================================================== eof ==
