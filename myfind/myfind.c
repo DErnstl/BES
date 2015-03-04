@@ -113,7 +113,7 @@ int main(int argc, const char *argv[]) {
 	const char * const *paramlist = (const char * const *)&argv[2];
 	const char *filename = (const char *)argv[1];
 
-	check_stdout();
+	/*check_stdout();*/
 	/* Check if parameters are correct */
 	if (check_arg(argc, argv) == EXIT_FAILURE) exit(EXIT_FAILURE);
 
