@@ -43,7 +43,7 @@
 #define MATCH		1
 #define MISMATCH	0
 
-#define NOPARAMETER (strcmp(parms[parm_pos], "\0") == 0)
+#define NOPARAMETER (parms[parm_pos] == NULL)
 #define NAME (strcmp(parms[parm_pos], "-name") == 0)
 #define PATH (strcmp(parms[parm_pos], "-path") == 0)
 #define USER (strcmp(parms[parm_pos], "-user") == 0)
@@ -226,7 +226,8 @@ void do_file(const char * file_name, const char * const * parms) {
 
 int check(const char * dir_name, struct stat file, const char * const * parms, int parm_pos) {
 
-	if((int)(sizeof(parms)/sizeof(parms[0])) < parm_pos) {
+	if NOPARAMETER {
+		print(dir_name);
 		return MISMATCH;
 	}
 	else if NAME {
