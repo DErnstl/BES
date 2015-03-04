@@ -115,7 +115,6 @@ int main(int argc, const char *argv[]) {
 	if (check_arg(argc, argv) == EXIT_FAILURE) exit(EXIT_FAILURE);
 
 	/* Go through all files */
-printf("main() filename: %s\n", filename);
 	do_dir(filename, paramlist);
 
 	exit(EXIT_SUCCESS);
@@ -184,25 +183,20 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	struct dirent *d;
 	char filename[PATH_MAX];
 
-printf("do_dir from main(): dir_name: %s\n", dir_name);
 	if ((dir = opendir(dir_name)) == NULL) {
 			error(1, 1, "%d", errno);
 			exit(EXIT_FAILURE);
 	}
 
-printf("do_dir after opendir: dir_name: %s\n", dir_name);
 	while ((d = readdir(dir)) != NULL) {
-printf("d->d_name: %s\n", d->d_name);
 		if (strcmp(dir_name, ".") == 0) continue;
 		else if (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0) continue;
 		else {
-printf("filename 1: %s\n", filename);
 			strcpy(filename, dir_name);
-printf("filename 2: %s\n", filename);
 			strcat(filename, "/");
-printf("filename 3: %s\n", filename);
 			strcat(filename, d->d_name);
 printf("filename 4: %s\n", filename);
+
 			do_file(filename,parms);
 		}
 
@@ -212,7 +206,7 @@ printf("filename 4: %s\n", filename);
 }
 
 void do_file(const char * file_name, const char * const * parms) {
-	int parm_pos = 2;
+	int parm_pos = 0;
 	/* create filedescriptor */
 	struct stat fd_in;
 
@@ -229,10 +223,7 @@ void do_file(const char * file_name, const char * const * parms) {
 
 int check(const char * dir_name, struct stat file, const char * const * parms, int parm_pos) {
 
-printf("in check()\n");
-
-	if NOPARAMETER {
-printf("in check() noparameter\n");
+	if((int)(sizeof(parms)/sizeof(parms[0])) < parm_pos) {
 		print(dir_name);
 		return MISMATCH;
 	}
@@ -307,8 +298,8 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	int parmsint = 0;
 	userdet = getpwuid(fd_in.st_uid);
 	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
-	if(((userdet->pw_name) == (parms[parm_pos + 1])) || (userdet->pw_uid == (uid_t)parmsint)) return EXIT_SUCCESS;
-	else return EXIT_FAILURE;
+	if(((userdet->pw_name) == (parms[parm_pos + 1])) || (userdet->pw_uid == (uid_t)parmsint)) return MATCH;
+	else return MISMATCH;
 
 }
 
@@ -316,8 +307,8 @@ int check_nouser(struct stat fd_in)
 {
 	struct passwd *userdet = NULL;
 	userdet = getpwuid(fd_in.st_uid);
-	if(userdet == NULL) return EXIT_SUCCESS;
-	else return EXIT_FAILURE;
+	if(userdet == NULL) return MATCH;
+	else return MISMATCH;
 
 }
 
