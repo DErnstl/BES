@@ -224,7 +224,6 @@ void do_file(const char * file_name, const char * const * parms) {
 int check(const char * dir_name, struct stat file, const char * const * parms, int parm_pos) {
 
 	if((int)(sizeof(parms)/sizeof(parms[0])) < parm_pos) {
-		print(dir_name);
 		return MISMATCH;
 	}
 	else if NAME {
@@ -242,7 +241,7 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 	else if USER {
 		if (check_user(file,parms,parm_pos)) {
 			parm_pos=parm_pos+2;
-			if (!CHECK) print(dir_name);
+			if (!CHECK)  print(dir_name);
 		}
 	}
 	else if NOUSER {
@@ -298,8 +297,14 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	int parmsint = 0;
 	userdet = getpwuid(fd_in.st_uid);
 	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
-	if(((userdet->pw_name) == (parms[parm_pos + 1])) || (userdet->pw_uid == (uid_t)parmsint)) return MATCH;
-	else return MISMATCH;
+	printf("user1 user 2: %s %s\n", userdet->pw_name, parms[parm_pos + 1]);
+	if(((userdet->pw_name) == parms[parm_pos]) || (userdet->pw_uid == (uid_t)parmsint)) {
+        printf("MATCH\n");
+	return MATCH;}
+	else {
+	printf("MISMATCH\n");
+        return MISMATCH;;}
+
 
 }
 
