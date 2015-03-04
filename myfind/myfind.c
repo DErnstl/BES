@@ -425,13 +425,14 @@ int print(const char * file_name) {
 	return MATCH;
 }
 
+/* deactivated, stops from compiling
 void check_stdout(void) {
 	if(!puts(isatty(fileno(stdout))) {
 		error(1, 0, "%d", errno);
 	}
 
 	return 0;
-}
+} */
 
 /*
  * =================================================================== eof ==
