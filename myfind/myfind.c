@@ -299,11 +299,11 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
 	printf("user1 user 2: %s %s\n", userdet->pw_name, parms[parm_pos + 1]);
 	if(((userdet->pw_name) == parms[parm_pos]) || (userdet->pw_uid == (uid_t)parmsint)) {
-        printf("MATCH\n");
+	printf("MATCH\n");
 	return MATCH;}
 	else {
 	printf("MISMATCH\n");
-        return MISMATCH;;}
+	return MISMATCH;;}
 
 
 }
@@ -385,21 +385,33 @@ int check_type(struct stat file, const char * const * parms, int parm_pos) {
 
 int print_ls(const char * file_name, struct stat file) {
 	/*20696685	8 -rw-r--r--	1 akerenyi	staff	1453 Mar  2 18:19 ./Makefile*/
-	/*indoe			???	permissions	 link	user		group				  size last mod. date	file name*/
 
 	struct passwd * passwd = getpwuid(file.st_uid);
 	struct group * group = getgrgid(file.st_gid);
 	/*getgrgid*/
 
-	fprintf(stdout, "%8ld\t???\t%ld\t%s\t%s\t%.0f %s %s\n",
-		(long) file.st_ino,		/* inode */
-		/* MISSING! size in blocks ??? */
+	fprintf(stdout, "%8ld\t%16.0f ",
+		(long) file.st_ino,		/* Inode */
+		(double)file.st_blocks	/* Blocks allocated */
+	);
+	/* Permissions */
+	fprintf(stdout, (S_ISDIR(file.st_mode)) ? "d" : "-");
+	fprintf(stdout, (file.st_mode & S_IRUSR) ? "r" : "-");
+	fprintf(stdout, (file.st_mode & S_IWUSR) ? "w" : "-");
+	fprintf(stdout, (file.st_mode & S_IXUSR) ? "x" : "-");
+	fprintf(stdout, (file.st_mode & S_IRGRP) ? "r" : "-");
+	fprintf(stdout, (file.st_mode & S_IWGRP) ? "w" : "-");
+	fprintf(stdout, (file.st_mode & S_IXGRP) ? "x" : "-");
+	fprintf(stdout, (file.st_mode & S_IROTH) ? "r" : "-");
+	fprintf(stdout, (file.st_mode & S_IWOTH) ? "w" : "-");
+	fprintf(stdout, (file.st_mode & S_IXOTH) ? "x" : "-");
+	fprintf(stdout,"\t%ld\t%16s\t%16s\t%16.0f %s %s\n",
 		(long) file.st_nlink,		/* number of links */
-		passwd->pw_name,					/* user name */
-		group->gr_name,					/* group name */
+		passwd->pw_name,		/* user name */
+		group->gr_name,			/* group name */
 		(double) file.st_size,		/* file size */
 		ctime(&file.st_mtime),		/* last modification date */
-		file_name						/* file name */
+		file_name			/* file name */
 	);
 
 	return MATCH;
