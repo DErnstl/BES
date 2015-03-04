@@ -46,7 +46,7 @@ myfind: $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
-	$(RM) *.o *~ myfind
+	$(RM) *.o myfind
 
 distclean: clean
 	$(RM) -r doc
