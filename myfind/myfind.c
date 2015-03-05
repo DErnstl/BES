@@ -310,6 +310,7 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	char *endptr = NULL;
 	int parmsint = 0;
 
+	/* TODO: Error checking */
 	userdet = getpwuid(fd_in.st_uid);
 	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
 
