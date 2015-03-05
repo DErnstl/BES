@@ -402,9 +402,16 @@ int print_ls(const char * file_name, struct stat file) {
 
 	struct passwd * passwd = getpwuid(file.st_uid);
 	struct group * group = getgrgid(file.st_gid);
-	/*getgrgid*/
 
-	fprintf(stdout, "%8ld\t%16.0f ",
+	/* delete \n from ctime() */
+	char *mtime;
+	int len;
+	mtime = ctime(&file.st_mtime);
+	len = strlen(mtime);
+	mtime[len -1] = '\0';
+
+
+	fprintf(stdout, "%ld %.0f ",
 		(long) file.st_ino,		/* Inode */
 		(double)file.st_blocks	/* Blocks allocated */
 	);
@@ -419,12 +426,12 @@ int print_ls(const char * file_name, struct stat file) {
 	fprintf(stdout, (file.st_mode & S_IROTH) ? "r" : "-");
 	fprintf(stdout, (file.st_mode & S_IWOTH) ? "w" : "-");
 	fprintf(stdout, (file.st_mode & S_IXOTH) ? "x" : "-");
-	fprintf(stdout,"\t%ld\t%16s\t%16s\t%16.0f %s %s\n",
+	fprintf(stdout," %ld %s %s %.0f %s %s\n",
 		(long) file.st_nlink,		/* number of links */
 		passwd->pw_name,		/* user name */
 		group->gr_name,			/* group name */
 		(double) file.st_size,		/* file size */
-		ctime(&file.st_mtime),		/* last modification date */
+		mtime,		/* last modification date */
 		file_name			/* file name */
 	);
 
