@@ -411,10 +411,12 @@ int print_ls(const char * file_name, struct stat file) {
 	time = localtime(&file.st_mtime);
 	strftime(mtime, 1000, "%b %d %H:%M", time);
 
-	fprintf(stdout, " %ld %4.0f ",
+	if (fprintf(stdout, " %ld %4.0f ",
 		(long) file.st_ino,		/* Inode */
-		(double)file.st_blocks	/* Blocks allocated */
-	);
+		(double)file.st_blocks	) < 0) {
+			fprintf(stderr, "Writung to stdout not possible\n");
+			exit(EXIT_FAILURE);
+	}
 	/* Permissions */
 	fprintf(stdout, (S_ISDIR(file.st_mode)) ? "d" : "-");
 	fprintf(stdout, (file.st_mode & S_IRUSR) ? "r" : "-");
@@ -426,7 +428,7 @@ int print_ls(const char * file_name, struct stat file) {
 	fprintf(stdout, (file.st_mode & S_IROTH) ? "r" : "-");
 	fprintf(stdout, (file.st_mode & S_IWOTH) ? "w" : "-");
 	fprintf(stdout, (file.st_mode & S_IXOTH) ? "x" : "-");
-	fprintf(stdout," %3ld %8s %8s %12.0f %s %s\n",
+	fprintf(stdout," %3ld %s %8s %12.0f %s %s\n",
 		(long) file.st_nlink,		/* number of links */
 		passwd->pw_name,		/* user name */
 		group->gr_name,			/* group name */
