@@ -117,8 +117,11 @@ int main(int argc, const char *argv[]) {
 	/* Check if parameters are correct */
 	if (check_arg(argc, argv) == EXIT_FAILURE) exit(EXIT_FAILURE);
 
-	/* Go through all files */
-	do_dir(filename, paramlist);
+	/* check (all) first dirs */
+	do_file(filename, paramlist);
+
+	/* Go through all files 
+	do_dir(filename, paramlist); */
 
 	exit(EXIT_SUCCESS);
 }
@@ -192,11 +195,14 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	}
 
 	while ((d = readdir(dir)) != NULL) {
-		if (strcmp(dir_name, ".") == 0) continue;
-		else if (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0) continue;
+		if (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0) continue;
 		else {
+
 			strcpy(filename, dir_name);
-			strcat(filename, "/");
+			/* if there is already a /, dont catenate again */
+			if (dir_name[strlen(dir_name) - 1] != '/') {
+				strcat(filename, "/");
+			}
 			strcat(filename, d->d_name);
 printf("filename 4: %s\n", filename);
 
