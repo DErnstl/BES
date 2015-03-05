@@ -309,15 +309,15 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	struct passwd *userdet = NULL;
 	char *endptr = NULL;
 	int parmsint = 0;
+
 	userdet = getpwuid(fd_in.st_uid);
 	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
-	printf("user1 user 2: %s %s\n", userdet->pw_name, parms[parm_pos + 1]);
+
 	if(((userdet->pw_name) == parms[parm_pos]) || (userdet->pw_uid == (uid_t)parmsint)) {
-	printf("MATCH\n");
-	return MATCH;}
-	else {
-	printf("MISMATCH\n");
-	return MISMATCH;;}
+		return MATCH;
+	} else {
+		return MISMATCH;
+	}
 
 
 }
