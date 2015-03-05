@@ -411,7 +411,7 @@ int print_ls(const char * file_name, struct stat file) {
 	mtime[len -1] = '\0';
 
 
-	fprintf(stdout, "%ld %.0f ",
+	fprintf(stdout, " %ld %4.0f ",
 		(long) file.st_ino,		/* Inode */
 		(double)file.st_blocks	/* Blocks allocated */
 	);
@@ -426,7 +426,7 @@ int print_ls(const char * file_name, struct stat file) {
 	fprintf(stdout, (file.st_mode & S_IROTH) ? "r" : "-");
 	fprintf(stdout, (file.st_mode & S_IWOTH) ? "w" : "-");
 	fprintf(stdout, (file.st_mode & S_IXOTH) ? "x" : "-");
-	fprintf(stdout," %ld %s %s %.0f %s %s\n",
+	fprintf(stdout," %3ld %s %8s %12.0f %s %s\n",
 		(long) file.st_nlink,		/* number of links */
 		passwd->pw_name,		/* user name */
 		group->gr_name,			/* group name */
