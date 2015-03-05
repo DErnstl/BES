@@ -190,25 +190,26 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	char filename[PATH_MAX];
 
 	if ((dir = opendir(dir_name)) == NULL) {
+		if (errno != EACCES) {
 			error(1, 1, "%d", errno);
 			exit(EXIT_FAILURE);
-	}
-
-	while ((d = readdir(dir)) != NULL) {
-		if (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0) continue;
-		else {
-
-			strcpy(filename, dir_name);
-			/* if there is already a /, dont catenate again */
-			if (dir_name[strlen(dir_name) - 1] != '/') {
-				strcat(filename, "/");
-			}
-			strcat(filename, d->d_name);
-printf("filename 4: %s\n", filename);
-
-			do_file(filename,parms);
 		}
+	} else {
+		while ((d = readdir(dir)) != NULL) {
+			if (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0) continue;
+			else {
 
+				strcpy(filename, dir_name);
+				/* if there is already a /, dont catenate again */
+				if (dir_name[strlen(dir_name) - 1] != '/') {
+					strcat(filename, "/");
+				}
+				strcat(filename, d->d_name);
+
+				do_file(filename,parms);
+			}
+
+		}
 	}
 
 	closedir(dir);
