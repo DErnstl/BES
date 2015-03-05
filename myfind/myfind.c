@@ -404,13 +404,12 @@ int print_ls(const char * file_name, struct stat file) {
 	struct passwd * passwd = getpwuid(file.st_uid);
 	struct group * group = getgrgid(file.st_gid);
 
-	/* delete \n from ctime() */
-	char *mtime;
-	int len;
-	mtime = ctime(&file.st_mtime);
-	len = strlen(mtime);
-	mtime[len -1] = '\0';
+	/* Format mtime */
+	char mtime[NAME_MAX];
+	struct tm *time;
 
+	time = localtime(&file.st_mtime);
+	strftime(mtime, 1000, "%b %d %H:%M", time);
 
 	fprintf(stdout, " %ld %4.0f ",
 		(long) file.st_ino,		/* Inode */
@@ -427,7 +426,7 @@ int print_ls(const char * file_name, struct stat file) {
 	fprintf(stdout, (file.st_mode & S_IROTH) ? "r" : "-");
 	fprintf(stdout, (file.st_mode & S_IWOTH) ? "w" : "-");
 	fprintf(stdout, (file.st_mode & S_IXOTH) ? "x" : "-");
-	fprintf(stdout," %3ld %s %8s %12.0f %s %s\n",
+	fprintf(stdout," %3ld %8s %8s %12.0f %s %s\n",
 		(long) file.st_nlink,		/* number of links */
 		passwd->pw_name,		/* user name */
 		group->gr_name,			/* group name */
