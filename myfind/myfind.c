@@ -44,6 +44,7 @@
 #define MISMATCH	0
 
 #define NOPARAMETER (parms[parm_pos] == NULL)
+#define NEXT_PARAMETER (check_next_parameter(parms[parm_pos+1]))
 #define NAME (strcmp(parms[parm_pos], "-name") == 0)
 #define PATH (strcmp(parms[parm_pos], "-path") == 0)
 #define USER (strcmp(parms[parm_pos], "-user") == 0)
@@ -89,6 +90,7 @@ void check_stdout(void);
 /*TODO: Tom */
 int check_name(const char * file_name, const char * const * parms, int parm_pos);
 int check_path(const char * file_name, const char * const * parms, int parm_pos);
+int check_next_parameter(const char * string);
 
 
 /**
@@ -128,31 +130,31 @@ int main(int argc, const char *argv[]) {
 
 
 /* Function Definitions */
+int check_next_parameter(const char * string) {
+	if (string[0] == '-') return MISMATCH;
+	else return MATCH;
+}
+
 int check_arg(const int argc, const char * argv[]) {
 	const char * const * parms = argv;
 	int parm_pos = 2;
 
 	if (argc < 2) {
-	error(1, 1, "%d", errno);
-	usage();
-	return EXIT_FAILURE;
+		usage();
+		return EXIT_FAILURE;
 }
 
 	while (parm_pos < argc) {
-		if((!NAME || !PATH || !USER) && (parm_pos + 1 < argc)) {
-			parm_pos += 2;
-		} else if(!NOUSER || !PRINT || !LS) {
-			parm_pos++;
-		} else if (!TYPE && (parm_pos + 1 < argc)) {
-			if (check_arg_type(argv[parm_pos + 1])) {
-				parm_pos += 2;
-			} else {
-				error(1, 1, "%d", errno);
-				usage();
-				return EXIT_FAILURE;
+		if (NAME && NEXT_PARAMETER) parm_pos += 2;
+		else if (PATH && NEXT_PARAMETER) parm_pos += 2;
+		else if (USER && NEXT_PARAMETER) parm_pos += 2;
+		else if (TYPE && NEXT_PARAMETER) {
+			if (check_arg_type(argv[parm_pos + 1])) parm_pos += 2;
 			}
-		} else {
-			error(1, 1, "%d", errno);
+		else if NOUSER parm_pos++;
+		else if PRINT parm_pos++;
+		else if LS parm_pos++;
+		else {
 			usage();
 			return EXIT_FAILURE;
 		}
@@ -180,7 +182,8 @@ int check_arg_type(const char * argv) {
 			    return MATCH;
 			break;
 		default:
-			return MISMATCH;
+			usage();
+			return EXIT_FAILURE;
 	}
 }
 
@@ -441,6 +444,10 @@ void check_stdout(void) {
 
 	return 0;
 } */
+
+void usage (void) {
+	fprintf(stderr, "muhhhhhh!\n");
+}
 
 /*
  * =================================================================== eof ==
