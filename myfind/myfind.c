@@ -313,7 +313,7 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	userdet = getpwuid(fd_in.st_uid);
 	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
 
-	if(((userdet->pw_name) == parms[parm_pos]) || (userdet->pw_uid == (uid_t)parmsint)) {
+	if(((userdet->pw_name) == parms[parm_pos + 1]) || (userdet->pw_uid == (uid_t)parmsint)) {
 		return MATCH;
 	} else {
 		return MISMATCH;
