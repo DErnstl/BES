@@ -454,7 +454,17 @@ void check_stdout(void) {
 } */
 
 void usage (void) {
-	fprintf(stderr, "muhhhhhh!\n");
+	fprintf(stderr, "\nUsage: myfind <directory> [ <options> ] ...\n\n");
+	fprintf(stderr, "myfind is a simple command line tool for getting files and folders\n");
+	fprintf(stderr, "under the specified path matching the given options.\n\n");
+	fprintf(stderr, "Options:\n");
+	fprintf(stderr, "\t-name\t\t<pattern>\tfind files/directories with matching name\n");
+	fprintf(stderr, "\t-user\t\t<name>/<uid>\tfind files/directories of a user\n");
+	fprintf(stderr, "\t-nouser\t\t\t\tfind files/directories without a user\n");
+	fprintf(stderr, "\t-path\t\t<pattern>\tfind files/directories with matchin path (incl. name)\n");
+	fprintf(stderr, "\t-type\t\t[bcdpfls]\tfind files/directories with matching type\n");
+	fprintf(stderr, "\t-print\t\t\t\tprint name of file/directory to console\n");
+	fprintf(stderr, "\t-ls\t\t\t\tprint number of inode, number of blocks, permissions, etc...\n\n");
 }
 
 /*
