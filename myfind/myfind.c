@@ -230,14 +230,16 @@ void do_file(const char * file_name, const char * const * parms) {
 		exit(EXIT_FAILURE);
 	}
 
+	
 	check(file_name, fd_in, parms, parm_pos);
+	if NOPARAMETER {
+		print(file_name);}
 	if (S_ISDIR(fd_in.st_mode)) { do_dir(file_name,parms); }
 }
 
 int check(const char * dir_name, struct stat file, const char * const * parms, int parm_pos) {
 
 	if NOPARAMETER {
-		print(dir_name);
 		return MISMATCH;
 	}
 	else if NAME {
@@ -314,7 +316,7 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	userdet = getpwuid(fd_in.st_uid);
 	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
 
-	if(((userdet->pw_name) == parms[parm_pos + 1]) || (userdet->pw_uid == (uid_t)parmsint)) {
+	if((strcmp(userdet->pw_name, parms[parm_pos + 1]) == 0) || (userdet->pw_uid == (uid_t)parmsint)) {
 		return MATCH;
 	} else {
 		return MISMATCH;
