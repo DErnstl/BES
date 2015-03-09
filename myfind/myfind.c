@@ -431,13 +431,28 @@ int print_ls(const char * file_name, struct stat file) {
 	fprintf(stdout, (S_ISDIR(file.st_mode)) ? "d" : "-");
 	fprintf(stdout, (file.st_mode & S_IRUSR) ? "r" : "-");
 	fprintf(stdout, (file.st_mode & S_IWUSR) ? "w" : "-");
-	fprintf(stdout, (file.st_mode & S_IXUSR) ? "x" : "-");
+	if (file.st_mode & S_IXUSR) {
+		if (file.st_mode & S_ISUID) fprintf(stdout, "s");
+		else fprintf(stdout, "x");
+	} else if (file.st_mode & S_ISUID) {
+		fprintf(stdout, "S");
+	} else fprintf(stdout, "-");
 	fprintf(stdout, (file.st_mode & S_IRGRP) ? "r" : "-");
 	fprintf(stdout, (file.st_mode & S_IWGRP) ? "w" : "-");
-	fprintf(stdout, (file.st_mode & S_IXGRP) ? "x" : "-");
+	if (file.st_mode & S_IXGRP) {
+		if (file.st_mode & S_ISGID) fprintf(stdout, "s");
+		else fprintf(stdout, "x");
+	} else if (file.st_mode & S_ISGID) {
+		fprintf(stdout, "S");
+	} else fprintf(stdout, "-");
 	fprintf(stdout, (file.st_mode & S_IROTH) ? "r" : "-");
 	fprintf(stdout, (file.st_mode & S_IWOTH) ? "w" : "-");
-	fprintf(stdout, (file.st_mode & S_IXOTH) ? "x" : "-");
+	if (file.st_mode & S_IXOTH) {
+		if (file.st_mode & S_ISVTX) fprintf(stdout, "t");
+		else fprintf(stdout, "x");
+	} else if (file.st_mode & S_ISVTX) {
+		fprintf(stdout, "T");
+	} else fprintf(stdout, "-");
 	fprintf(stdout," %3ld %s %8s %12.0f %s %s\n",
 		(long) file.st_nlink,		/* number of links */
 		passwd->pw_name,		/* user name */
