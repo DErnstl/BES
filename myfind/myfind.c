@@ -31,6 +31,7 @@
 #include <grp.h>
 #include <time.h>
 #include <unistd.h>
+#include <libgen.h>
 
 /*
  * --------------------------------------------------------------- defines --
@@ -289,7 +290,13 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 }
 
 int check_name(const char * file_name, const char * const * parms, int parm_pos) {
-	if(fnmatch(parms[parm_pos+1],file_name,FNM_NOESCAPE) == 0) {
+	char *basec;
+	char *basen;
+
+	basec = strdup(file_name);
+	basen = basename(basec);
+
+	if(fnmatch(basen,parms[parm_pos+1],FNM_NOESCAPE) == 0) {
 		return MATCH;
 	} else {
 		return MISMATCH;
