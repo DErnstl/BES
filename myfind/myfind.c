@@ -305,7 +305,8 @@ int check_name(const char * file_name, const char * const * parms, int parm_pos)
 }
 
 int check_path(const char * file_name, const char * const * parms, int parm_pos) {
-	if(fnmatch(parms[parm_pos+1],file_name,FNM_PATHNAME) == 0) {
+
+	if(fnmatch(parms[parm_pos+1],file_name,FNM_NOESCAPE) == 0) {
 		return MATCH;
 	} else {
 		return MISMATCH;
