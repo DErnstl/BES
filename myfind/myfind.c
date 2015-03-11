@@ -335,7 +335,7 @@ int check_nouser(struct stat fd_in)
 }
 
 int check_type(struct stat file, const char * const * parms, int parm_pos) {
-	char type = (char) *parms[parm_pos];
+	char type = (char) *parms[parm_pos + 1];
 
 	switch (type) {
 		case 'b':
