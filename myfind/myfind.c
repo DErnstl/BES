@@ -45,7 +45,7 @@
 #define MISMATCH	0
 
 #define NOPARAMETER (parms[parm_pos] == NULL)
-#define NEXT_PARAMETER (check_next_parameter(parms[parm_pos+1]))
+#define HASNEXTARG (parm_pos + 1 < argc)
 #define NAME (strcmp(parms[parm_pos], "-name") == 0)
 #define PATH (strcmp(parms[parm_pos], "-path") == 0)
 #define USER (strcmp(parms[parm_pos], "-user") == 0)
@@ -76,7 +76,8 @@ int check(const char * file_name, struct stat file, const char * const * parms, 
 
 /*TODO: Romeo */
 int check_user(struct stat fd_in, const char * const * parms, int parm_pos);
-int check_arg(const int argc, const char * argv[]);
+void check_arg(const int argc, const char * argv[]);
+void check_arg_error(void);
 int check_arg_type(const char * argv);
 int check_nouser(struct stat fd_in);
 
@@ -91,7 +92,6 @@ void check_stdout(void);
 /*TODO: Tom */
 int check_name(const char * file_name, const char * const * parms, int parm_pos);
 int check_path(const char * file_name, const char * const * parms, int parm_pos);
-int check_next_parameter(const char * string);
 
 
 /**
@@ -118,7 +118,7 @@ int main(int argc, const char *argv[]) {
 
 	/*check_stdout();*/
 	/* Check if parameters are correct */
-	if (check_arg(argc, argv) == EXIT_FAILURE) exit(EXIT_FAILURE);
+	check_arg(argc, argv);
 
 	/* check (all) first dirs */
 	do_file(filename, paramlist);
@@ -131,37 +131,72 @@ int main(int argc, const char *argv[]) {
 
 
 /* Function Definitions */
-int check_next_parameter(const char * string) {
-	if (string[0] == '-') return MISMATCH;
-	else return MATCH;
-}
-
-int check_arg(const int argc, const char * argv[]) {
+void check_arg(const int argc, const char * argv[])
+{
 	const char * const * parms = argv;
 	int parm_pos = 2;
 
 	if (argc < 2) {
-		usage();
-		return EXIT_FAILURE;
-}
-
-	while (parm_pos < argc) {
-		if (NAME && NEXT_PARAMETER) parm_pos += 2;
-		else if (PATH && NEXT_PARAMETER) parm_pos += 2;
-		else if (USER && NEXT_PARAMETER) parm_pos += 2;
-		else if (TYPE && NEXT_PARAMETER) {
-			if (check_arg_type(argv[parm_pos + 1])) parm_pos += 2;
-			}
-		else if NOUSER parm_pos++;
-		else if PRINT parm_pos++;
-		else if LS parm_pos++;
-		else {
-			usage();
-			return EXIT_FAILURE;
-		}
+		check_arg_error();
 	}
 
-	return EXIT_SUCCESS;
+	while (parm_pos < argc) {
+		if (NAME && HASNEXTARG) {
+			if (parm_pos + 2 < argc) {
+                                parm_pos +=2;
+                        } else {
+                                break;
+			}
+		} else if (PATH && HASNEXTARG) {
+			if (parm_pos + 2 < argc) {
+				parm_pos +=2;
+			} else {
+				break;
+			}
+		} else if (USER && HASNEXTARG) {
+			if (parm_pos + 2 < argc) {
+                                parm_pos +=2;
+                        } else {
+                                break;
+			}
+		} else if (TYPE && HASNEXTARG) {
+			if (check_arg_type(argv[parm_pos + 1])) {
+				if (parm_pos + 2 < argc) {
+                                	parm_pos +=2;
+                        	} else {
+                                	break;
+				}
+			} else {
+				check_arg_error();
+			}
+		}
+		else if (NOUSER) {
+			if (parm_pos + 1 < argc) {
+                                parm_pos++;
+                        } else {
+                                break;
+			}
+		} else if (PRINT) {
+			if (parm_pos + 1< argc) {
+                                parm_pos++;
+                        } else {
+                                break;
+                        }
+		} else if (LS) {
+			if (parm_pos + 1 < argc) {
+                                parm_pos++;
+                        } else {
+                                break;
+                        }
+		} else check_arg_error();
+	}
+}
+
+void check_arg_error(void)
+{
+	errno = EINVAL;
+	usage();
+	error(1, 1, "%d", errno);
 }
 
 int check_arg_type(const char * argv) {
@@ -176,8 +211,7 @@ int check_arg_type(const char * argv) {
 			return MATCH;
 			break;
 		default:
-			usage();
-			return EXIT_FAILURE;
+			return MISMATCH;	
 	}
 }
 
