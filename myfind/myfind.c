@@ -317,14 +317,14 @@ int check_path(const char * file_name, const char * const * parms, int parm_pos)
 int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 {
 	struct passwd *userdet = NULL;
-	char *endptr = NULL;
+	char *endptr;
 	int parmsint = 0;
 
 	userdet = getpwuid(fd_in.st_uid);
 	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
 
-	if((endptr != 0) & (strcmp(userdet->pw_name, parms[parm_pos + 1]) == 0)) return MATCH;
-	else if((endptr != 0) & (userdet->pw_uid == (uid_t)parmsint)) return MATCH;
+	if(strcmp(userdet->pw_name, parms[parm_pos + 1]) == 0) return MATCH;
+	else if((strcmp(parms[parm_pos +1], endptr) != 0) & (userdet->pw_uid == (uid_t)parmsint)) return MATCH;
 	else return MISMATCH;
 
 }
