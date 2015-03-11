@@ -167,20 +167,13 @@ int check_arg(const int argc, const char * argv[]) {
 int check_arg_type(const char * argv) {
    	switch ((char) * argv) {
 		case 'b':
-		case 'B':
 		case 'c':
-		case 'C':
 		case 'd':
-		case 'D':
 		case 'p':
-		case 'P':
 		case 'f':
-		case 'F':
 		case 'l':
-		case 'L':
 		case 's':
-		case 'S':
-			    return MATCH;
+			return MATCH;
 			break;
 		default:
 			usage();
@@ -346,7 +339,6 @@ int check_type(struct stat file, const char * const * parms, int parm_pos) {
 
 	switch (type) {
 		case 'b':
-		case 'B':
 			if (S_ISBLK(file.st_mode)) {
 				return MATCH;
 			} else {
@@ -354,7 +346,6 @@ int check_type(struct stat file, const char * const * parms, int parm_pos) {
 			}
 			break;
 		case 'c':
-		case 'C':
 			if (S_ISCHR(file.st_mode)) {
 				return MATCH;
 			} else {
@@ -362,15 +353,13 @@ int check_type(struct stat file, const char * const * parms, int parm_pos) {
 			}
 			break;
 		case 'd':
-		case 'D':
 			if (S_ISDIR(file.st_mode)) {
 				return MATCH;
 			} else {
 				return MISMATCH;
 			}
 			break;
-		case 'p':
-		case 'P':
+		case 'p':	
 			if (S_ISFIFO(file.st_mode)) {
 				return MATCH;
 			} else {
@@ -378,7 +367,6 @@ int check_type(struct stat file, const char * const * parms, int parm_pos) {
 			}
 			break;
 		case 'f':
-		case 'F':
 			if (S_ISREG(file.st_mode)) {
 				return MATCH;
 			} else {
@@ -386,7 +374,6 @@ int check_type(struct stat file, const char * const * parms, int parm_pos) {
 			}
 			break;
 		case 'l':
-		case 'L':
 			if (S_ISLNK(file.st_mode)) {
 				return MATCH;
 			} else {
@@ -394,7 +381,6 @@ int check_type(struct stat file, const char * const * parms, int parm_pos) {
 			}
 			break;
 		case 's':
-		case 'S':
 			if (S_ISSOCK(file.st_mode)) {
 				return MATCH;
 			} else {
