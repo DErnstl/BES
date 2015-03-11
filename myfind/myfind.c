@@ -317,11 +317,14 @@ int check_path(const char * file_name, const char * const * parms, int parm_pos)
 int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 {
 	struct passwd *userdet = NULL;
+	struct passwd *usernam = NULL;
 	char *endptr;
 	int parmsint = 0;
 
+	usernam = getpwnam(parms[parm_pos +1]);
 	userdet = getpwuid(fd_in.st_uid);
 	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
+	if((strcmp(parms[parm_pos +1], endptr) == 0) & (usernam == NULL)) error(1, 1, "%s is not the name of a knowm user", parms[parm_pos +1]);
 
 	if(strcmp(userdet->pw_name, parms[parm_pos + 1]) == 0) return MATCH;
 	else if((strcmp(parms[parm_pos +1], endptr) != 0) & (userdet->pw_uid == (uid_t)parmsint)) return MATCH;
