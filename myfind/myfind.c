@@ -441,9 +441,9 @@ int print_ls(const char * file_name, struct stat file) {
 	strftime(mtime, 1000, "%b %d %H:%M", time);
 
 	if (fprintf(stdout, " %ld %4.0f ",
-		(long) file.st_ino,		/* Inode */
+		(long) file.st_ino,
 		(double)file.st_blocks	) < 0) {
-			fprintf(stderr, "Writung to stdout not possible\n");
+			fprintf(stderr, "Writing to stdout not possible\n");
 			exit(EXIT_FAILURE);
 	}
 	/* Permissions */
@@ -488,15 +488,6 @@ int print(const char * file_name) {
 	fprintf(stdout, "%s\n", file_name);
 	return MATCH;
 }
-
-/* deactivated, stops from compiling
-void check_stdout(void) {
-	if(!puts(isatty(fileno(stdout))) {
-		error(1, 0, "%d", errno);
-	}
-
-	return 0;
-} */
 
 void usage (void) {
 	fprintf(stderr, "\nUsage: myfind <directory> [ <options> ] ...\n\n");
