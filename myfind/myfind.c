@@ -281,7 +281,7 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 	}
 	else if PRINT {
 		if (print(dir_name)) {
-			parm_pos=parm_pos+2;
+			parm_pos=parm_pos+1;
 			CHECK;
 		}
 	}
