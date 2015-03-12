@@ -8,7 +8,7 @@
  * @author Thomas Zeitinger <ic14b033@technikum-wien.at>
  * @date 2015/02/09
  *
- * @version 470
+ * @version 100
  *
  */
 
@@ -37,7 +37,6 @@
  * --------------------------------------------------------------- defines --
  */
 
-/* Contant Definitions */
 #define NAME_MAX	255
 #define PATH_MAX	4096
 
@@ -57,46 +56,29 @@
 #define CHECK (check(dir_name,file,parms,parm_pos))
 
 /*
- * -------------------------------------------------------------- typedefs --
+ *  * ------------------------------------------------ function prototypes --
  */
 
-/*
- * --------------------------------------------------------------- globals --
- */
-
-/*
- * ------------------------------------------------------------- functions --
- */
-
-
-/* Function Prototypes */
-void do_file(const char * file_name, const char * const * parms);	/* return type void as none was given */
-void do_dir(const char * dir_name, const char * const * parms);		/* return type void as none was given */
+void do_file(const char * file_name, const char * const * parms);
+void do_dir(const char * dir_name, const char * const * parms);	
 int check(const char * file_name, struct stat file, const char * const * parms, int parm_pos);
-
-/*TODO: Romeo */
 int check_user(struct stat fd_in, const char * const * parms, int parm_pos);
 void check_arg(const int argc, const char * argv[]);
 void check_arg_error(void);
 int check_arg_type(const char * argv);
 int check_nouser(struct stat fd_in);
-
-
-/*TODO: Adam */
 int check_type(struct stat file, const char * const * parms, int parm_pos);
 int print_ls(const char * file_name, struct stat file);
 int print(const char * file_name);
-void usage (void); /*Adam*/
+void usage (void);
 void check_stdout(void);
-
-/*TODO: Tom */
 int check_name(const char * file_name, const char * const * parms, int parm_pos);
 int check_path(const char * file_name, const char * const * parms, int parm_pos);
 
 
 /**
  *
- * \brief The most unusful, but educational Linux program ;-)
+ * \brief main function for myfind, a sipmle version of find
  *
  * This is the main entry point for any C program.
  *
@@ -129,8 +111,18 @@ int main(int argc, const char *argv[]) {
 	exit(EXIT_SUCCESS);
 }
 
+/**
+ *
+ * \brief check_arg checks the validity of the entered arguments depending on the action
+ *
+ * \param argc the number of arguments
+ * \param argv the arguments itselves (including the program name in argv[0])
+ *
+ * \return void
+ *
+ */
 
-/* Function Definitions */
+
 void check_arg(const int argc, const char * argv[])
 {
 	const char * const * parms = argv;
@@ -192,12 +184,35 @@ void check_arg(const int argc, const char * argv[])
 	}
 }
 
+/**
+ *
+ * \brief check_arg_error prints the usage in case of invalid arguments
+ *
+ * \param void no parameters
+ * 
+ * \return void
+ *
+ */
+
+
 void check_arg_error(void)
 {
 	errno = EINVAL;
 	usage();
 	error(1, 1, "%d", errno);
 }
+
+/**
+ * 
+ * \brief check_arg_type checks the arguments for action -type
+ *
+ * \param *argv argument entered for -find 
+ *
+ * \return MATCH if argument is valid, MISMATCh if argument isn't valid
+ * \retval 1 if argument is valid
+ * \retval 0 if argument isn't valid
+ *
+ */
 
 int check_arg_type(const char * argv) {
    	switch ((char) * argv) {
@@ -214,6 +229,18 @@ int check_arg_type(const char * argv) {
 			return MISMATCH;	
 	}
 }
+
+/**
+ * 
+ * \brief do_dir opens and reads a directory, excludes . and .., prepares the path and calls do_file  
+ *
+ * \param *dir_name name of the directory
+ * \param *parms actions and arguments entered by the user
+ *
+ * \return void
+ *
+ */
+
 
 void do_dir(const char * dir_name, const char * const * parms) {
 	DIR *dir;
@@ -246,6 +273,18 @@ void do_dir(const char * dir_name, const char * const * parms) {
 	closedir(dir);
 }
 
+/**
+ * 
+ * \brief d_file reads file details, calls check (which checks the file for all arguments), prints if no parameter was entered and calls do_dir if the file is a directory
+ *
+ * \param *dir_name name of the file
+ * \param *parms actions and arguments entered by the user
+ *
+ * \return void
+ *
+ */
+
+
 void do_file(const char * file_name, const char * const * parms) {
 	int parm_pos = 0;
 	/* create filedescriptor */
@@ -264,6 +303,21 @@ void do_file(const char * file_name, const char * const * parms) {
 		print(file_name);}
 	if (S_ISDIR(fd_in.st_mode)) { do_dir(file_name,parms); }
 }
+
+/**
+ * 
+ * \brief check checks a file if it meets the given arguments and calls print if it does
+ *
+ * \param *dir_name name of the file
+ * \param file file detail (from lstat)
+ * \param parms actions and arguments entered by the user
+ * \param parm_pos current action (which is checked)
+ *
+ * \return calls itself until a check failed or there isn't anything to check left, then returns MISMATCH
+ * \retval 0 if a check failed or there isn't anything to check left
+ *
+ */
+
 
 int check(const char * dir_name, struct stat file, const char * const * parms, int parm_pos) {
 
@@ -316,6 +370,21 @@ int check(const char * dir_name, struct stat file, const char * const * parms, i
 	return MISMATCH;
 }
 
+/**
+ * 
+ * \brief check_name checks for action -name if the entered name is the name of the file
+ *
+ * \param *file_name name of the file
+ * \param parms actions and arguments entered by the user
+ * \param parm_pos current action (which is checked)
+ *
+ * \return MATCH if the entered name is the file's name, MISMATCH if not
+ * \retval 0 if the entered name isn't the file's name
+ * \retval 1 if the entered name is the file's name
+ *
+ */
+
+
 int check_name(const char * file_name, const char * const * parms, int parm_pos) {
 	char *basec;
 	char *basen;
@@ -331,6 +400,21 @@ int check_name(const char * file_name, const char * const * parms, int parm_pos)
 
 }
 
+/**
+ * 
+ * \brief check_patch checks for action -path if the entered patch is the name of the file's path
+ *
+ * \param *file_name name of the file
+ * \param parms actions and arguments entered by the user
+ * \param parm_pos current action (which is checked)
+ *
+ * \return MATCH if the entered path is the file's path, MISMATCH if not
+ * \retval 0 if the entered path isn't the file's path
+ * \retval 1 if the entered path is the file's path
+ *
+ */
+
+
 int check_path(const char * file_name, const char * const * parms, int parm_pos) {
 
 	if(fnmatch(parms[parm_pos+1],file_name,FNM_NOESCAPE) == 0) {
@@ -340,6 +424,21 @@ int check_path(const char * file_name, const char * const * parms, int parm_pos)
 	}
 
 }
+
+/**
+ * 
+ * \brief check_user checks for action -user if the entered user (name or UID) is the owner of the file and checks if the user (if a name was entered exists) 
+ *
+ * \param fd_in file details (from lstat)
+ * \param parms actions and arguments entered by the user
+ * \param parm_pos current action (which is checked)
+ *
+ * \return MATCH if the entered user is the file's owner, MISMATCH if not
+ * \retval 0 if the entered user isn't the file's owner
+ * \retval 1 if the entered user is the file's owner
+ *
+ */
+
 
 int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 {
@@ -351,13 +450,28 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	usernam = getpwnam(parms[parm_pos +1]);
 	userdet = getpwuid(fd_in.st_uid);
 	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
-	if((strcmp(parms[parm_pos +1], endptr) == 0) & (usernam == NULL)) error(1, 1, "%s is not the name of a knowm user", parms[parm_pos +1]);
+	if((strcmp(parms[parm_pos +1], endptr) == 0) & (usernam == NULL)) {
+		error(1, 1, "%s is not the name of a knowm user", parms[parm_pos +1]);
+		exit(EXIT_FAILURE);
+	}
 
 	if(strcmp(userdet->pw_name, parms[parm_pos + 1]) == 0) return MATCH;
 	else if((strcmp(parms[parm_pos +1], endptr) != 0) & (userdet->pw_uid == (uid_t)parmsint)) return MATCH;
 	else return MISMATCH;
 
 }
+
+/**
+ * 
+ * \brief check_nouser checks if a file's owner is still an existing user 
+ *
+ * \param fd_in file details (from lstat)
+ *   
+ * \return MATCH if the file's owner doesn't exist, MISMATCH if it exists
+ * \retval 0 if the file's owner exists
+ * \retval 1 if the file's owner doesn't exist
+ *
+ */
 
 int check_nouser(struct stat fd_in)
 {
@@ -367,6 +481,19 @@ int check_nouser(struct stat fd_in)
 	else return MISMATCH;
 
 }
+
+/**
+ * 
+ * \brief check_type checks vor action -type if the entered type is the same as the file's type
+ *
+ * \param file file details (from lstat)
+ * \param parms actions and arguments entered by the user
+ * \param parm_pos current action (which is checked)
+ * \retval 0 if the file's owner exists
+ * \retval 1 if the file's owner doesn't exist
+ * 
+ */
+
 
 int check_type(struct stat file, const char * const * parms, int parm_pos) {
 	char type = (char) *parms[parm_pos + 1];
