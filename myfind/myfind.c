@@ -489,8 +489,9 @@ int check_nouser(struct stat fd_in)
  * \param file file details (from lstat)
  * \param parms actions and arguments entered by the user
  * \param parm_pos current action (which is checked)
- * \retval 0 if the file's owner exists
- * \retval 1 if the file's owner doesn't exist
+ * \return MATCH if the the entered type is the same as the file's type, MISMATCH if it isn't the same
+ * \retval 0 if the the entered type isn't the same as the file's type
+ * \retval 1 if the the entered type is the same as the file's type
  * 
  */
 
@@ -554,6 +555,18 @@ int check_type(struct stat file, const char * const * parms, int parm_pos) {
 	}
 }
 
+/**
+ * 
+ * \brief action -ls: prints the file's details 
+ *
+ * \param file_name name of the file 
+ * \param file file details (from lstat)
+ *
+ * \return MATCH after printing
+ * \retval 1 after printing
+ * 
+ */
+
 int print_ls(const char * file_name, struct stat file) {
 	/*20696685	8 -rw-r--r--	1 akerenyi	staff	1453 Mar  2 18:19 ./Makefile*/
 
@@ -611,10 +624,29 @@ int print_ls(const char * file_name, struct stat file) {
 	return MATCH;
 }
 
+/**
+ * 
+ * \brief prints the checked file's path'
+ *
+ * \param file_name name of the file 
+ *
+ * \return MATCH after printing
+ * \retval 1 after printing
+ * 
+ */
+
 int print(const char * file_name) {
 	fprintf(stdout, "%s\n", file_name);
 	return MATCH;
 }
+
+/**
+ * 
+ * \brief prints the usege if entered arguments are not valid
+ *
+ * \return void
+ * 
+ */
 
 void usage (void) {
 	fprintf(stderr, "\nUsage: myfind <directory> [ <options> ] ...\n\n");
