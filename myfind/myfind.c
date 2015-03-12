@@ -447,15 +447,21 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	char *endptr;
 	int parmsint = 0;
 
+	/* get user data with username */
 	usernam = getpwnam(parms[parm_pos +1]);
+	/* get user data with UID */
 	userdet = getpwuid(fd_in.st_uid);
+	/* convert entered uid to long integer */
 	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
+	/* if enterd user is a user name: check if the user exists */
 	if((strcmp(parms[parm_pos +1], endptr) == 0) & (usernam == NULL)) {
 		error(1, 1, "%s is not the name of a knowm user", parms[parm_pos +1]);
 		exit(EXIT_FAILURE);
 	}
-
+	
+	/* compare entered user with file's owner name */
 	if(strcmp(userdet->pw_name, parms[parm_pos + 1]) == 0) return MATCH;
+	/* compare entered user with file's owner UID */
 	else if((strcmp(parms[parm_pos +1], endptr) != 0) & (userdet->pw_uid == (uid_t)parmsint)) return MATCH;
 	else return MISMATCH;
 
