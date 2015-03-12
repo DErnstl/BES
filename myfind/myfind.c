@@ -482,7 +482,9 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 int check_nouser(struct stat fd_in)
 {
 	struct passwd *userdet = NULL;
+	/* get user data with UID */
 	userdet = getpwuid(fd_in.st_uid);
+	/* return MATCH is user doesn't exist */
 	if(userdet == NULL) return MATCH;
 	else return MISMATCH;
 
