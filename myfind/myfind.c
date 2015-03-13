@@ -591,9 +591,9 @@ int print_ls(const char * file_name, struct stat file) {
 		(long) file.st_ino,
 		(double)file.st_blocks);
 	/* Permissions */
-        fprintf(stdout, (S_ISDIR(file.st_mode)) ? "d" : "-");
-        fprintf(stdout, (file.st_mode & S_IRUSR) ? "r" : "-");
-        fprintf(stdout, (file.st_mode & S_IWUSR) ? "w" : "-");
+        myprintf((S_ISDIR(file.st_mode)) ? "d" : "-");
+        myprintf((file.st_mode & S_IRUSR) ? "r" : "-");
+        myprintf((file.st_mode & S_IWUSR) ? "w" : "-");
 	if (file.st_mode & S_IXUSR) {
 		if (file.st_mode & S_ISUID) myprintf("s");
 		else myprintf("x");
@@ -653,6 +653,14 @@ int print(const char * file_name) {
 	myprintf("%s\n", file_name);
 	return MATCH;
 }
+
+/**
+ * 
+ * \brief wrapper for printf
+ *
+ * \param format
+ *
+ */
 
 void myprintf(char *format, ...) {
    va_list args;
