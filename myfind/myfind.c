@@ -75,7 +75,8 @@ int check_path(const char * file_name, const char * const * parms, int parm_pos)
 int print_ls(const char * file_name, struct stat file);
 int print(const char * file_name);
 void myprintf(char *format, ...);
-
+void itoa(int num, char str[]);
+void reverse(char str[]);
 
 /**
  *
@@ -579,19 +580,36 @@ int check_type(struct stat file, const char * const * parms, int parm_pos) {
 int print_ls(const char * file_name, struct stat file) {
 	/*20696685	8 -rw-r--r--	1 akerenyi	staff	1453 Mar  2 18:19 ./Makefile*/
 
-	struct passwd * passwd = getpwuid(file.st_uid);
-	struct group * group = getgrgid(file.st_gid);
-
-	/* Format mtime */
+	struct passwd *passwd = getpwuid(file.st_uid);
+	struct group *group = getgrgid(file.st_gid);
 	char mtime[NAME_MAX];
 	struct tm *time;
+	char user_to_print[NAME_MAX];
+	char group_to_print[NAME_MAX];
+	/*char buffer[NAME_MAX];*/
 
+	if (!passwd->pw_name) {
+		sprintf(user_to_print,"%d",file.st_uid);
+		fprintf(stdout, "%s", user_to_print);
+	} else {
+		strcpy(user_to_print, passwd->pw_name);
+	}
+
+	if (!group->gr_name) {
+		sprintf(group_to_print,"%d", file.st_gid);
+		fprintf(stdout, "%s", group_to_print);
+	} else {
+		strcpy(group_to_print, group->gr_name);
+	}
+
+	/* Format mtime */
 	time = localtime(&file.st_mtime);
 	strftime(mtime, 1000, "%b %d %H:%M", time);
 
 	myprintf(" %ld %4.0f ",
 		(long) file.st_ino,
 		(double)file.st_blocks);
+	
 	/* Permissions */
         myprintf((S_ISDIR(file.st_mode)) ? "d" : "-");
         myprintf((file.st_mode & S_IRUSR) ? "r" : "-");
@@ -620,8 +638,8 @@ int print_ls(const char * file_name, struct stat file) {
 	} else myprintf("-");
 	myprintf(" %3ld %s %8s %12.0f %s %s",
 		(long) file.st_nlink,		/* number of links */
-		passwd->pw_name,		/* user name */
-		group->gr_name,			/* group name */
+		user_to_print,			/* user name */
+		group_to_print,			/* group name */
 		(double) file.st_size,		/* file size */
 		mtime,		/* last modification date */
 		file_name			/* file name */
@@ -676,6 +694,37 @@ void myprintf(char *format, ...) {
    va_start(args, format);
    if (vprintf(format, args) < 0) error(1, 1, "%d", errno);
    va_end(args);
+}
+
+void itoa(int num, char str[])
+{
+	int i = 0;
+	int sign;
+
+	if ((sign = num) < 0) {	/* record sign */
+		num = -num;	/* make n positive */
+	}
+
+	do {					/* generate digits in reverse order */
+		str[i++] = num % 10 + '0';	/* get next digit */
+	} while ((num /= 10) > 0);		/* delete it */
+
+	if (sign < 0) str[i++] = '-';
+	str[i] = '\0';
+	reverse(str);
+}
+
+void reverse(char str[])
+{
+	int i;
+	int j;
+	char c;
+
+	for (i = 0, j = strlen(str) - 1; i < j; i++, j--) {
+		c = str[i];
+		str[i] = str[j];
+		str[j] = c;
+	}
 }
 
 /**
