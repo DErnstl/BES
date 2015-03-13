@@ -92,8 +92,6 @@ void reverse(char str[]);
  *
  */
 
-
-/* Main Function */
 int main(int argc, const char *argv[]) {
 
 	/* Declare variables, need as const array of all parameters */
@@ -449,6 +447,10 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 		char2int = strtol(parms[parm_pos + 1], &endptr, 10);
 		if (char2int == 0) {
 			error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);
+			/* 
+ 			 * According to script this should be printed on stdout, however
+ 			 * as it is an error we print it on stderr
+ 			 */
 			return MISMATCH;
 		}
 		username = getpwuid(char2int);
@@ -595,15 +597,18 @@ int print_ls(const char * file_name, struct stat file) {
 		strcpy(group_to_print, group->gr_name);
 	}
 
-	/* Format mtime */
 	time = localtime(&file.st_mtime);
 	strftime(mtime, 1000, "%b %d %H:%M", time);
+	/* correct day format would require %e however it is not allowed within the C90 standard*/
 
 	myprintf(" %ld %4.0f ",
 		(long) file.st_ino,
 		(double)file.st_blocks);
+	/* standard st_blocks size is 512 Bytes altough divinding by 2 would result in
+ 	 * correct number, according to our knowledge result should be shown in 
+ 	 * 512 Bytes, so we left it unaltered
+ 	 */
 	
-	/* Permissions */
         myprintf((S_ISDIR(file.st_mode)) ? "d" : "-");
         myprintf((file.st_mode & S_IRUSR) ? "r" : "-");
         myprintf((file.st_mode & S_IWUSR) ? "w" : "-");
@@ -634,7 +639,7 @@ int print_ls(const char * file_name, struct stat file) {
 		user_to_print,			/* user name */
 		group_to_print,			/* group name */
 		(double) file.st_size,		/* file size */
-		mtime,		/* last modification date */
+		mtime,				/* last modification date */
 		file_name			/* file name */
 	);
 
