@@ -453,10 +453,9 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 			error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);
 			return MISMATCH;
 		}
-	} else {
-		/* compare entered user with file's owner name */
-		if (((long)fd_in.st_uid) == ((long)username->pw_uid)) return MATCH;
 	}
+	/* compare entered user with file's owner name */
+	if (((long)fd_in.st_uid) == ((long)username->pw_uid)) return MATCH;
 	return MISMATCH;
 }
 
@@ -667,15 +666,12 @@ int print(const char * file_name) {
 
 /**
  * 
-<<<<<<< HEAD
  * \brief wrapper for printf
  *
  * \param format
-=======
  * \brief wrapper for printf with error checking
  *
  * \param formatstrings
->>>>>>> check_user_karl_vs_160
  *
  */
 
