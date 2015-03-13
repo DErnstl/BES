@@ -441,18 +441,19 @@ int check_path(const char * file_name, const char * const * parms, int parm_pos)
 int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 {
 	struct passwd *username = NULL;
-	char *endptr;
+	char *endptr = NULL;
 	int char2int = 0;
 
 	username = getpwnam(parms[parm_pos +1]);
 	if (username == NULL) {
-		username->pw_uid = -1;
 		error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);
-		/* convert entered uid to long integer */
 		char2int = strtol(parms[parm_pos + 1], &endptr, 10);
+		if (char2int == 0) {
+			return MISMATCH;
+		}
 		username = getpwuid(char2int);
 		if (username == NULL ) {
-			username->pw_uid = -1;
+			printf("qoo");
 			return MISMATCH;
 		}
 	}
