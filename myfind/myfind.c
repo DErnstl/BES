@@ -440,33 +440,23 @@ int check_path(const char * file_name, const char * const * parms, int parm_pos)
 
 int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 {
-	struct passwd *userdet = NULL;
-	struct passwd *usernam = NULL;
+	struct passwd *username = NULL;
 	char *endptr;
-	int parmsint = 0;
+	int char2int = 0;
 
-	errno = 0;
-	/* get user data with username */
-	usernam = getpwnam(parms[parm_pos +1]);
-	/* if enterd user is a user name: check if the user exists */
-	if (usernam == NULL) {
-		return MISMATCH;
-	} else if 
-	/* get user data with UID */
-		(userdet = getpwuid(fd_in.st_uid)) {
-		if (userdet == NULL) {
-			return MISMATCH;
-		}
-	} else {
-		if (errno == 0) error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);
+	if ((username = getpwnam(parms[parm_pos +1])) == NULL) {
+			/* convert entered uid to long integer */
+			char2int = strtol(parms[parm_pos + 1], &endptr, 10);
+			if ((username = getpwuid(char2int)) == NULL ) {
+					error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);
+					return MISMATCH;
+			}
 	}
-	/* convert entered uid to long integer */
-	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
 	
 	/* compare entered user with file's owner name */
-	if(strcmp(userdet->pw_name, parms[parm_pos + 1]) == 0) return MATCH;
+	if(strcmp(username->pw_name, parms[parm_pos + 1]) == 0) return MATCH;
 	/* compare entered user with file's owner UID */
-	else if((strcmp(parms[parm_pos +1], endptr) != 0) & (userdet->pw_uid == (uid_t)parmsint)) return MATCH;
+	else if((strcmp(parms[parm_pos +1], endptr) != 0) & (username->pw_uid == (uid_t)char2int)) return MATCH;
 	else return MISMATCH;
 
 }
