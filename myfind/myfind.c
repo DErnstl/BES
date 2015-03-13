@@ -459,10 +459,6 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 		if (((long)fd_in.st_uid) == ((long)username->pw_uid)) return MATCH;
 	}
 	return MISMATCH;
-<<<<<<< HEAD
-=======
-
->>>>>>> karli_und_die_160
 }
 
 /**
