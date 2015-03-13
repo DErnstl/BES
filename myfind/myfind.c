@@ -622,7 +622,7 @@ int print_ls(const char * file_name, struct stat file) {
 	} else if (file.st_mode & S_ISVTX) {
 		fprintf(stdout, "T");
 	} else fprintf(stdout, "-");
-	fprintf(stdout," %3ld %s %8s %12.0f %s %s\n",
+	fprintf(stdout," %3ld %s %8s %12.0f %s %s",
 		(long) file.st_nlink,		/* number of links */
 		passwd->pw_name,		/* user name */
 		group->gr_name,			/* group name */
@@ -631,6 +631,16 @@ int print_ls(const char * file_name, struct stat file) {
 		file_name			/* file name */
 	);
 
+	if (S_ISLNK(file.st_mode)) {
+		char buffer[PATH_MAX];
+		int count = readlink(file_name, buffer, sizeof(buffer));
+		if (count >= 0) {
+			buffer[count] = '\0';
+			fprintf(stdout, " -> %s\n", buffer);
+		}
+	} else {
+		fprintf(stdout ,"\n");
+	}
 	return MATCH;
 }
 
