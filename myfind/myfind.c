@@ -686,37 +686,6 @@ void myprintf(char *format, ...) {
    va_end(args);
 }
 
-void itoa(int num, char str[])
-{
-	int i = 0;
-	int sign;
-
-	if ((sign = num) < 0) {	/* record sign */
-		num = -num;	/* make n positive */
-	}
-
-	do {					/* generate digits in reverse order */
-		str[i++] = num % 10 + '0';	/* get next digit */
-	} while ((num /= 10) > 0);		/* delete it */
-
-	if (sign < 0) str[i++] = '-';
-	str[i] = '\0';
-	reverse(str);
-}
-
-void reverse(char str[])
-{
-	int i;
-	int j;
-	char c;
-
-	for (i = 0, j = strlen(str) - 1; i < j; i++, j--) {
-		c = str[i];
-		str[i] = str[j];
-		str[j] = c;
-	}
-}
-
 /**
  * 
  * \brief prints the usege if entered arguments are not valid
