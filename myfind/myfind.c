@@ -449,17 +449,16 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 			printf("username not found\n");
 			/* convert entered uid to long integer */
 			char2int = strtol(parms[parm_pos + 1], &endptr, 10);
-			printf("converted to char: %s\n", char2int);
+			printf("converted to char: %d\n", char2int);
 			if ((username = getpwuid(char2int)) == NULL ) {
 					error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);
 					return MISMATCH;
 			}
-	} 
-
-	/* compare entered user with file's owner name */
-	if ((fd_in.st_uid) == (username->pw_uid)) return MATCH;
-	else return MISMATCH;
-
+	} else {
+		/* compare entered user with file's owner name */
+		if (((long)fd_in.st_uid) == ((long)username->pw_uid)) return MATCH;
+	}
+	return MISMATCH;
 }
 
 /**
