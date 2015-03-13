@@ -444,13 +444,15 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	char *endptr;
 	int char2int = 0;
 
-	if ((username = getpwnam(parms[parm_pos +1])) == NULL) {
-			/* convert entered uid to long integer */
-			char2int = strtol(parms[parm_pos + 1], &endptr, 10);
-			if ((username = getpwuid(char2int)) == NULL ) {
-					error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);
-					return MISMATCH;
-			}
+	username = getpwnam(parms[parm_pos +1]);
+	if (username == NULL) {
+		/* convert entered uid to long integer */
+		char2int = strtol(parms[parm_pos + 1], &endptr, 10);
+		username = getpwuid(char2int);
+		if (username == NULL ) {
+			error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);
+			return MISMATCH;
+		}
 	} else {
 		/* compare entered user with file's owner name */
 		if (((long)fd_in.st_uid) == ((long)username->pw_uid)) return MATCH;
