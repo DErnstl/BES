@@ -447,10 +447,10 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	username = getpwnam(parms[parm_pos +1]);
 	if (username == NULL) {
 		/* convert entered uid to long integer */
+		error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);
 		char2int = strtol(parms[parm_pos + 1], &endptr, 10);
 		username = getpwuid(char2int);
 		if (username == NULL ) {
-			error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);
 			return MISMATCH;
 		}
 	}
