@@ -455,7 +455,7 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	/* get user data with UID */
 	userdet = getpwuid(fd_in.st_uid);
 	if (userdet == NULL) {
-		error(1, 1, "%d", errno);
+		if (errno == 0) error(0, 0, "%s is not the name of a known group", parms[parm_pos +1]);
 		return MISMATCH;
 	}
 	/* convert entered uid to long integer */
