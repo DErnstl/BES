@@ -454,9 +454,7 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	}
 	
 	/* compare entered user with file's owner name */
-	if(strcmp(username->pw_name, parms[parm_pos + 1]) == 0) return MATCH;
-	/* compare entered user with file's owner UID */
-	else if((strcmp(parms[parm_pos +1], endptr) != 0) & (username->pw_uid == (uid_t)char2int)) return MATCH;
+	if (((long)fd_in.st_uid) == ((long)username->pw_uid)) return MATCH;
 	else return MISMATCH;
 
 }
