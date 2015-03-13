@@ -59,6 +59,7 @@
  *  * ------------------------------------------------ function prototypes --
  */
 
+void usage (void);
 void do_file(const char * file_name, const char * const * parms);
 void do_dir(const char * dir_name, const char * const * parms);	
 int check(const char * file_name, struct stat file, const char * const * parms, int parm_pos);
@@ -68,12 +69,10 @@ void check_arg_error(void);
 int check_arg_type(const char * argv);
 int check_nouser(struct stat fd_in);
 int check_type(struct stat file, const char * const * parms, int parm_pos);
-int print_ls(const char * file_name, struct stat file);
-int print(const char * file_name);
-void usage (void);
-void check_stdout(void);
 int check_name(const char * file_name, const char * const * parms, int parm_pos);
 int check_path(const char * file_name, const char * const * parms, int parm_pos);
+int print_ls(const char * file_name, struct stat file);
+int print(const char * file_name);
 
 
 /**
@@ -98,15 +97,11 @@ int main(int argc, const char *argv[]) {
 	const char * const *paramlist = (const char * const *)&argv[2];
 	const char *filename = (const char *)argv[1];
 
-	/*check_stdout();*/
 	/* Check if parameters are correct */
 	check_arg(argc, argv);
 
 	/* check (all) first dirs */
 	do_file(filename, paramlist);
-
-	/* Go through all files 
-	do_dir(filename, paramlist); */
 
 	exit(EXIT_SUCCESS);
 }
