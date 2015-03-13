@@ -446,14 +446,13 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 
 	username = getpwnam(parms[parm_pos +1]);
 	if (username == NULL) {
-		error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);
 		char2int = strtol(parms[parm_pos + 1], &endptr, 10);
 		if (char2int == 0) {
 			return MISMATCH;
 		}
 		username = getpwuid(char2int);
 		if (username == NULL ) {
-			printf("qoo");
+			error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);
 			return MISMATCH;
 		}
 	}
