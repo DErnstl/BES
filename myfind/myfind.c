@@ -32,6 +32,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <libgen.h>
+#include <stdarg.h>
 
 /*
  * --------------------------------------------------------------- defines --
@@ -73,6 +74,7 @@ int check_name(const char * file_name, const char * const * parms, int parm_pos)
 int check_path(const char * file_name, const char * const * parms, int parm_pos);
 int print_ls(const char * file_name, struct stat file);
 int print(const char * file_name);
+void myprintf(char *format, ...);
 
 
 /**
@@ -585,39 +587,36 @@ int print_ls(const char * file_name, struct stat file) {
 	time = localtime(&file.st_mtime);
 	strftime(mtime, 1000, "%b %d %H:%M", time);
 
-	if (fprintf(stdout, " %ld %4.0f ",
+	myprintf(" %ld %4.0f ",
 		(long) file.st_ino,
-		(double)file.st_blocks	) < 0) {
-			fprintf(stderr, "Writing to stdout not possible\n");
-			exit(EXIT_FAILURE);
-	}
+		(double)file.st_blocks);
 	/* Permissions */
-	fprintf(stdout, (S_ISDIR(file.st_mode)) ? "d" : "-");
-	fprintf(stdout, (file.st_mode & S_IRUSR) ? "r" : "-");
-	fprintf(stdout, (file.st_mode & S_IWUSR) ? "w" : "-");
+        fprintf(stdout, (S_ISDIR(file.st_mode)) ? "d" : "-");
+        fprintf(stdout, (file.st_mode & S_IRUSR) ? "r" : "-");
+        fprintf(stdout, (file.st_mode & S_IWUSR) ? "w" : "-");
 	if (file.st_mode & S_IXUSR) {
-		if (file.st_mode & S_ISUID) fprintf(stdout, "s");
-		else fprintf(stdout, "x");
+		if (file.st_mode & S_ISUID) myprintf("s");
+		else myprintf("x");
 	} else if (file.st_mode & S_ISUID) {
-		fprintf(stdout, "S");
-	} else fprintf(stdout, "-");
-	fprintf(stdout, (file.st_mode & S_IRGRP) ? "r" : "-");
-	fprintf(stdout, (file.st_mode & S_IWGRP) ? "w" : "-");
+		myprintf("S");
+	} else myprintf("-");
+	myprintf((file.st_mode & S_IRGRP) ? "r" : "-");
+	myprintf((file.st_mode & S_IWGRP) ? "w" : "-");
 	if (file.st_mode & S_IXGRP) {
-		if (file.st_mode & S_ISGID) fprintf(stdout, "s");
-		else fprintf(stdout, "x");
+		if (file.st_mode & S_ISGID) myprintf("s");
+		else myprintf("x");
 	} else if (file.st_mode & S_ISGID) {
-		fprintf(stdout, "S");
-	} else fprintf(stdout, "-");
-	fprintf(stdout, (file.st_mode & S_IROTH) ? "r" : "-");
-	fprintf(stdout, (file.st_mode & S_IWOTH) ? "w" : "-");
+		myprintf("S");
+	} else myprintf("-");
+	myprintf((file.st_mode & S_IROTH) ? "r" : "-");
+	myprintf((file.st_mode & S_IWOTH) ? "w" : "-");
 	if (file.st_mode & S_IXOTH) {
-		if (file.st_mode & S_ISVTX) fprintf(stdout, "t");
-		else fprintf(stdout, "x");
+		if (file.st_mode & S_ISVTX) myprintf("t");
+		else myprintf("x");
 	} else if (file.st_mode & S_ISVTX) {
-		fprintf(stdout, "T");
-	} else fprintf(stdout, "-");
-	fprintf(stdout," %3ld %s %8s %12.0f %s %s",
+		myprintf("T");
+	} else myprintf("-");
+	myprintf(" %3ld %s %8s %12.0f %s %s",
 		(long) file.st_nlink,		/* number of links */
 		passwd->pw_name,		/* user name */
 		group->gr_name,			/* group name */
@@ -631,10 +630,10 @@ int print_ls(const char * file_name, struct stat file) {
 		int count = readlink(file_name, buffer, sizeof(buffer));
 		if (count >= 0) {
 			buffer[count] = '\0';
-			fprintf(stdout, " -> %s\n", buffer);
+			myprintf(" -> %s\n", buffer);
 		}
 	} else {
-		fprintf(stdout ,"\n");
+		myprintf("\n");
 	}
 	return MATCH;
 }
@@ -651,8 +650,16 @@ int print_ls(const char * file_name, struct stat file) {
  */
 
 int print(const char * file_name) {
-	fprintf(stdout, "%s\n", file_name);
+	myprintf("%s\n", file_name);
 	return MATCH;
+}
+
+void myprintf(char *format, ...) {
+   va_list args;
+
+   va_start(args, format);
+   if (vprintf(format, args) < 0) error(1, 1, "%d", errno);
+   va_end(args);
 }
 
 /**
