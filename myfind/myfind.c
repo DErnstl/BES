@@ -448,6 +448,7 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	if (username == NULL) {
 		char2int = strtol(parms[parm_pos + 1], &endptr, 10);
 		if (char2int == 0) {
+			error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);
 			return MISMATCH;
 		}
 		username = getpwuid(char2int);
