@@ -455,7 +455,7 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 		}
 	}
 	/* compare entered user with file's owner name */
-	if (((long)fd_in.st_uid) == ((long)username->pw_uid)) return MATCH;
+	if ((fd_in.st_uid) == (username->pw_uid)) return MATCH;
 	return MISMATCH;
 }
 
