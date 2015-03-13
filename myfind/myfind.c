@@ -452,7 +452,7 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	usernam = getpwnam(parms[parm_pos +1]);
 	/* if enterd user is a user name: check if the user exists */
 	if (usernam == NULL) {
-		if (errno == 0) error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);	
+		if (errno == 0) fprintf(stdout, "%s is not the name of a known user", parms[parm_pos +1]);	
 		return MISMATCH;
 	}
 	/* get user data with UID */
