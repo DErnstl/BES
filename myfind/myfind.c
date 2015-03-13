@@ -447,19 +447,19 @@ int check_user(struct stat fd_in, const char * const * parms, int parm_pos)
 	char *endptr;
 	int parmsint = 0;
 
+	errno = 0;
 	/* get user data with username */
 	usernam = getpwnam(parms[parm_pos +1]);
-	if (usernam == NULL) return MISMATCH;
+	/* if enterd user is a user name: check if the user exists */
+	if (usernam == NULL) {
+		if (errno == 0) error(0, 0, "%s is not the name of a known user", parms[parm_pos +1]);	
+		return MISMATCH;
+	}
 	/* get user data with UID */
 	userdet = getpwuid(fd_in.st_uid);
 	if (userdet == NULL) return MISMATCH;
 	/* convert entered uid to long integer */
 	parmsint = strtol(parms[parm_pos + 1], &endptr, 10);
-	/* if enterd user is a user name: check if the user exists */
-	if((strcmp(parms[parm_pos +1], endptr) == 0) & (usernam == NULL)) {
-		error(1, 1, "%s is not the name of a knowm user", parms[parm_pos +1]);
-		exit(EXIT_FAILURE);
-	}
 	
 	/* compare entered user with file's owner name */
 	if(strcmp(userdet->pw_name, parms[parm_pos + 1]) == 0) return MATCH;
