@@ -1,0 +1,9 @@
+Makefile:
+- headerkommentare
+
+myfind.c:
+
+main(): die Parameter Check Funktion hätten wir in eine eigene Funktion gebaut und da die einzelnen Blöcke sehr ähnlich sind, wären da vieleicht auch eine Rekusrion möglich
+
+ToDos:
+sprintf
