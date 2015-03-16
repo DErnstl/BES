@@ -3,7 +3,22 @@ Makefile:
 
 myfind.c:
 
-main(): die Parameter Check Funktion hätten wir in eine eigene Funktion gebaut und da die einzelnen Blöcke sehr ähnlich sind, wären da vieleicht auch eine Rekusrion möglich
+Die Ergebnisse des Testlaufs mit dem Script:
+Successful Tests: 85741
+Failed     Tests: 28416
+
+Viele Fehler kommen hiervon:
+
+ic14b033@annuminas:~/beispiel_1/bsp1_grp16$ ./myfind /var/tmp/test-find/simple/plain-file -ls -ls -ls -user hugo -ls
+[./myfind]      :Username: 'hugo' is not existing nor an UID.
+[./myfind]      : -user benoetigt einen parameter: [username] oder [uid].
+
+ic14b033@annuminas:~/beispiel_1/bsp1_grp16$ bic-myfind /var/tmp/test-find/simple/plain-file -ls -ls -ls -user hugo -ls
+ 10607    4 -rw-rw-rw-   3 root     root           12 Mar  2 13:22 /var/tmp/test-find/simple/plain-file
+ 10607    4 -rw-rw-rw-   3 root     root           12 Mar  2 13:22 /var/tmp/test-find/simple/plain-file
+ 10607    4 -rw-rw-rw-   3 root     root           12 Mar  2 13:22 /var/tmp/test-find/simple/plain-file
+bic-myfind: `hugo' is not the name of a known user
+
 
 ToDos:
 sprintf

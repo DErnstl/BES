@@ -74,6 +74,9 @@ struct params {
 /*
  * --------------------------------------------------------------- globals --
  */
+ /* ### FB: globale variable ist nicht so schön, wenn dann static 
+  * 	und MAX_FILENAME ist sicher größer als 100 
+  * 	siehe /usr/src/kernels/$(uname -r)/include/linux/limits.h */
 char programmname [100]; /* weils mich grad nicht gfreut das sauber zu machen TODO */
 /*
  * ------------------------------------------------------------- functions --
@@ -123,6 +126,11 @@ int main (int argc, const char *argv[])
 	
 	strncpy(programmname,argv[0],strlen(argv[0]));
 
+	/* ### FB: wir finden das ist eine etwas lange main() :)
+	 * 	und es werden zwei Funktionen ausgeführt. Eine
+	 * 	der beiden, wohl am ehesten den Parametercheck,
+	 * 	könnte man auslagern. */
+
 	/*! brief initiate default values */	
 	for(run=1;run<=argc;run++) {
 		param_check=0;
@@ -142,8 +150,13 @@ int main (int argc, const char *argv[])
 		if (argv[run] == NULL) {  /* no further parameters and searchpath already checked so exit loop for parameter handling */
 			break;
 		}
+
+		 /* ### FB: Im folgenden sind die Schleifen immer sehr ähnlich, ggf wäre eine
+		  * 	Rekursion mit z.B. Übergabe des Flags in die Fkt kürzer und übersichtlicher */
 		if (strncmp(argv[run],"-user",5)==0) {
 			if ((argv[run+1]!=NULL) && (argv[run+1][0] != '-')) {
+				 /* ### FB: ADAM: kannst Du Dir den malloc() ansehen? Ich
+				  * 	verstehe es nicht komplett */
 				if ((parameters=malloc(sizeof(struct params)+(sizeof(char)*strlen(argv[run+1])+1)))==NULL) {
 					fprintf(stderr,"[%s]\t:Critical error on memory allocation. Exiting\n",argv[0]);
 					exit(MEMORY_ERROR);
