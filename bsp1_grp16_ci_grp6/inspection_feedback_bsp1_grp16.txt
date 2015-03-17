@@ -1,0 +1,7 @@
+/* ### FB SST: Feedback von Gruppe 16 zu Bsp 1 */
+
+sehr schoen strukturierter code.
+Im grossen und ganzen leicht lesbar und verstaendlich.
+der einsatz von funktionen bzw parameterpruefungen ueber #defines finde ich persoenlich nicht so gut \ 
+weil der code damit schwer nachvollziehbar wird
+
