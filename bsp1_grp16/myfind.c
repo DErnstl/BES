@@ -68,6 +68,7 @@ enum {
 struct params {
 	int paramtype;
 	struct params *next;
+	/* ### FB: Entweder Pointer oder definieren mit MAX_LENGHT */
 	char param_value[1];
 };
 
@@ -82,6 +83,7 @@ char programmname [100]; /* weils mich grad nicht gfreut das sauber zu machen TO
  * ------------------------------------------------------------- functions --
  */
 
+/* ### FB: Style: Manchmal = mit Spaces, dann ohne. ebenso bei den Klammern */
 char *strerror( int errnum ); /*! generates typical error message */
 int do_file(const char *filename, const struct params *parameters); 			/*! process a file */
 int do_directory(const char *pathname, const struct params *parameters); 	/*! process a directory. calls do_file */
@@ -155,8 +157,8 @@ int main (int argc, const char *argv[])
 		  * 	Rekursion mit z.B. Übergabe des Flags in die Fkt kürzer und übersichtlicher */
 		if (strncmp(argv[run],"-user",5)==0) {
 			if ((argv[run+1]!=NULL) && (argv[run+1][0] != '-')) {
-				 /* ### FB: ADAM: kannst Du Dir den malloc() ansehen? Ich
-				  * 	verstehe es nicht komplett */
+				 /* ### FB: +1 extra Char im malloc() ist zuviel, im struct ist bereits
+				  * 	das extra Byte reserviert worden */
 				if ((parameters=malloc(sizeof(struct params)+(sizeof(char)*strlen(argv[run+1])+1)))==NULL) {
 					fprintf(stderr,"[%s]\t:Critical error on memory allocation. Exiting\n",argv[0]);
 					exit(MEMORY_ERROR);
@@ -529,6 +531,7 @@ int do_directory(const char *pathname, const struct params *param)
 	struct dirent *entryp; 		/* dir entry pointer */
 	int return_value=0;
 
+	/* ### FB Better use lstat() (symlinks) */
 	if (stat(pathname, &attrib)!=0) {               /* get the attributes of filename */
 		fprintf(stderr,"[%s]:%d: '%s': %s\n",programmname,__LINE__,pathname,strerror(errno));
 		return 0;
@@ -764,6 +767,8 @@ void gettime(const time_t timep)
 	{
 		time_fmt = "%b  %e %R";
 	}
+
+	/* ### FB (SST:) error handling for localtime ;-) */
 	tm = localtime(&timep);
 	
 	strftime(datastring, sizeof(datastring), time_fmt, tm);
@@ -779,8 +784,11 @@ void gettime(const time_t timep)
  */
 void get_file_attribs(const struct stat *file_stat)
 {
+	/* ### FB: Warum eine Trennung der Output Funktionen? */
 
-	/* ### FB: Fehlerbehandlung printf() fehlt ein paar Mal ;) */
+	/* ### FB: Fehlerbehandlung printf() fehlt ein paar Mal ;) 
+	 * 	Warum einen Formatstring in printf, anstatt den Character
+	 * 	direkt printen?*/
 	if(S_ISDIR(file_stat->st_mode)) {
 		printf("%c",'d');
 	} else if(S_ISCHR(file_stat->st_mode)) {
@@ -860,7 +868,7 @@ void get_file_attribs(const struct stat *file_stat)
  */
 void do_usageprint(int postusage) 
 {
-
+	/* ### FB: die folgende Variablenzuweisung ist unnötig */
 	postusage=postusage;
 	switch(postusage) {
 		case 1:

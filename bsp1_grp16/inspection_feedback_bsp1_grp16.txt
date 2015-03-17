@@ -31,6 +31,7 @@ verkürzt den Code und macht ihn lesbarer.
 Nicht ganz einen durhcgängigen Stil geplegt: z.B. return_value in main() und
 retval in do_file()return_value in main() und retval in do_file(), in
 do_directory() wieder return_value.
+Ähnlich mit den Leerzeuchen vor und nach '(', '=', ')'.
 
 Es werden auch Funktionen doppelt aufgerufen: check_user=getuser(...) beim
 Parametercheck in der main() und später nochmal in der do_file(), anstelle das
