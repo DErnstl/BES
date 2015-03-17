@@ -170,6 +170,7 @@ int main (int argc, const char *argv[])
 						}
 						parameters->next=NULL;
 						last=parameters;
+						/* ### FB: ADAM: was ist das? */
 						parameters->paramtype=0 | USER_FLAG;
 						strcpy(parameters->param_value,argv[run+1]);
 						run++;
@@ -358,11 +359,13 @@ int do_file(const char *filename, const struct params *param)
 {
         struct stat attrib;                     /* create a file attribute structure */
 	struct passwd *check_user;
+	/* ### FB: Warum ein Const? Das Struct wird ja später mit Werten befüllt. */
 	const struct params *running=NULL;
 	int defaultprint=1;
 	int cmp_value=0;
 	char *tempfile=NULL;
 	const char *pos=NULL;
+	/* ### FB: Stil: in den anderen Funktionen wird return_value verwendet */
 	int retval=0;
 	int poshelper=0;
 	unsigned long uidcheck=0;
@@ -391,12 +394,14 @@ int do_file(const char *filename, const struct params *param)
 					}
 					break;
 				case USER_FLAG:
+					/* ### FB: die Funktion getuser() wurde ja schon in der main() befüllt, warum nochmal? */
 					if ((check_user= getuser(running->param_value,DONTCHECKUIDFLAG))!=NULL) {
 						if(attrib.st_uid!=check_user->pw_uid) {
 							retval= NO_FILE_MATCH;
 							defaultprint=0;
 						}
 					} else {
+						/* ### FB: die Funktion makeuid() wurde ja schon in der main() befüllt, warum nochmal? */
 						uidcheck=makeuid(running->param_value);
 						if((uidcheck==0) || (attrib.st_uid!=uidcheck)) { /* we now also search for non existing numeric users. Hopefully */
 							retval=NO_USER_MATCH;
