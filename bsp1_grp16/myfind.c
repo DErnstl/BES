@@ -52,7 +52,8 @@
  * -------------------------------------------------------------- typedefs --
  */
 
-
+/* ### FB: eine tolle Idee mit Bitmustern zu arbeiten. Schade das die
+ * 	Struktur das dann doch nicht erlaubt hat. */
 enum {
 	NAME_FLAG =   (1 << 0),
 	USER_FLAG =   (1 << 1),
@@ -172,7 +173,7 @@ int main (int argc, const char *argv[])
 						}
 						parameters->next=NULL;
 						last=parameters;
-						/* ### FB: ADAM: was ist das? */
+						/* ### FB: siehe Kommentar bei der enum Deklaration */
 						parameters->paramtype=0 | USER_FLAG;
 						strcpy(parameters->param_value,argv[run+1]);
 						run++;
@@ -189,6 +190,8 @@ int main (int argc, const char *argv[])
 		}
 		if ((strncmp(argv[run],"-name",5)==0)) {
 			if ((argv[run+1]!=NULL)) {
+				 /* ### FB: +1 extra Char im malloc() ist zuviel, im struct ist bereits
+				  * 	das extra Byte reserviert worden */
 				if ((parameters=malloc(sizeof(struct params)+(sizeof(char)*strlen(argv[run+1])+1)))==NULL) {
 					fprintf(stderr,"[%s]\t:Critical error on memory allocation. Exiting\n",argv[0]);
 					exit(MEMORY_ERROR);
@@ -213,6 +216,8 @@ int main (int argc, const char *argv[])
 		}
 		if ((strncmp(argv[run],"-path",5)==0)) {
 			if ((argv[run+1]!=NULL) && (argv[run+1][0] != '-')) {
+				 /* ### FB: +1 extra Char im malloc() ist zuviel, im struct ist bereits
+				  * 	das extra Byte reserviert worden */
 				if ((parameters=malloc(sizeof(struct params)+(sizeof(char)*strlen(argv[run+1])+1)))==NULL) {
 					fprintf(stderr,"[%s]\t:Critical error on memory allocation. Exiting\n",argv[0]);
 					exit(MEMORY_ERROR);
@@ -236,6 +241,8 @@ int main (int argc, const char *argv[])
 		}
 		if ((strncmp(argv[run],"-type",5)==0)) {
 			if ((argv[run+1]!=NULL) && (argv[run+1][0] != '-')) {
+				 /* ### FB: +1 extra Char im malloc() ist zuviel, im struct ist bereits
+				  * 	das extra Byte reserviert worden */
 				if ((parameters=malloc(sizeof(struct params)+(sizeof(char)*strlen(argv[run+1])+1)))==NULL) {
 					fprintf(stderr,"[%s]\t:Critical error on memory allocation. Exiting\n",argv[0]);
 					exit(MEMORY_ERROR);
@@ -269,6 +276,8 @@ int main (int argc, const char *argv[])
 		}
 			
 		if (strncmp(argv[run],"-print",6)==0) {
+				 /* ### FB: +1 extra Char im malloc() ist zuviel, im struct ist bereits
+				  * 	das extra Byte reserviert worden */
 			if ((parameters=malloc(sizeof(struct params)+(sizeof(char)*7)))==NULL) {
 				fprintf(stderr,"[%s]\t:Critical error on memory allocation. Exiting\n",argv[0]);
 				exit(MEMORY_ERROR);
@@ -286,6 +295,8 @@ int main (int argc, const char *argv[])
 			param_check=1;
 		}
 		if (strncmp(argv[run],"-ls",3)==0) {
+				 /* ### FB: +1 extra Char im malloc() ist zuviel, im struct ist bereits
+				  * 	das extra Byte reserviert worden */
 			if ((parameters=malloc(sizeof(struct params)+(sizeof(char)*4)))==NULL) {
 				fprintf(stderr,"[%s]\t:Critical error on memory allocation. Exiting\n",argv[0]);
 				exit(MEMORY_ERROR);
@@ -421,6 +432,7 @@ int do_file(const char *filename, const struct params *param)
 
 				case TYPE_FLAG: 
 					pos=running->param_value; 
+					/* ### FB: nettes ASCII testing :) */
 					switch ((pos[0]<96)?pos[0]+32:pos[0]) {
 						case TYPE_FLAG_B:
 								if(S_ISBLK(attrib.st_mode)==0) {
@@ -536,6 +548,8 @@ int do_directory(const char *pathname, const struct params *param)
 		fprintf(stderr,"[%s]:%d: '%s': %s\n",programmname,__LINE__,pathname,strerror(errno));
 		return 0;
 	}
+	/* ### FB Wo werden denn andere Arten von file types behandelt? Ich sehe nur
+	 * 	Regular Files und Directories */
 	if (S_ISREG(attrib.st_mode)) { 
 		if((return_value=do_file(pathname,param))==MEMORY_ERROR) {
 			return MEMORY_ERROR;
