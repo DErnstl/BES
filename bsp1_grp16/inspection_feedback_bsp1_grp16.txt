@@ -1,34 +1,16 @@
-Makefile:
-- headerkommentare
+Summary:
+Alles in allem technisch gut, aber wirklich sehr schwer zu verstehen. Mag auch
+an unserer fehlenden Übung liegen. Eine klarere Trennung der einzelnen
+Funktionen in eigene Bestandteile könnte ein erster Ansatz zum besseren
+Verständnis sein.
+Dafür das zwei aus Eurer Gruppe keine bis wenig Erfahrung mit dem Programmieren
+haben: Thunbs up!
 
-myfind.c:
+Some details:
+Viele der Funktionen und deren einzelnen Blöcke könnten in Rekursionen
+ausgelagert werden. Das verkürzt den Code und macht ihn lesbarer.
 
-Die Ergebnisse des Testlaufs mit dem Script:
-Successful Tests: 85741
-Failed     Tests: 28416
-
-Viele Fehler kommen hiervon:
-
-ic14b033@annuminas:~/beispiel_1/bsp1_grp16$ ./myfind /var/tmp/test-find/simple/plain-file -ls -ls -ls -user hugo -ls
-[./myfind]      :Username: 'hugo' is not existing nor an UID.
-[./myfind]      : -user benoetigt einen parameter: [username] oder [uid].
-
-ic14b033@annuminas:~/beispiel_1/bsp1_grp16$ bic-myfind /var/tmp/test-find/simple/plain-file -ls -ls -ls -user hugo -ls
- 10607    4 -rw-rw-rw-   3 root     root           12 Mar  2 13:22 /var/tmp/test-find/simple/plain-file
- 10607    4 -rw-rw-rw-   3 root     root           12 Mar  2 13:22 /var/tmp/test-find/simple/plain-file
- 10607    4 -rw-rw-rw-   3 root     root           12 Mar  2 13:22 /var/tmp/test-find/simple/plain-file
-bic-myfind: `hugo' is not the name of a known user
-
-
-ToDos:
-sprintf
-
-
-Technisch gut durchdacht, ein wenig schwer zu verstehen. Viele der Funktionen
-und deren einzelnen Blöcke könnten in Rekursionen ausgelagert werden. Das
-verkürzt den Code und macht ihn lesbarer.
-
-Auch die Funktionen sind unserer meinung nach mit zu viel unterschiedlichen
+Auch die Funktionen sind unserer Meinung nach mit zu viel unterschiedlichen
 Routinen überladen, eine klare Trennung wäre dem Verständnis entgegen
 gekommen.
 
@@ -38,8 +20,14 @@ retval in do_file(), in do_directory() wieder return_value.
 
 Es werden auch Funktionen doppelt aufgerufen: check_user=getuser(...) beim
 Parametercheck in der main() und später nochmal in der do_file(), anstelle das
-Ergebnis des ersten Aufrufs weiter zu geben.
+Ergebnis des ersten Aufrufs weiter zu geben. Es könnte auch die
+Parameterprüfung weniger 'scharf' gemacht werden, dann würde der -user Check
+(siehe unten) laufen und der Ressourcenverbrauch des Programms könnte um (sehr
+grobe Schätzung) 0.001% geringer sein ;-)
+
+Der -user Check funktioniert nicht so wie er sollte (siehe Source).
 
 Die Trennung der beiden Output Funktionen do_output() und get_file_attribs()
 ist nicht hübsch und schwer zu durchschauen. Könnte auch in eine Funktion
 gepackt werden.
+

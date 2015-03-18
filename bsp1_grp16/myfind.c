@@ -178,7 +178,12 @@ int main (int argc, const char *argv[])
 						strcpy(parameters->param_value,argv[run+1]);
 						run++;
 					} else {
+						/* ### FB: Hier sollte das Programm nicht abbrechen, denn bei z.B:
+						 * 	./myfind /var/tmp/test-find/simple/plain-file -ls -user hugo
+						 * 	sollte trotz falschem User ein -ls gemacht werden */
 						fprintf(stderr,"[%s]\t:Username: '%s' is not existing nor an UID.\n",programmname,argv[run+1]);
+						/* ### FB: Das postusage=1 passt hier nicht, denn so gibt es zwei
+						 * 	unterschiedliche Fehlermeldungen */
 						postusage=1;
 					}
 					param_check=1;
@@ -347,6 +352,9 @@ int main (int argc, const char *argv[])
 	for (parameters=start; parameters != NULL; ) {
 		last=parameters;	
 		parameters=parameters->next;
+		/* ### FB 2xfree() sind einer zuviel 
+		 * 	(http://de.wikipedia.org/wiki/Mehrfache_Deallokation)
+		 * 	und pointer auf NULL setzen */
 		free(last);
 	}
 	return return_value;
@@ -433,8 +441,10 @@ int do_file(const char *filename, const struct params *param)
 
 				case TYPE_FLAG: 
 					pos=running->param_value; 
-					/* ### FB: nettes ASCII testing :) */
+					/* ### FB: nettes ASCII testing :) 
+					 * 	Die Richtlinien wollen aber strcmp() */
 					switch ((pos[0]<96)?pos[0]+32:pos[0]) {
+						/* ### FB: kein default (siehe Richtlinien) */
 						case TYPE_FLAG_B:
 								if(S_ISBLK(attrib.st_mode)==0) {
 									retval= NO_FILE_MATCH;
@@ -581,12 +591,18 @@ int do_directory(const char *pathname, const struct params *param)
 			}
 			return_value=do_file((const char *) fullfile, param);
 			if (return_value==MEMORY_ERROR) {
+				/* ### FB 2xfree() sind einer zuviel 
+				 * 	(http://de.wikipedia.org/wiki/Mehrfache_Deallokation)
+				 * 	und pointer auf NULL setzen */
 				(void) free(fullfile);
 				(void) closedir (dirp);
 				(void) free(fullfile);
 				return MEMORY_ERROR;
 			}
 			if (fullfile!=NULL) {
+				/* ### FB 2xfree() sind einer zuviel 
+				 * 	(http://de.wikipedia.org/wiki/Mehrfache_Deallokation)
+				 * 	und pointer auf NULL setzen */
 				free(fullfile);
 				fullfile=NULL;
 			}
@@ -609,12 +625,16 @@ int do_directory(const char *pathname, const struct params *param)
  */
 unsigned long makeuid(const char *username)
 {
+	/* ### FB: type mismatch: unsigned long als Rückgabewert, die Variable
+	 * 	ist aber als long definiert */
 	long uidcheck=0;
 	char *pos=NULL;
 
+	/* ### FB: keine Fehlerbehandlung */
 	uidcheck=strtol(username,&pos,10);
 
-
+	/* ### FB: UID 0 ist root, ich würde die Rückgabe auf signed ändern
+	 * 	und -1 oder so zurück geben */
 	return (pos[0]=='\0') ? uidcheck : 0;
 
 }
@@ -696,6 +716,7 @@ struct group* getgroup(const char *groupname, const long grpuid)
 			return NULL; /* correct value for nogroup flag */
 		}
 	} else {	
+		/* ### FB: keine Fehlerbehandlung */
 		uidcheck=strtol(groupname,&pos,10);
 
 
@@ -735,12 +756,19 @@ int do_output(const char *fullfilename, const struct params *param, const struct
 	if ((param!=NULL) && ((param->paramtype & LS_FLAG)!=0)) {
 		/* ### FB: Fehlerbehandlung printf() fehlt */
 		printf("%6lu\t", file_stat->st_ino);
+		/* ### FB: /2 finde ich hier unsauber, aber verständlich weil das testscript das
+		 * 	anmeckert. In jenem verstehe ich nicht die Anzeige von 1024B Blocks, obwohl
+		 * 	das zugrunde liegende Filesystem 4k und das struct stat 512B Blöcke
+		 * 	liefert. (TZ) */
 		printf("%4lu ", (file_stat->st_blocks /2 ));
 		
 		get_file_attribs(file_stat);
 
 		/* ### FB: Fehlerbehandlung printf() fehlt */
 		printf("\t%d", (file_stat->st_nlink!=0)?file_stat->st_nlink:0);
+		/* ### FB: Warum wird die Hilsvariable uid und unten gid verwendet? Lesbarer
+		 * 	wird es nicht wirklich [tm] und file_stat->st_uid sollte doch das 
+		 * 	selbe tun? */
 		uid = file_stat->st_uid;
 		local_user = getuser(NULL,uid);
 		if ((local_user != NULL) && (local_user->pw_uid == uid)) {
@@ -774,10 +802,13 @@ int do_output(const char *fullfilename, const struct params *param, const struct
 void gettime(const time_t timep) 
 {
 	struct tm *tm;
+	/* ### FB: Grenze nicht als symbolische Konstante definiert (siehe
+	 * 	Richtlinien) und keine Fehlerbehandlung bei Überlauf */
 	char datastring[256];
 	char *time_fmt = NULL;
 
-	
+	/* ### FB: Wozu dieses if? Gleich darüber wird time_fmt auf NULL gesetzt
+	 * 	und eine Schleife gibt es hier nicht */	
 	if (time_fmt == NULL )
 	{
 		time_fmt = "%b  %e %R";
@@ -803,7 +834,7 @@ void get_file_attribs(const struct stat *file_stat)
 
 	/* ### FB: Fehlerbehandlung printf() fehlt ein paar Mal ;) 
 	 * 	Warum einen Formatstring in printf, anstatt den Character
-	 * 	direkt printen?*/
+	 * 	direkt printen? */
 	if(S_ISDIR(file_stat->st_mode)) {
 		printf("%c",'d');
 	} else if(S_ISCHR(file_stat->st_mode)) {
