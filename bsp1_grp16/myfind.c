@@ -384,6 +384,7 @@ int do_file(const char *filename, const struct params *param)
 	unsigned long uidcheck=0;
 
 	errno=0;
+	/* ### FB Better use lstat() (symlinks) */
 	if (stat(filename, &attrib)!=0) {               /* get the attributes of filename */
 		fprintf(stderr,"[%s]:%d: '%s': %s\n",programmname,__LINE__,filename,strerror(errno));
 		return 0;

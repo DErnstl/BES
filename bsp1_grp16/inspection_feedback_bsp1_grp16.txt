@@ -28,11 +28,18 @@ Technisch gut durchdacht, ein wenig schwer zu verstehen. Viele der Funktionen
 und deren einzelnen Blöcke könnten in Rekursionen ausgelagert werden. Das
 verkürzt den Code und macht ihn lesbarer.
 
-Nicht ganz einen durhcgängigen Stil geplegt: z.B. return_value in main() und
-retval in do_file()return_value in main() und retval in do_file(), in
-do_directory() wieder return_value.
-Ähnlich mit den Leerzeuchen vor und nach '(', '=', ')'.
+Auch die Funktionen sind unserer meinung nach mit zu viel unterschiedlichen
+Routinen überladen, eine klare Trennung wäre dem Verständnis entgegen
+gekommen.
+
+Nicht ganz einen durchgängigen Stil gepflegt: z.B. return_value in main() und
+retval in do_file(), in do_directory() wieder return_value.
+Ähnlich mit den Leerzeichen vor und nach '(', '=', ')'.
 
 Es werden auch Funktionen doppelt aufgerufen: check_user=getuser(...) beim
 Parametercheck in der main() und später nochmal in der do_file(), anstelle das
 Ergebnis des ersten Aufrufs weiter zu geben.
+
+Die Trennung der beiden Output Funktionen do_output() und get_file_attribs()
+ist nicht hübsch und schwer zu durchschauen. Könnte auch in eine Funktion
+gepackt werden.
