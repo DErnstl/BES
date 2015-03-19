@@ -85,6 +85,8 @@ char programmname [100]; /* weils mich grad nicht gfreut das sauber zu machen TO
  */
 
 /* ### FB: Style: Manchmal = mit Spaces, dann ohne. ebenso bei den Klammern */
+
+/* ### FB: function strerror already defined in error.h, no need to do it again */
 char *strerror( int errnum ); /*! generates typical error message */
 int do_file(const char *filename, const struct params *parameters); 			/*! process a file */
 int do_directory(const char *pathname, const struct params *parameters); 	/*! process a directory. calls do_file */
@@ -282,7 +284,9 @@ int main (int argc, const char *argv[])
 			
 		if (strncmp(argv[run],"-print",6)==0) {
 				 /* ### FB: +1 extra Char im malloc() ist zuviel, im struct ist bereits
-				  * 	das extra Byte reserviert worden */
+				  * 	das extra Byte reserviert worden 
+				  * 	Ein sizeof(argv[run]) ist klarer als ein *7 und oben wurde
+				  * 	es auch so verwendet */
 			if ((parameters=malloc(sizeof(struct params)+(sizeof(char)*7)))==NULL) {
 				fprintf(stderr,"[%s]\t:Critical error on memory allocation. Exiting\n",argv[0]);
 				exit(MEMORY_ERROR);
@@ -301,7 +305,9 @@ int main (int argc, const char *argv[])
 		}
 		if (strncmp(argv[run],"-ls",3)==0) {
 				 /* ### FB: +1 extra Char im malloc() ist zuviel, im struct ist bereits
-				  * 	das extra Byte reserviert worden */
+				  * 	das extra Byte reserviert worden
+				  * 	Ein sizeof(argv[run]) ist klarer als ein *4 und oben wurde
+				  * 	es auch so verwendet */
 			if ((parameters=malloc(sizeof(struct params)+(sizeof(char)*4)))==NULL) {
 				fprintf(stderr,"[%s]\t:Critical error on memory allocation. Exiting\n",argv[0]);
 				exit(MEMORY_ERROR);
@@ -319,6 +325,10 @@ int main (int argc, const char *argv[])
 			param_check=1;
 		}
 		if (strncmp(argv[run],"-nouser",7)==0) {
+				 /* ### FB: +1 extra Char im malloc() ist zuviel, im struct ist bereits
+				  * 	das extra Byte reserviert worden
+				  * 	Ein sizeof(argv[run]) ist klarer als ein *8 und oben wurde
+				  * 	es auch so verwendet */
 			if ((parameters=malloc(sizeof(struct params)+(sizeof(char)*8)))==NULL) {
 				fprintf(stderr,"[%s]\t:Critical error on memory allocation. Exiting\n",argv[0]);
 				exit(MEMORY_ERROR);
@@ -352,7 +362,7 @@ int main (int argc, const char *argv[])
 	for (parameters=start; parameters != NULL; ) {
 		last=parameters;	
 		parameters=parameters->next;
-		/* ### FB 2xfree() sind einer zuviel 
+		/* ### FB:2xfree() sind einer zuviel :)
 		 * 	(http://de.wikipedia.org/wiki/Mehrfache_Deallokation)
 		 * 	und pointer auf NULL setzen */
 		free(last);
@@ -380,7 +390,7 @@ int do_file(const char *filename, const struct params *param)
 {
         struct stat attrib;                     /* create a file attribute structure */
 	struct passwd *check_user;
-	/* ### FB: Warum ein Const? Das Struct wird ja später mit Werten befüllt. */
+	/* ### FB: Const ist hier unnötig. Das Struct wird ja später mit Werten befüllt. */
 	const struct params *running=NULL;
 	int defaultprint=1;
 	int cmp_value=0;
@@ -392,7 +402,7 @@ int do_file(const char *filename, const struct params *param)
 	unsigned long uidcheck=0;
 
 	errno=0;
-	/* ### FB Better use lstat() (symlinks) */
+	/* ### FB:Better use lstat() (symlinks) */
 	if (stat(filename, &attrib)!=0) {               /* get the attributes of filename */
 		fprintf(stderr,"[%s]:%d: '%s': %s\n",programmname,__LINE__,filename,strerror(errno));
 		return 0;
@@ -416,14 +426,16 @@ int do_file(const char *filename, const struct params *param)
 					}
 					break;
 				case USER_FLAG:
-					/* ### FB: die Funktion getuser() wurde ja schon in der main() befüllt, warum nochmal? */
+					/* ### FB: die Funktion getuser() wurde ja schon in der main() befüllt, ein Weg das
+					 * 	Ergebnis nochmal zu verwenden wäre Ressourcen sparender */
 					if ((check_user= getuser(running->param_value,DONTCHECKUIDFLAG))!=NULL) {
 						if(attrib.st_uid!=check_user->pw_uid) {
 							retval= NO_FILE_MATCH;
 							defaultprint=0;
 						}
 					} else {
-						/* ### FB: die Funktion makeuid() wurde ja schon in der main() befüllt, warum nochmal? */
+						/* ### FB: die Funktion makeuid() wurde ja schon in der main() befüllt, ein Weg das
+						 * 	Ergebnis nochmal zu verwenden wäre Ressourcen sparender */
 						uidcheck=makeuid(running->param_value);
 						if((uidcheck==0) || (attrib.st_uid!=uidcheck)) { /* we now also search for non existing numeric users. Hopefully */
 							retval=NO_USER_MATCH;
@@ -554,13 +566,13 @@ int do_directory(const char *pathname, const struct params *param)
 	struct dirent *entryp; 		/* dir entry pointer */
 	int return_value=0;
 
-	/* ### FB Better use lstat() (symlinks) */
+	/* ### FB:Better use lstat() (symlinks) */
 	if (stat(pathname, &attrib)!=0) {               /* get the attributes of filename */
+		/* ### FB:man errno empfiehlt errno vor dem Function-Call auf 0 zu setzen
+		 * 	(so wie oben in do_file() */
 		fprintf(stderr,"[%s]:%d: '%s': %s\n",programmname,__LINE__,pathname,strerror(errno));
 		return 0;
 	}
-	/* ### FB Wo werden denn andere Arten von file types behandelt? Ich sehe nur
-	 * 	Regular Files und Directories */
 	if (S_ISREG(attrib.st_mode)) { 
 		if((return_value=do_file(pathname,param))==MEMORY_ERROR) {
 			return MEMORY_ERROR;
@@ -570,6 +582,8 @@ int do_directory(const char *pathname, const struct params *param)
 
 	dirp = opendir(pathname);
 	if (dirp==NULL) {
+		/* ### FB:man errno empfiehlt errno vor dem Function-Call auf 0 zu setzen
+		 * 	(so wie oben in do_file() */
 		fprintf(stderr,"[%s]:%d: '%s': %s\n",programmname,__LINE__,pathname,strerror(errno));
 		return 0;
 	}
@@ -580,6 +594,7 @@ int do_directory(const char *pathname, const struct params *param)
 			if (strcmp(entryp->d_name,"..")==0)  {
 				continue;
 			}
+			/* ### FB:da maximal ein / und ein \0 nachträglich hinzu gefügt werden, genügt ein +2 */
 			if ((fullfile=malloc(sizeof(char)*(strlen(pathname)+strlen(entryp->d_name)+3)))==NULL) {
 				(void) closedir (dirp);
 				return MEMORY_ERROR;
@@ -591,7 +606,7 @@ int do_directory(const char *pathname, const struct params *param)
 			}
 			return_value=do_file((const char *) fullfile, param);
 			if (return_value==MEMORY_ERROR) {
-				/* ### FB 2xfree() sind einer zuviel 
+				/* ### FB:2xfree() sind einer zuviel 
 				 * 	(http://de.wikipedia.org/wiki/Mehrfache_Deallokation)
 				 * 	und pointer auf NULL setzen */
 				(void) free(fullfile);
@@ -600,9 +615,6 @@ int do_directory(const char *pathname, const struct params *param)
 				return MEMORY_ERROR;
 			}
 			if (fullfile!=NULL) {
-				/* ### FB 2xfree() sind einer zuviel 
-				 * 	(http://de.wikipedia.org/wiki/Mehrfache_Deallokation)
-				 * 	und pointer auf NULL setzen */
 				free(fullfile);
 				fullfile=NULL;
 			}
@@ -653,6 +665,8 @@ unsigned long makeuid(const char *username)
  * \retval struct passwd* if a user was found.
  *
  */
+
+/* ### FB:fileflag oder checkflag wäre hier aussagekräftiger als fileuid */
 struct passwd* getuser(const char *username, const long fileuid) 
 {
 	long uidcheck=0;
@@ -766,9 +780,8 @@ int do_output(const char *fullfilename, const struct params *param, const struct
 
 		/* ### FB: Fehlerbehandlung printf() fehlt */
 		printf("\t%d", (file_stat->st_nlink!=0)?file_stat->st_nlink:0);
-		/* ### FB: Warum wird die Hilsvariable uid und unten gid verwendet? Lesbarer
-		 * 	wird es nicht wirklich [tm] und file_stat->st_uid sollte doch das 
-		 * 	selbe tun? */
+		/* ### FB: Die Hilfsvariablen uid und gid machen den Code nicht wirklich [tm]
+		 * 	lesbarer und file_stat->st_uid sollte doch auch tun */
 		uid = file_stat->st_uid;
 		local_user = getuser(NULL,uid);
 		if ((local_user != NULL) && (local_user->pw_uid == uid)) {
@@ -799,6 +812,7 @@ int do_output(const char *fullfilename, const struct params *param, const struct
  *
  * \param file_stat is the stat structure for a file
  */
+/* ### FB: die Funktion sollte print_time heißen, sie gettet ja nix */
 void gettime(const time_t timep) 
 {
 	struct tm *tm;
@@ -807,14 +821,15 @@ void gettime(const time_t timep)
 	char datastring[256];
 	char *time_fmt = NULL;
 
-	/* ### FB: Wozu dieses if? Gleich darüber wird time_fmt auf NULL gesetzt
-	 * 	und eine Schleife gibt es hier nicht */	
+	/* ### FB: Gleich darüber wird time_fmt auf NULL gesetzt
+	 * 	und eine Schleife gibt es hier nicht. Die if Struktur ist
+	 * 	damit unnötig  */	
 	if (time_fmt == NULL )
 	{
 		time_fmt = "%b  %e %R";
 	}
 
-	/* ### FB (SST:) error handling for localtime ;-) */
+	/* ### FB:(SST:) error handling for localtime ;-) */
 	tm = localtime(&timep);
 	
 	strftime(datastring, sizeof(datastring), time_fmt, tm);
@@ -828,9 +843,10 @@ void gettime(const time_t timep)
  *
  * \param file_stat is the stat structure for a file
  */
+/* ### FB: die Funktion sollte print_file_attribs heißen, sie gettet ja nix */
 void get_file_attribs(const struct stat *file_stat)
 {
-	/* ### FB: Warum eine Trennung der Output Funktionen? */
+	/* ### FB: nicht schön das es zwei Output Funktionen gibt */
 
 	/* ### FB: Fehlerbehandlung printf() fehlt ein paar Mal ;) 
 	 * 	Warum einen Formatstring in printf, anstatt den Character

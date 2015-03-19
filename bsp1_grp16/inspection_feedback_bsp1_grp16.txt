@@ -14,6 +14,12 @@ Auch die Funktionen sind unserer Meinung nach mit zu viel unterschiedlichen
 Routinen überladen, eine klare Trennung wäre dem Verständnis entgegen
 gekommen.
 
+Die Benennung der Funktionen und Variablen läßt manchmal nicht wirklich auf
+die Funktion schliessen:
+- Variable fileuid in getuser() benennt ja eigentlich ein Flag
+- get_file_attribs() ist eigentlich print_file_attribs()
+- gettime() ist ein print_time()
+
 Nicht ganz einen durchgängigen Stil gepflegt: z.B. return_value in main() und
 retval in do_file(), in do_directory() wieder return_value.
 Ähnlich mit den Leerzeichen vor und nach '(', '=', ')'.
