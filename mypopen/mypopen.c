@@ -1,46 +1,99 @@
 #include <stdio.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
 #include <sys/wait.h>
+#include <unistd.h>
+#include "mypopen.h"
 
-#define READ 0
-#define WRITE 1
-
-int main (int argc, const char *argv[])
+FILE *mypopen(const char *cmd, const char *type)
 {
-	int pipefd[2];
-	static pid_t pid;
-	char buf;
-	int status;
+	int file_fd[2];
+	pid_t pid;
+	FILE *file_stream;
 
-	if (pipe(pipefd) == -1) {
-		/* Error handling: pipe error */
-		/* errno is set automatically */
-		exit(EXIT_FAILURE);
-	}
-    
-	pid = fork();
-	if (pid == -1) {
-		/* Error handling: fork error */
-		/* errno is set automatically */
-		exit(EXIT_FAILURE);
+	/* only allow "r" or "w" */
+	if ((type[0] != 'r' && type[0] != 'w') || type[1] != 0) {
+		errno = EINVAL;
+		return(NULL);
 	}
 
-	/* Case: Child reads, parent writes */
-	if (pid == 0) {				/* child */
-		close(pipefd[0]);
-		dup2(pipefd[1], STDOUT_FILENO);
-		execl("/bin/sh", argv[1]);
-		close(pipefd[1]);
-		exit(EXIT_SUCCESS);
-	} else {				/* parent */
-		close(pipefd[1]);
-		while (read(pipefd[0], &buf, 1) > 0) {
-			write(STDOUT_FILENO, &buf, 1);		
+	if (limit > 1) {
+		errno = ESTRPIPE;
+		return(NULL);
+	}
+
+	/* Pipe error */
+	if (pipe(file_fd) == -1) {
+		return(NULL);	/* errno set by pipe() */
+	} else {
+		limit++;
+	}
+
+	if ((pid = fork()) == -1) {
+		/* errno set by fork() */
+		close(file_fd[0]);
+		close(file_fd[1]);
+		return(NULL);
+	} else if (pid == 0) {	/* child */
+		if (*type == 'r') {
+			close(file_fd[0]);
+			dup2(file_fd[1], STDOUT_FILENO);
+			close(file_fd[1]);
+		} else {
+			close(file_fd[1]);
+			dup2(file_fd[0], STDIN_FILENO);
+			close(file_fd[0]);
 		}
-		close(pipefd[0]);
-		waitpid(pid, &status, 0);
-		exit(EXIT_SUCCESS);
+
+		/* Error handling??? */
+		execl("/bin/sh", "sh", "-c", cmd, (char *)NULL);
+
+		if (*type == 'r') {
+			close(STDOUT_FILENO);
+		} else {
+			close(STDIN_FILENO);
+		}
+	} else { /* parent  */
+		if (*type == 'r') {
+			close(file_fd[1]);
+			if ((file_stream = fdopen(file_fd[0], type)) == NULL) {
+				return(NULL);
+			}
+		} else {
+			close(file_fd[0]);
+			if ((file_stream = fdopen(file_fd[1], type)) == NULL) {
+				return(NULL);
+			}
+		}
+
+		child_pid = pid;		/* remember child_pid for this fd */
+		return(file_stream);
 	}
 }
+
+int mypclose(FILE *file_stream)
+{
+	int fd;
+	int stat;
+
+	if (child_pid == 0) {
+		errno = EINVAL;
+		return(-1);
+	}
+
+	if (fclose(file_stream) == EOF) {
+		return(-1);
+	}
+
+	while (waitpid(child_pid, &stat, 0) == -1) {
+		if (errno != EINTR) {
+			return(-1);	/* error other than EINTR from waitpid() */
+		}
+	}
+
+	child_pid = 0;
+
+	return(stat);
+}
+
