@@ -1,128 +1,104 @@
-#include "apue.h"
-#inclucde <errno.h>
+#include <stdio.h>
+#include <errno.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 /* Pointer to array allocated at run-time. */
-static pid_t *childpid = NULL;
+static pid_t child_pid;
 
-/* From our open_max(), Figure 2.17. */
-static int maxfd;
+/* Limit of mypopen execution */
+static unsigned int limit = 0;
 
-FILE *popen(const char *cmdstring, const char *type)
+FILE *mypopen(const char *cmd, const char *type)
 {
-	int i;
-	int pfd[2];
+	int file_fd[2];
 	pid_t pid;
-	FILE *fp;
+	FILE *file_stream;
 
 	/* only allow "r" or "w" */
-	if ((type[0] != ’r’ && type[0] != ’w’) || type[1] != 0) {
+	if ((type[0] != 'r' && type[0] != 'w') || type[1] != 0) {
 		errno = EINVAL;
 		return(NULL);
 	}
 
-	if (childpid == NULL) {		/* first time through */
-		/* allocate zeroed out array for child pids */
-		maxfd = open_max();
-		if ((childpid = calloc(maxfd, sizeof(pid_t))) == NULL) {
-			return(NULL);
-		}
+	if (limit > 1) {
+		errno = ESTRPIPE;
+		return(NULL);
 	}
 
 	/* Pipe error */
-	if (pipe(pfd) < 0) {
+	if (pipe(file_fd) == -1) {
 		return(NULL);	/* errno set by pipe() */
+	} else {
+		limit++;
 	}
 
-	if (pfd[0] >= maxfd || pfd[1] >= maxfd) {
-		close(pfd[0]);
-		close(pfd[1]);
-		errno = EMFILE;
+	if ((pid = fork()) == -1) {
+		/* errno set by fork() */
+		close(file_fd[0]);
+		close(file_fd[1]);
 		return(NULL);
-	}
-
-	if ((pid = fork()) < 0) {
-		return(NULL);	/* errno set by fork() */
 	} else if (pid == 0) {	/* child */
-		if (*type == ’r’) {
-			close(pfd[0]);
-			if (pfd[1] != STDOUT_FILENO) {
-				dup2(pfd[1], STDOUT_FILENO);
-				close(pfd[1]);
+		if (*type == 'r') {
+			close(file_fd[0]);
+			dup2(file_fd[1], STDOUT_FILENO);
+			close(file_fd[1]);
+		} else {
+			close(file_fd[1]);
+			dup2(file_fd[0], STDIN_FILENO);
+			close(file_fd[0]);
+		}
+
+		/* Error handling??? */
+		execl("/bin/sh", "sh", "-c", cmd, (char *)NULL);
+
+		if (*type == 'r') {
+			close(STDOUT_FILENO);
+		} else {
+			close(STDIN_FILENO);
+		}
+	} else { /* parent  */
+		if (*type == 'r') {
+			close(file_fd[1]);
+			if ((file_stream = fdopen(file_fd[0], type)) == NULL) {
+				return(NULL);
 			}
 		} else {
-			close(pfd[1]);
-			if (pfd[0] != STDIN_FILENO) {
-				dup2(pfd[0], STDIN_FILENO);
-				close(pfd[0]);
+			close(file_fd[0]);
+			if ((file_stream = fdopen(file_fd[1], type)) == NULL) {
+				return(NULL);
 			}
 		}
 
-		/* close all descriptors in childpid[] */
-		for (i = 0; i < maxfd; i++) {
-			if (childpid[i] > 0) {
-				close(i);
-			}
-		}
-
-
-		execl("/bin/sh", "sh", "-c", cmdstring, (char *)0);
-		_exit(127);
+		child_pid = pid;		/* remember child_pid for this fd */
+		return(file_stream);
 	}
-
-	/* parent continues... */
-	if (*type == ’r’) {
-		close(pfd[1]);
-		if ((fp = fdopen(pfd[0], type)) == NULL) {
-			return(NULL);
-		}
-	} else {
-		close(pfd[0]);
-		if ((fp = fdopen(pfd[1], type)) == NULL) {
-			return(NULL);
-		}
-	}
-
-	childpid[fileno(fp)] = pid;	/* remember child pid for this fd */
-	return(fp);
 }
 
-
-int pclose(FILE *fp)
+int mypclose(FILE *file_stream)
 {
-	int fd, stat;
-	pid_t pid;
+	int fd;
+	int stat;
 
-	if (childpid == NULL) {
+	if (child_pid == 0) {
 		errno = EINVAL;
-		return(-1);	/* popen() has never been called */
-	}
-
-	fd = fileno(fp);
-
-	if (fd >= maxfd) {
-		errno = EINVAL;
-		return(-1);	/* invalid file descriptor */
-	}
-
-	if ((pid = childpid[fd]) == 0) {
-		errno = EINVAL;
-		return(-1);	/* fp wasn’t opened by popen() */
-	}
-
-	childpid[fd] = 0;
-
-	if (fclose(fp) == EOF) {
 		return(-1);
 	}
 
-	while (waitpid(pid, &stat, 0) < 0) {
+	if (fclose(file_stream) == EOF) {
+		return(-1);
+	}
+
+	while (waitpid(child_pid, &stat, 0) == -1) {
 		if (errno != EINTR) {
 			return(-1);	/* error other than EINTR from waitpid() */
 		}
 	}
 
-	return(stat);   /* return child’s termination status */
+	child_pid = 0;
+
+	return(stat);
 }
 

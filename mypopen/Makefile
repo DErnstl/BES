@@ -1,6 +1,6 @@
 ##
 ## @file Makefile
-## Betriebssysteme myfind Makefile
+## Betriebssysteme mypopen Makefile
 ## Beispiel 1
 ##
 ## @author Adam Kerenyi <ic14b080@technikum-wien.at>
@@ -17,7 +17,7 @@
 ##
 
 CC=gcc
-CFLAGS=-DDEBUG -Wall -pedantic -Werror -Wextra -Wstrict-prototypes -fno-common -g -O3
+CFLAGS=-DDEBUG -Wall -pedantic -Werror -Wextra -Wstrict-prototypes -fno-common -g -O3 
 CP=cp
 CD=cd
 MV=mv
@@ -40,18 +40,22 @@ EXCLUDE_PATTERN=footrulewidth
 ## --------------------------------------------------------------- targets --
 ##
 
-all: mypopen
+all: test-pipe
 
-myfind: $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^
+test-pipe: test-pipe.o mypopen.o
+	$(CC) $(OPTFLAGS) test-pipe.o mypopen.o -o test-pipe
 
 clean:
-	$(RM) *.o mypopen
+	$(RM) *.o *.h.gch test-pipe
 
-distclean: clean
-	$(RM) -r doc
+clean_doc:
+	$(RM) -r doc/
 
-doc: html pdf
+doc: clean_doc
+	$(DOXYGEN)
+
+clean_all: clean clean_doc
+
 
 html:
 	$(DOXYGEN) doxygen.dcf
