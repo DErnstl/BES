@@ -6,6 +6,10 @@
 #include <unistd.h>
 #include "mypopen.h"
 
+static pid_t child_pid = -1;
+static unsigned int limit = 0;
+static FILE *file_compare = NULL;
+
 FILE *mypopen(const char *cmd, const char *type)
 {
 	int file_fd[2];
@@ -26,8 +30,6 @@ FILE *mypopen(const char *cmd, const char *type)
 	/* Pipe error */
 	if (pipe(file_fd) == -1) {
 		return(NULL);	/* errno set by pipe() */
-	} else {
-		limit++;
 	}
 
 	if ((pid = fork()) == -1) {
@@ -37,12 +39,21 @@ FILE *mypopen(const char *cmd, const char *type)
 		return(NULL);
 	} else if (pid == 0) {	/* child */
 		if (*type == 'r') {
+			/* Error Handling */
 			close(file_fd[0]);
-			dup2(file_fd[1], STDOUT_FILENO);
+			if (dup2(file_fd[1], STDOUT_FILENO) == -1) {
+				/* Res ausfrüumen */
+				close(file_fd[1]);
+				exit(EXIT_FAILURE);
+			}
 			close(file_fd[1]);
 		} else {
 			close(file_fd[1]);
-			dup2(file_fd[0], STDIN_FILENO);
+			if (dup2(file_fd[0], STDIN_FILENO) == -1) {
+				/* Res ausfrüumen */
+				close(file_fd[1]);
+				exit(EXIT_FAILURE);
+			}
 			close(file_fd[0]);
 		}
 
@@ -58,16 +69,20 @@ FILE *mypopen(const char *cmd, const char *type)
 		if (*type == 'r') {
 			close(file_fd[1]);
 			if ((file_stream = fdopen(file_fd[0], type)) == NULL) {
+				close(file_fd[0]);
 				return(NULL);
 			}
 		} else {
 			close(file_fd[0]);
 			if ((file_stream = fdopen(file_fd[1], type)) == NULL) {
+				close(file_fd[1]);
 				return(NULL);
 			}
 		}
 
 		child_pid = pid;		/* remember child_pid for this fd */
+		file_compare = file_stream;
+		limit++;
 		return(file_stream);
 	}
 }
@@ -82,23 +97,35 @@ int mypclose(FILE *file_stream)
 		return(-1);
 	}
 
-	if (child_pid == 0) {
+	if (child_pid == -1) {
+		errno = EINVAL;
+		return(-1);
+	}
+
+	if (file_compare != file_stream) {
 		errno = EINVAL;
 		return(-1);
 	}
 
 	if (fclose(file_stream) == EOF) {
+		errno = EINVAL;
 		return(-1);
 	}
 
 	while (waitpid(child_pid, &stat, 0) == -1) {
+
 		if (errno != EINTR) {
 			return(-1);	/* error other than EINTR from waitpid() */
 		}
 	}
 
-	child_pid = 0;
+	child_pid = -1;
 
-	return(stat);
+	if (WIFEXITED(stat)) {
+		return (WEXITSTATUS(stat));
+	}
+
+	errno = ECHILD;
+	return(-1);
 }
 
