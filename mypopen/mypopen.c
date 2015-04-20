@@ -18,8 +18,8 @@ FILE *mypopen(const char *cmd, const char *type)
 		return(NULL);
 	}
 
-	if (limit > 1) {
-		errno = ESTRPIPE;
+	if (limit > 0) {
+		errno = EAGAIN;
 		return(NULL);
 	}
 
@@ -76,6 +76,11 @@ int mypclose(FILE *file_stream)
 {
 	int fd;
 	int stat;
+
+	if (limit == 0) {
+		errno = ECHILD;
+		return(-1);
+	}
 
 	if (child_pid == 0) {
 		errno = EINVAL;
