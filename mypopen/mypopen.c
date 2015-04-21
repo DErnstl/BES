@@ -133,6 +133,8 @@ FILE *mypopen(const char *cmd, const char *type)
 		limit++;
 		return(file_stream);
 	}
+
+	return(NULL);
 }
 
 /**
@@ -149,7 +151,6 @@ FILE *mypopen(const char *cmd, const char *type)
 
 int mypclose(FILE *file_stream)
 {
-	int fd;
 	int stat;
 
 	if (limit == 0) {
@@ -189,3 +190,7 @@ int mypclose(FILE *file_stream)
 	return(-1);
 }
 
+
+/*
+ * =================================================================== eof ==
+ */

@@ -1,12 +1,12 @@
 ##
 ## @file Makefile
 ## Betriebssysteme mypopen Makefile
-## Beispiel 1
+## Beispiel 2
 ##
 ## @author Adam Kerenyi <ic14b080@technikum-wien.at>
 ## @author Romeo Beck <ic14b037@technikum-wien.at>
 ## @author Thomas Zeitinger <ic14b033@technikum-wien.at>
-## @date 2015/02/09
+## @date 2015/04/24
 ##
 ## @version $Revision: 972 $
 ##
@@ -27,8 +27,6 @@ DOXYGEN=doxygen
 
 OBJECTS=mypopen.o
 
-EXCLUDE_PATTERN=footrulewidth
-
 ##
 ## ----------------------------------------------------------------- rules --
 ##
@@ -40,22 +38,23 @@ EXCLUDE_PATTERN=footrulewidth
 ## --------------------------------------------------------------- targets --
 ##
 
-all: test-pipe
+all: mypopen popentest test-pipe
 
-test-pipe: test-pipe.o mypopen.o
-	$(CC) $(OPTFLAGS) test-pipe.o mypopen.o -o test-pipe
+mypopen: $(OBJECTS)
+	$(CC) $(CFLAGS) -o $@ -c $<
 
+popentest:
+	$(CC) $(CFLAGS) -o popentest mypopen.o -lpopentest
+
+test-pipe:
+	$(CC) $(CFLAGS) -o test-pipe mypopen.o -ltest-pipe
 clean:
-	$(RM) *.o *.h.gch test-pipe
+	$(RM) *.o popentest test-pipe
 
-clean_doc:
-	$(RM) -r doc/
+distclean: clean
+	$(RM) -r doc
 
-doc: clean_doc
-	$(DOXYGEN)
-
-clean_all: clean clean_doc
-
+doc: html pdf
 
 html:
 	$(DOXYGEN) doxygen.dcf
