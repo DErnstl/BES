@@ -51,7 +51,7 @@ static FILE *file_compare = NULL;
  *
  * Library to simulate popen
  *
- * \param Command to fork and directions (r/w)
+ * \param cmd, type
  *
  * \return Filestream
  * \retval 0
@@ -143,7 +143,7 @@ FILE *mypopen(const char *cmd, const char *type)
  *
  * Library to simulate pclose
  *
- * \param Filestream
+ * \param file_stream
  *
  * \retval Exitstatus child or -1
  *

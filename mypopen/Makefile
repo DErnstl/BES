@@ -27,6 +27,8 @@ DOXYGEN=doxygen
 
 OBJECTS=mypopen.o
 
+EXCLUDE_PATTERN=footrulewidth
+
 ##
 ## ----------------------------------------------------------------- rules --
 ##
