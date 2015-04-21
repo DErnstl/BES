@@ -1,3 +1,22 @@
+/**
+ * @file mypopen.o
+ * Betriebssysteme mypopen Library
+ * Beispiel 2
+ *
+ * @author Adam Kerenyi <ic14b080@technikum-wien.at>
+ * @author Romeo Beck <ic14b037@technikum-wien.at>
+ * @author Thomas Zeitinger <ic14b033@technikum-wien.at>
+ * @date 2015/04/24
+ *
+ * @version 470 
+ *
+ */
+
+
+/*
+ * -------------------------------------------------------------- includes --
+ */
+
 #include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -6,9 +25,38 @@
 #include <unistd.h>
 #include "mypopen.h"
 
+/*
+ * --------------------------------------------------------------- defines --
+ */
+
+/*
+ * -------------------------------------------------------------- typedefs --
+ */
+
+/*
+ * --------------------------------------------------------------- globals --
+ */
+
 static pid_t child_pid = -1;
 static unsigned int limit = 0;
 static FILE *file_compare = NULL;
+
+/*
+ * ------------------------------------------------------------- functions --
+ */
+
+/**
+ *
+ * \brief mypopen - popen clone
+ *
+ * Library to simulate popen
+ *
+ * \param Command to fork and directions (r/w)
+ *
+ * \return Filestream
+ * \retval 0
+ *
+ */
 
 FILE *mypopen(const char *cmd, const char *type)
 {
@@ -86,6 +134,18 @@ FILE *mypopen(const char *cmd, const char *type)
 		return(file_stream);
 	}
 }
+
+/**
+ *
+ * \brief myclose - plose clone
+ *
+ * Library to simulate pclose
+ *
+ * \param Filestream
+ *
+ * \retval Exitstatus child or -1
+ *
+ */
 
 int mypclose(FILE *file_stream)
 {
