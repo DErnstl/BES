@@ -64,33 +64,29 @@ FILE *mypopen(const char *cmd, const char *type)
 	pid_t pid;
 	FILE *file_stream;
 
-	/* only allow "r" or "w" */
 	if ((type[0] != 'r' && type[0] != 'w') || type[1] != 0) {
 		errno = EINVAL;
 		return(NULL);
 	}
 
+	/* only one instance is allowed */
 	if (limit > 0) {
 		errno = EAGAIN;
 		return(NULL);
 	}
 
-	/* Pipe error */
 	if (pipe(file_fd) == -1) {
-		return(NULL);	/* errno set by pipe() */
+		return(NULL);
 	}
 
 	if ((pid = fork()) == -1) {
-		/* errno set by fork() */
 		close(file_fd[0]);
 		close(file_fd[1]);
 		return(NULL);
 	} else if (pid == 0) {	/* child */
 		if (*type == 'r') {
-			/* Error Handling */
 			close(file_fd[0]);
 			if (dup2(file_fd[1], STDOUT_FILENO) == -1) {
-				/* Res ausfrüumen */
 				close(file_fd[1]);
 				exit(EXIT_FAILURE);
 			}
@@ -98,15 +94,20 @@ FILE *mypopen(const char *cmd, const char *type)
 		} else {
 			close(file_fd[1]);
 			if (dup2(file_fd[0], STDIN_FILENO) == -1) {
-				/* Res ausfrüumen */
 				close(file_fd[1]);
 				exit(EXIT_FAILURE);
 			}
 			close(file_fd[0]);
 		}
 
-		/* Error handling??? */
-		execl("/bin/sh", "sh", "-c", cmd, (char *)NULL);
+		if (execl("/bin/sh", "sh", "-c", cmd, (char *)NULL) == -1) {
+			if (*type == 'r') {
+				close(STDOUT_FILENO);
+			} else {
+				close(STDIN_FILENO);
+			}
+			return(NULL);
+		}
 
 		if (*type == 'r') {
 			close(STDOUT_FILENO);
@@ -128,7 +129,7 @@ FILE *mypopen(const char *cmd, const char *type)
 			}
 		}
 
-		child_pid = pid;		/* remember child_pid for this fd */
+		child_pid = pid;
 		file_compare = file_stream;
 		limit++;
 		return(file_stream);
@@ -176,7 +177,7 @@ int mypclose(FILE *file_stream)
 	while (waitpid(child_pid, &stat, 0) == -1) {
 
 		if (errno != EINTR) {
-			return(-1);	/* error other than EINTR from waitpid() */
+			return(-1);
 		}
 	}
 
