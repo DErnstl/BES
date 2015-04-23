@@ -40,7 +40,7 @@ EXCLUDE_PATTERN=footrulewidth
 ## --------------------------------------------------------------- targets --
 ##
 
-all: mypopen popentest test-pipe
+all: mypopen popentest
 
 mypopen: $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ -c $<
@@ -51,7 +51,7 @@ popentest:
 test-pipe:
 	$(CC) $(CFLAGS) -o test-pipe mypopen.o -ltest-pipe
 clean:
-	$(RM) *.o popentest test-pipe
+	$(RM) *.o popentest
 
 distclean: clean
 	$(RM) -r doc
