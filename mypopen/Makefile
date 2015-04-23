@@ -43,7 +43,7 @@ EXCLUDE_PATTERN=footrulewidth
 all: mypopen popentest
 
 mypopen: $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -o mypopen.o -c mypopen.c
 
 popentest:
 	$(CC) $(CFLAGS) -o popentest mypopen.o -lpopentest
@@ -51,7 +51,7 @@ popentest:
 test-pipe:
 	$(CC) $(CFLAGS) -o test-pipe mypopen.o -ltest-pipe
 clean:
-	$(RM) *.o popentest
+	$(RM) -f *.o popentest
 
 distclean: clean
 	$(RM) -r doc
