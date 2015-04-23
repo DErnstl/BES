@@ -68,8 +68,8 @@ pdf: html
 	$(RM) refman_save.tex && \
 	make && \
 	$(MV) refman.pdf refman.save && \
-	$(RM) *.pdf *.html *.tex *.aux *.sty *.log *.eps *.out *.ind *.idx \
-		*.ilg *.toc *.tps Makefile && \
+	$(RM) *.pdf *.tex *.aux *.sty *.log *.eps *.out *.ind *.idx \
+		*.ilg *.toc Makefile && \
 	$(MV) refman.save refman.pdf
 
 ##
