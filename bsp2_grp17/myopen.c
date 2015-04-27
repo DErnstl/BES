@@ -1,3 +1,7 @@
+/* ### FB: doxygen header and separators missing */
+/* ### FB: defines should come after includes*/
+
+/* ### FB: WHAT IS THIS??? */
 #define _XOPEN_SOURCE 600 /* can't use fdopen otherwise */
 #include <stdlib.h>
 #include <errno.h>
@@ -36,6 +40,7 @@ extern FILE *mypopen(const char *command, const char *type)
 		return NULL;
 	}
 
+	/* ### FB: Suggestion: always use curly braces, even for one line of code */
 	if(pipe(ioPipes) == -1) /* pipe(...) does error setting */
 		return NULL;
 
@@ -71,7 +76,9 @@ extern FILE *mypopen(const char *command, const char *type)
 			close(ioPipes[0]);
 
 		}
+		/* ### FB: typecast missing: should be (char *) NULL */
 		execl("/bin/sh", "sh", "-c", command, NULL); /* execute given command */
+		/* ### FB: missing error handling for execl */
 		exit(3); /* 3 = normal process termination */
 	}
 	else /* parent process*/
@@ -94,6 +101,7 @@ extern FILE *mypopen(const char *command, const char *type)
 				return NULL;
 			}
 		}
+		/* ### FB: file_compare??? pid??? */
 		return instance;
 	}
 }
@@ -122,8 +130,10 @@ extern int mypclose(FILE *stream)
 		return -1;
 	}
 
+	/* ### FB: Missing error handling for EOF */
 	fclose(stream); /* close stream */
 
+	/* ### FB: Not the nicest while */
 	/* waiting for process to die */
 	while ((waitpidReturnVal = waitpid(processId, &waitpidStatus, 0)) != processId)
 	{
