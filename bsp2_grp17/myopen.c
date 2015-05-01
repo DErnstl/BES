@@ -101,7 +101,6 @@ extern FILE *mypopen(const char *command, const char *type)
 				return NULL;
 			}
 		}
-		/* ### FB: file_compare??? pid??? */
 		return instance;
 	}
 }
