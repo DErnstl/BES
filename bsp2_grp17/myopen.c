@@ -1,7 +1,7 @@
 /* ### FB: doxygen header and separators missing */
-/* ### FB: defines should come after includes*/
 
-/* ### FB: WHAT IS THIS??? */
+/* ### FB: defines should come after includes*/
+/* ### FB: Unsure about this, but our version works without this define and uses fdopen too */
 #define _XOPEN_SOURCE 600 /* can't use fdopen otherwise */
 #include <stdlib.h>
 #include <errno.h>
@@ -133,7 +133,6 @@ extern int mypclose(FILE *stream)
 	/* ### FB: Missing error handling for EOF */
 	fclose(stream); /* close stream */
 
-	/* ### FB: Not the nicest while */
 	/* waiting for process to die */
 	while ((waitpidReturnVal = waitpid(processId, &waitpidStatus, 0)) != processId)
 	{
