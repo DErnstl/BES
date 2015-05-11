@@ -47,6 +47,7 @@ int main(int argc, const char *argv[]) {
 	/* Ringbuffer positiv? */
 	if (ringbuffer < 1) {
 		fprintf(stderr, "Ringbuffer must be greater 0\n");
+		exit(EXIT_FAILURE);
 	}
 
 	/* semaphore anlegen */
@@ -55,15 +56,25 @@ int main(int argc, const char *argv[]) {
 		/* -1 = semaphore existiert bereits */
 		if ((senderid = semgrep(SENDERKEY)) == -1) {
 			/* FEHLERBEHANDLUNG */
+			fprintf(stderr, "semaphore error\n");
+			exit(EXIT_FAILURE);
 		}
 	}
 
 	/* shm anlegen */
-	if ((shmid = shmget(SHMKEY, ringbuffer, 0600|IPC_CREAT)) == -1) {
+	errno = 0;
+	if ((shmid = shmget(SHMKEY, ringbuffer, 0600|IPC_CREAT|IPC_EXCL)) == -1) {
 		/* FEHLERBEHANDLUNG */
+		if (errno == EEXIST) {
+			if ((shmid = shmget(SHMKEY, ringbuffer)) == -1) {
+				fprintf(stderr, "shm error\n");
+				exit(EXIT_FAILURE);
+			}
+		}
 	}
 
 	/* shm einhaengen */
+	errno = 0;
 	if ((pnShm = shmat(shmid, NULL, 0)) == (int *) -1) {
 		/* FEHLERBEHANDLUNG */
 	}
