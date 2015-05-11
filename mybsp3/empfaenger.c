@@ -3,5 +3,5 @@
 #include <unistd.h>
 #include <sys/types.h>
 
-keybase = 1000 * (int) getuid(void);
-
+/* shm löschen
+ * semaphoren löschen */

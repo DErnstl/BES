@@ -19,36 +19,14 @@
  * - EMPFAENGER: shm entfernen
  * - EMPFAENGER: semaphore entfernen */
 
-/* offene Fragen:
- *
- * wie finde ich die semaphore des anderen prozesses?
- * soll ich die keys für jeden prozess statisch als DEFINE verwenden?
- *
- */
-
-static int semid_sender;
-static int semid_empfaenger;
-
 #define SHMKEY (1000 * (int) getuid(void) + 0)
 #define EMPFAENGERKEY (1000 * (int) getuid(void) + 1)
 #define SENDERKEY (1000 * (int) getuid(void) + 2)
-
-/*int getkey(int role) {
-	int keybase = 1000 * (int) getuid(void);
-
-	if (role < 1 || role > 2) {
-		fprintf(stderr, "Undefined Role, please check source. I die.\n");
-		exit(EXIT_FAILURE);
-	}
-
-	return keybase + role;
-}*/
 
 int main(int argc, const char *argv[]) {
 
 	int opt;
 	int ringbuffer;
-	int role = 1; /* sender = 1, empfaenger = 2 */
 	int mykey;
 	int semid;
 	int shmid;
@@ -66,16 +44,19 @@ int main(int argc, const char *argv[]) {
 		}
 	}
 
-	/* key anlegen */
-	mykey = getkey(role);
+	/* Ringbuffer positiv? */
+	if (ringbuffer < 1) {
+		fprintf(stderr, "Ringbuffer must be greater 0\n");
+	}
+
 	/* semaphore anlegen */
-	if ((semid = seminit(mykey, 0660, ringbuffer)) == -1 ) {
+	if ((semid = seminit(SENDERKEY, 0600, ringbuffer)) == -1 ) {
 		/* FEHLERBEHANDLUNG */
 		/* -1 = semaphore existiert bereits */
 	}
 
 	/* shm anlegen */
-	if ((shmid = shmget(mykey, ringbuffer, 0660|IPC_CREAT)) == -1) {
+	if ((shmid = shmget(SHMKEY, ringbuffer, 0600|IPC_CREAT)) == -1) {
 		/* FEHLERBEHANDLUNG */
 	}
 
