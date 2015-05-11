@@ -7,6 +7,7 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <error.h>
+#include <signal.h>
 
 /* TODO:
  * - P
