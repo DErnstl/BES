@@ -27,8 +27,8 @@ int main(int argc, const char *argv[]) {
 
 	int opt;
 	int ringbuffer;
-	int mykey;
-	int semid;
+	int senderid;
+	int empfaengerid;
 	int shmid;
 	int *pnShm = 0;
 
@@ -50,9 +50,12 @@ int main(int argc, const char *argv[]) {
 	}
 
 	/* semaphore anlegen */
-	if ((semid = seminit(SENDERKEY, 0600, ringbuffer)) == -1 ) {
+	if ((senderid = seminit(SENDERKEY, 0600, ringbuffer)) == -1 ) {
 		/* FEHLERBEHANDLUNG */
 		/* -1 = semaphore existiert bereits */
+		if ((senderid = semgrep(SENDERKEY)) == -1) {
+			/* FEHLERBEHANDLUNG */
+		}
 	}
 
 	/* shm anlegen */
@@ -65,9 +68,13 @@ int main(int argc, const char *argv[]) {
 		/* FEHLERBEHANDLUNG */
 	}
 
-	/* P */
+	/* P(senderid) */
 	/* daten rein schreiben */
-	/* V */
+	/* semaphore empfaenger holen */
+	if ((empfaengerid = semgrep(EMPFAENGERKEY)) == -1) {
+		/* FEHLERBEHANDLUNG */
+	}
+	/* V(empfaengerid) */
 
 	/* shm aushaengen */
 	if (shmdt(pnShm) == -1 ) {
