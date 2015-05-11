@@ -20,39 +20,26 @@ int main(int argc, const char *argv[]) {
 
 	int opt;
 	int ringbuffer;
-	int semid;
+	int semid_sender;
+	int semid_empfaenger;
 	int shmid;
-	int *pnShm = 0;
+	int *pnShm = NULL;
 
 	/* parameter abfragen */
 	ringbuffer = mygetopts(argc, argv);
 
 	/* semaphore anlegen */
-	semid = mysemaphore(SENDERKEY, ringbuffer);
+	semid_sender = mysemaphore(SENDERKEY, ringbuffer);
+	semid_empfaenger = mysemaphore(EMPFAENGERKEY, 0);
 
 	/* shm anlegen */
 	shmid = myshmcreate(SHMKEY, ringbuffer);
 
 	/* shm einhaengen */
-	errno = 0;
-	if ((pnShm = shmat(shmid, NULL, 0)) == (int *) -1) {
-		/* FEHLERBEHANDLUNG */
-		error(1, 1, "%d", errno);
-		/* aufräumen */
-		/* shm löschen */
-		errno = 0;
-		if ((shmctl(shmid,IPC_RMID,NULL)) == -1) {
-			error(1, 1, "%d", errno);
-		}
-		/* semaphore löschen */
-		if ((semrm(semid)) == -1) {
-			fprintf(stderr, "semaphore error\n");
-		}
-		exit(EXIT_FAILURE);
-	}
+	pnShm = myshmmount(shmid);
 
 	/* P(semid) */
-	/* daten rein schreiben */
+	/* daten rein schreiben (Modulo) */
 	/* semaphore empfaenger holen */
 	if ((empfaengerid = semgrep(EMPFAENGERKEY)) == -1) {
 		/* FEHLERBEHANDLUNG */
@@ -63,12 +50,12 @@ int main(int argc, const char *argv[]) {
 	/* shm aushaengen */
 	if (shmdt(pnShm) == -1 ) {
 		/* FEHLERBEHANDLUNG */
-		error(1, 1, "%d", errno);
+		error(0, 1, "%d", errno);
 		/* aufräumen */
 		/* shm löschen */
 		errno = 0;
 		if ((shmctl(shmid,IPC_RMID,NULL)) == -1) {
-			error(1, 1, "%d", errno);
+			error(0, 1, "%d", errno);
 		}
 		/* semaphore löschen */
 		if ((semrm(semid)) == -1) {
