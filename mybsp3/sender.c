@@ -20,56 +20,18 @@ int main(int argc, const char *argv[]) {
 
 	int opt;
 	int ringbuffer;
-	int senderid;
-	int empfaengerid;
+	int semid;
 	int shmid;
 	int *pnShm = 0;
 
 	/* parameter abfragen */
-	while ((opt = getopt(argc, argv, "m:")) != -1) {
-		switch (opt) {
-			case 'm':
-				ringbuffer = atoi(optarg);
-				break;
-			default: /* '?' */
-				fprintf(stderr, "Usage: %s <-m ringbuffer elements>\n", argv[0]);
-				exit(EXIT_FAILURE);
-		}
-	}
-
-	/* Ringbuffer positiv? */
-	if (ringbuffer < 1) {
-		fprintf(stderr, "Ringbuffer must be greater 0\n");
-		exit(EXIT_FAILURE);
-	}
+	ringbuffer = mygetopts(argc, argv);
 
 	/* semaphore anlegen */
-	if ((senderid = seminit(SENDERKEY, 0600, ringbuffer)) == -1 ) {
-		/* FEHLERBEHANDLUNG */
-		/* -1 = semaphore existiert bereits */
-		if ((senderid = semgrep(SENDERKEY)) == -1) {
-			/* FEHLERBEHANDLUNG */
-			fprintf(stderr, "semaphore error\n");
-			/* aufräumen nicht möglich */
-			exit(EXIT_FAILURE);
-		}
-	}
+	semid = mysemaphore(SENDERKEY, ringbuffer);
 
 	/* shm anlegen */
-	errno = 0;
-	if ((shmid = shmget(SHMKEY, ringbuffer, 0600|IPC_CREAT|IPC_EXCL)) == -1) {
-		/* FEHLERBEHANDLUNG */
-		if (errno == EEXIST) {
-			if ((shmid = shmget(SHMKEY, ringbuffer)) == -1) {
-				fprintf(stderr, "shm error\n");
-				/* aufräumen */
-				if ((semrm(senderid)) == -1) {
-					fprintf(stderr, "semaphore error\n");
-				}
-				exit(EXIT_FAILURE);
-			}
-		}
-	}
+	shmid = myshmcreate(SHMKEY, ringbuffer);
 
 	/* shm einhaengen */
 	errno = 0;
@@ -83,13 +45,13 @@ int main(int argc, const char *argv[]) {
 			error(1, 1, "%d", errno);
 		}
 		/* semaphore löschen */
-		if ((semrm(senderid)) == -1) {
+		if ((semrm(semid)) == -1) {
 			fprintf(stderr, "semaphore error\n");
 		}
 		exit(EXIT_FAILURE);
 	}
 
-	/* P(senderid) */
+	/* P(semid) */
 	/* daten rein schreiben */
 	/* semaphore empfaenger holen */
 	if ((empfaengerid = semgrep(EMPFAENGERKEY)) == -1) {
@@ -109,14 +71,14 @@ int main(int argc, const char *argv[]) {
 			error(1, 1, "%d", errno);
 		}
 		/* semaphore löschen */
-		if ((semrm(senderid)) == -1) {
+		if ((semrm(semid)) == -1) {
 			fprintf(stderr, "semaphore error\n");
 		}
 		exit(EXIT_FAILURE);
 	}
 
 	/* semaphore löschen */
-	if ((semrm(senderid)) == -1) {
+	if ((semrm(semid)) == -1) {
 		fprintf(stderr, "semaphore error\n");
 		exit(EXIT_FAILURE);
 	}
