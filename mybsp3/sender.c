@@ -18,7 +18,6 @@
 
 int main(int argc, const char *argv[]) {
 
-	int opt;
 	int ringbuffer;
 	int semid_sender;
 	int semid_empfaenger;
@@ -48,26 +47,15 @@ int main(int argc, const char *argv[]) {
 	/* V(empfaengerid) */
 
 	/* shm aushaengen */
-	if (shmdt(pnShm) == -1 ) {
-		/* FEHLERBEHANDLUNG */
-		error(0, 1, "%d", errno);
-		/* aufräumen */
-		/* shm löschen */
-		errno = 0;
-		if ((shmctl(shmid,IPC_RMID,NULL)) == -1) {
-			error(0, 1, "%d", errno);
-		}
-		/* semaphore löschen */
-		if ((semrm(semid)) == -1) {
-			fprintf(stderr, "semaphore error\n");
-		}
-		exit(EXIT_FAILURE);
-	}
+	myshmumount();
 
 	/* semaphore löschen */
-	if ((semrm(semid)) == -1) {
-		fprintf(stderr, "semaphore error\n");
-		exit(EXIT_FAILURE);
+	del_semaphore(semid_sender);
+
+	/* wenn der andere Prozess keine Semaphore mehr hat: aufräumen */
+	if (semgrab(EMPFAENGERKEY) != -1) {
+		cleanup();
 	}
+
 	return EXIT_SUCCESS;
 }
