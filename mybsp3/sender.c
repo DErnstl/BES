@@ -13,7 +13,6 @@
  * - P
  * - daten rein schreiben
  * - V
- * - aufräumen
  * - Signalbehandlung */
 
 int main(int argc, const char *argv[]) {
@@ -59,3 +58,4 @@ int main(int argc, const char *argv[]) {
 
 	return EXIT_SUCCESS;
 }
+

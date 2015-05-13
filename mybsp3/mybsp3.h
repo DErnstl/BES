@@ -1,21 +1,12 @@
 #define SHMKEY (1000 * (int) getuid(void) + 0)
 #define EMPFAENGERKEY (1000 * (int) getuid(void) + 1)
 #define SENDERKEY (1000 * (int) getuid(void) + 2)
-#define MODE 0600
+#define ACCESSMODE 0600
 
 static int semid_sender = -1;
 static int semid_empfaenger = -1;
 static int shmid = -1;
 static int *shmaddr = NULL;
-
-int mygetopts(int argc, const char *argv[]);
-int del_shm(int shmid);
-int del_semaphore(int semid);
-void cleanup(void);
-int mysemaphore(int key, int ringbuffer);
-int myshmcreate(int key, int ringbuffer);
-void myshmmount(int shmid, const void *shmaddr);
-
 
 void cleanup(void) {
 	/* NULL || detach */
@@ -64,7 +55,7 @@ int mygetopts(argc, argv) {
 }
 
 int mysemaphore(int key, int seminitvalue) {
-        if ((senderid = seminit(key, MODE, seminitvalue)) == -1 ) {
+        if ((senderid = seminit(key, ACCESSMODE, seminitvalue)) == -1 ) {
                 /* FEHLERBEHANDLUNG */
                 /* -1 = semaphore existiert bereits */
                 if ((senderid = semgrab(key)) == -1) {
@@ -84,7 +75,7 @@ int mysemaphore(int key, int seminitvalue) {
 
 int myshmcreate(int key, int ringbuffer) {
         errno = 0;
-        if ((shmid = shmget(SHMKEY, ringbuffer, MODE|IPC_CREAT|IPC_EXCL)) == -1) {
+        if ((shmid = shmget(SHMKEY, ringbuffer, ACCESSMODE|IPC_CREAT|IPC_EXCL)) == -1) {
                 /* FEHLERBEHANDLUNG */
                 if (errno == EEXIST) {
                         if ((shmid = shmget(SHMKEY, ringbuffer)) == -1) {
@@ -96,6 +87,7 @@ int myshmcreate(int key, int ringbuffer) {
 	return shmid;
 }
 
+/* TODO: der empfänger mountet ReadOnly! */
 (int *) myshmmount(int shmid, const void *shmaddr) {
         errno = 0;
         if ((shmaddr = shmat(shmid, NULL, 0)) == (int *) -1) {
