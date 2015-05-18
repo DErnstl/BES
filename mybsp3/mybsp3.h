@@ -116,5 +116,10 @@ void myshmmount(int shmid, int readonlyflag) {
         }
 }
 
-void myshmumount() {
+void myshmumount(void) {
+	errno = 0;
+	if (shmdt(shmaddr)  == (int *) -1) {
+		/* FEHLERBEHANDLUNG */
+		cleanup();
+	}
 }
