@@ -1,3 +1,13 @@
+#include <sem182.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <error.h>
+#include <signal.h>
+
 #define SHMKEY (1000 * (int) getuid(void) + 0)
 #define EMPFAENGERKEY (1000 * (int) getuid(void) + 1)
 #define SENDERKEY (1000 * (int) getuid(void) + 2)
@@ -87,12 +97,24 @@ int myshmcreate(int key, int ringbuffer) {
 	return shmid;
 }
 
-/* TODO: der empfänger mountet ReadOnly! */
-(int *) myshmmount(int shmid, const void *shmaddr) {
+/* der empfänger mountet ReadOnly!
+ * readonlyflag: wir verwenden hier einfach 0 für den Empfänger,
+ * so wie beim Initialisieren der Semaphore */
+void myshmmount(int shmid, int readonlyflag) {
         errno = 0;
-        if ((shmaddr = shmat(shmid, NULL, 0)) == (int *) -1) {
-                /* FEHLERBEHANDLUNG */
-                cleanup();
+	if (readonly == 0) {
+		if ((shmaddr = shmat(shmid, NULL, SHM_RDONLY)) == (int *) -1) {
+			/* FEHLERBEHANDLUNG */
+			cleanup();
+		}
+	}
+	else {
+        	if ((shmaddr = shmat(shmid, NULL, 0)) == (int *) -1) {
+                	/* FEHLERBEHANDLUNG */
+                	cleanup();
+		}
         }
-	return shmaddr;
+}
+
+void myshmumount() {
 }

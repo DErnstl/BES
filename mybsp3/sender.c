@@ -1,13 +1,8 @@
+#ifndef MYBSP3.H
 #include "mybsp3.h"
-#include <sem182.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <error.h>
-#include <signal.h>
+#endif
+
+/* Ich bin der Sender */
 
 /* TODO:
  * - P
@@ -18,10 +13,6 @@
 int main(int argc, const char *argv[]) {
 
 	int ringbuffer;
-	int semid_sender;
-	int semid_empfaenger;
-	int shmid;
-	int *pnShm = NULL;
 
 	/* parameter abfragen */
 	ringbuffer = mygetopts(argc, argv);
@@ -34,15 +25,11 @@ int main(int argc, const char *argv[]) {
 	shmid = myshmcreate(SHMKEY, ringbuffer);
 
 	/* shm einhaengen */
-	pnShm = myshmmount(shmid);
+	shmaddr = myshmmount(shmid, 1);
 
 	/* P(semid) */
 	/* daten rein schreiben (Modulo) */
 	/* semaphore empfaenger holen */
-	if ((empfaengerid = semgrep(EMPFAENGERKEY)) == -1) {
-		/* FEHLERBEHANDLUNG */
-		/* aufräumen */
-	}
 	/* V(empfaengerid) */
 
 	/* shm aushaengen */
