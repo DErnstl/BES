@@ -1,18 +1,14 @@
-#ifndef MYBSP3.H
+#ifndef MYBSP3_H
 #include "mybsp3.h"
 #endif
 
 /* Ich bin der Sender */
 
-/* TODO:
- * - P
- * - daten rein schreiben
- * - V
- * - Signalbehandlung */
-
 int main(int argc, const char *argv[]) {
 
 	int ringbuffer;
+	int input;
+	const int *shmaddr_init = NULL;
 
 	/* parameter abfragen */
 	ringbuffer = mygetopts(argc, argv);
@@ -26,22 +22,28 @@ int main(int argc, const char *argv[]) {
 
 	/* shm einhaengen */
 	shmaddr = myshmmount(shmid, 1);
+	shmaddr_init = shmaddr;
 
 	/* P(semid) */
+        /* Process the read of the input */
+        do {
+                input = fgetc(stdin);
+		myp(semid_sender);
+		*shmaddr = input;
+		myv(semid_empfaenger);
+		&shmaddr++;
+		if (&shmaddr_init + (ringbuffer - 1) == &shmaddr) {
+			&shmaddr = &shmaddr_init;
+		}
+
+        } while (input != EOF);
+
 	/* daten rein schreiben (Modulo) */
 	/* semaphore empfaenger holen */
 	/* V(empfaengerid) */
 
 	/* shm aushaengen */
 	myshmumount();
-
-	/* semaphore löschen */
-	del_semaphore(semid_sender);
-
-	/* wenn der andere Prozess keine Semaphore mehr hat: aufräumen */
-	if (semgrab(EMPFAENGERKEY) != -1) {
-		cleanup();
-	}
 
 	return EXIT_SUCCESS;
 }

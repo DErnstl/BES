@@ -1,3 +1,8 @@
+gcc -DDEBUG -Wall -pedantic -Werror -Wextra -Wstrict-prototypes -fno-common -g
+-O3 -o sender sender.c -lsem182
+
+
+
 int WaitForSemaphore() {
         /* Get the semaphore to use dependent on the given type */
         int iSem = (iBinType == MY_SENDER)?iSemIdW:iSemIdR;

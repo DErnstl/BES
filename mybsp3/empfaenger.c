@@ -1,30 +1,20 @@
+#ifndef MYBSP3.H
 #include "mybsp3.h"
-#include <sem182.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <error.h>
-#include <signal.h>
+#endif
+
+/* Ich bin der Sender */
 
 /* TODO:
- *
- * brauchen wir ein struct shmid_ds (man smhctl und man shmat)?
- * shmmount ist für den empfänger read-only!
  * - P
- * - daten rein schreiben und merken wo wir im buffer beim lesen/schreiben sind
+ * - daten rein schreiben
  * - V
  * - Signalbehandlung */
 
 int main(int argc, const char *argv[]) {
 
 	int ringbuffer;
-	int semid_sender;
-	int semid_empfaenger;
-	int shmid;
-	int *pnShm = NULL;
+	char output[1];
+	const int *shmaddr_init = NULL;
 
 	/* parameter abfragen */
 	ringbuffer = mygetopts(argc, argv);
@@ -37,15 +27,25 @@ int main(int argc, const char *argv[]) {
 	shmid = myshmcreate(SHMKEY, ringbuffer);
 
 	/* shm einhaengen */
-	pnShm = myshmmount(shmid);
+	shmaddr = myshmmount(shmid, 1);
+	shmaddr_init = shmaddr;
 
 	/* P(semid) */
+        /* Process the read of the input */
+        do {
+		myp(semid_empfaenger);
+		output = *shmaddr;
+		myv(semid_sender);
+		fprintf("%c", output);
+		&shmaddr++;
+		if (&shmaddr_init + (ringbuffer - 1) == &shmaddr) {
+			&shmaddr = &shmaddr_init;
+		}
+
+        } while (input != EOF);
+
 	/* daten rein schreiben (Modulo) */
 	/* semaphore empfaenger holen */
-	if ((empfaengerid = semgrep(EMPFAENGERKEY)) == -1) {
-		/* FEHLERBEHANDLUNG */
-		/* aufräumen */
-	}
 	/* V(empfaengerid) */
 
 	/* shm aushaengen */
