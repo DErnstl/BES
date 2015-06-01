@@ -1,4 +1,4 @@
-#include <sem182.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -65,6 +65,7 @@ int mygetopts(argc, argv) {
 }
 
 int mysemaphore(int key, int seminitvalue) {
+	int senderid = -1;
         if ((senderid = seminit(key, ACCESSMODE, seminitvalue)) == -1 ) {
                 /* FEHLERBEHANDLUNG */
                 /* -1 = semaphore existiert bereits */
@@ -81,6 +82,28 @@ int mysemaphore(int key, int seminitvalue) {
 	}
 
 	return senderid;
+}
+
+void myp(int semid) {
+	errno = 0;
+	if (P(semid) == -1) {
+		if (errno != EINTR) {
+			cleanup();
+		}
+	}	
+}
+
+void myv(int semid) {
+	if (V(semid) == -1) {
+		cleanup();
+	}
+}
+
+void myread()
+
+
+void mywriteshm() {
+
 }
 
 int myshmcreate(int key, int ringbuffer) {
