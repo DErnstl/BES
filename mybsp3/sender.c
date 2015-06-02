@@ -8,7 +8,7 @@ int main(int argc, const char *argv[]) {
 
 	int ringbuffer;
 	int input;
-	const int *shmaddr_init = NULL;
+	int *shmaddr_init = NULL;
 
 	/* parameter abfragen */
 	ringbuffer = mygetopts(argc, argv);
@@ -31,9 +31,9 @@ int main(int argc, const char *argv[]) {
 		myp(semid_sender);
 		*shmaddr = input;
 		myv(semid_empfaenger);
-		&shmaddr++;
-		if (&shmaddr_init + (ringbuffer - 1) == &shmaddr) {
-			&shmaddr = &shmaddr_init;
+		shmaddr++;
+		if (shmaddr_init + (ringbuffer - 1) == shmaddr) {
+			shmaddr = shmaddr_init;
 		}
 
         } while (input != EOF);

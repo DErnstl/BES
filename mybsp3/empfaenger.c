@@ -1,4 +1,4 @@
-#ifndef MYBSP3.H
+#ifndef MYBSP3_H
 #include "mybsp3.h"
 #endif
 
@@ -13,8 +13,8 @@
 int main(int argc, const char *argv[]) {
 
 	int ringbuffer;
-	char output[1];
-	const int *shmaddr_init = NULL;
+	char output;
+	int *shmaddr_init = NULL;
 
 	/* parameter abfragen */
 	ringbuffer = mygetopts(argc, argv);
@@ -36,13 +36,13 @@ int main(int argc, const char *argv[]) {
 		myp(semid_empfaenger);
 		output = *shmaddr;
 		myv(semid_sender);
-		fprintf("%c", output);
-		&shmaddr++;
-		if (&shmaddr_init + (ringbuffer - 1) == &shmaddr) {
-			&shmaddr = &shmaddr_init;
+		printf("%c", output);
+		shmaddr++;
+		if (shmaddr_init + (ringbuffer - 1) == shmaddr) {
+			shmaddr = shmaddr_init;
 		}
 
-        } while (input != EOF);
+        } while (output != EOF);
 
 	/* daten rein schreiben (Modulo) */
 	/* semaphore empfaenger holen */
