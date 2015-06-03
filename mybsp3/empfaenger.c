@@ -10,7 +10,7 @@
  * - V
  * - Signalbehandlung */
 
-int main(int argc, const char *argv[]) {
+int main(int argc, char* const argv[]) {
 
 	int ringbuffer;
 	char output;
@@ -24,10 +24,10 @@ int main(int argc, const char *argv[]) {
 	semid_empfaenger = mysemaphore(EMPFAENGERKEY, 0);
 
 	/* shm anlegen */
-	shmid = myshmcreate(SHMKEY, ringbuffer);
+	shmid = myshmcreate(ringbuffer);
 
 	/* shm einhaengen */
-	shmaddr = myshmmount(shmid, 1);
+	myshmmount(shmid, 1);
 	shmaddr_init = shmaddr;
 
 	/* P(semid) */
