@@ -1,11 +1,10 @@
-#ifndef MYBSP3.H
 #include "mybsp3.h"
-#endif
 
 int semid_sender = -1;
 int semid_empfaenger = -1;
 int shmid = -1;
 int *shmaddr = NULL;
+int ringbuffer = 0;
 
 void cleanup(void) {
 	/* NULL || detach */
@@ -33,8 +32,9 @@ int del_semaphore(int semid) {
 	return EXIT_SUCCESS;	
 }
 
-int mygetopts(argc, argv) {
-        /* parameter abfragen */
+int mygetopts(int argc, char* const argv[]) {
+	int opt;
+	/* parameter abfragen */
         while ((opt = getopt(argc, argv, "m:")) != -1) {
                 switch (opt) {
                         case 'm':
@@ -88,12 +88,12 @@ void myv(int semid) {
 	}
 }
 
-int myshmcreate(int key, int ringbuffer) {
+int myshmcreate(int ringbuffer) {
         errno = 0;
         if ((shmid = shmget(SHMKEY, ringbuffer, ACCESSMODE|IPC_CREAT|IPC_EXCL)) == -1) {
                 /* FEHLERBEHANDLUNG */
                 if (errno == EEXIST) {
-                        if ((shmid = shmget(SHMKEY, ringbuffer)) == -1) {
+                        if ((shmid = shmget(SHMKEY, ringbuffer, IPC_EXCL)) == -1) {
                                 /* aufräumen */
 				cleanup();
                         }
@@ -107,7 +107,7 @@ int myshmcreate(int key, int ringbuffer) {
  * so wie beim Initialisieren der Semaphore */
 void myshmmount(int shmid, int readonlyflag) {
         errno = 0;
-	if (readonly == 0) {
+	if (readonlyflag == 0) {
 		if ((shmaddr = shmat(shmid, NULL, SHM_RDONLY)) == (int *) -1) {
 			/* FEHLERBEHANDLUNG */
 			cleanup();
@@ -123,7 +123,7 @@ void myshmmount(int shmid, int readonlyflag) {
 
 void myshmumount(void) {
 	errno = 0;
-	if (shmdt(shmaddr)  == (int *) -1) {
+	if (shmdt(shmaddr) == -1) {
 		/* FEHLERBEHANDLUNG */
 		cleanup();
 	}

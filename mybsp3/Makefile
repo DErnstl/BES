@@ -46,10 +46,10 @@ mybsp3:
 	$(CC) $(CFLAGS) -c mybsp3.c -lsem182 $^
 
 sender:
-	$(CC) $(CFLAGS) -o sender sender.c mybsp.o
+	$(CC) $(CFLAGS) -o sender sender.c mybsp3.o
 
 empfaenger:
-	$(CC) $(CFLAGS) -o empfaenger empfaenger.c mybsp.o
+	$(CC) $(CFLAGS) -o empfaenger empfaenger.c mybsp3.o
 
 clean:
 	$(RM) *.o sender empfaenger
