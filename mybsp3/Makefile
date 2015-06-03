@@ -40,13 +40,19 @@ EXCLUDE_PATTERN=footrulewidth
 ## --------------------------------------------------------------- targets --
 ##
 
-all: mybsp3
+all: mybsp3 sender empfaenger
 
-mybsp3: $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^
+mybsp3: 
+	$(CC) $(CFLAGS) -c mybsp3.c –lsem182 $^
+
+sender:
+	$(CC) $(CFLAGS) -o sender sender.c mybsp.o
+
+empfaenger:
+	$(CC) $(CFLAGS) -o empfaenger empfaenger.c mybsp.o
 
 clean:
-	$(RM) *.o mybsp3
+	$(RM) *.o sender empfaenger
 
 distclean: clean
 	$(RM) -r doc
