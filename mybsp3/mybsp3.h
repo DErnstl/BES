@@ -6,7 +6,7 @@
  * @author Adam Kerenyi <ic14b080@technikum-wien.at>
  * @author Romeo Beck <ic14b037@technikum-wien.at>
  * @author Thomas Zeitinger <ic14b033@technikum-wien.at>
- * @date 2015/02/09
+ * @date 2015/06/05
  *
  * @version 100
  *
@@ -14,6 +14,10 @@
 
 #ifndef MYBSP3_H
 #define MYBSP3_H
+
+/*
+ * ------------------------------------------------------------------ includes--
+ */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -26,16 +30,28 @@
 #include <signal.h>
 #include <sem182.h>
 
+/*
+ * --------------------------------------------------------------- defines --
+ */
+
 #define SHMKEY (1000 * (int) getuid() + 0)
 #define EMPFAENGERKEY (1000 * (int) getuid() + 1)
 #define SENDERKEY (1000 * (int) getuid() + 2)
 #define ACCESSMODE 0600
+
+/*
+ * --------------------------------------------------------------- variables --
+ */
 
 extern int semid_sender;
 extern int semid_empfaenger;
 extern int shmid;
 extern int *shmaddr;
 extern int ringbuffer;
+
+/*
+ *  * ------------------------------------------------ function prototypes --
+ */
 
 void cleanup(void);
 int del_shm(int shmid);
