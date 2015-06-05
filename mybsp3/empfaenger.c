@@ -6,7 +6,7 @@
  * @author Adam Kerenyi <ic14b080@technikum-wien.at>
  * @author Romeo Beck <ic14b037@technikum-wien.at>
  * @author Thomas Zeitinger <ic14b033@technikum-wien.at>
- * @date 2015/02/09
+ * @date 2015/06/05
  *
  * @version 100
  *
