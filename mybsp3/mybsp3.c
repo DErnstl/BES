@@ -113,7 +113,7 @@ int mygetopts(int argc, char* const argv[]) {
         while ((opt = getopt(argc, argv, "m:")) != -1) {
                 switch (opt) {
                         case 'm':
-                                ringbuffer = atoi(optarg);
+                                ringbuffer = strtol(optarg, (char**) NULL, 10);
                                 break;
                         default:
 				error(1, 1, "Usage: %s <-m ringbuffer elements>\n", argv[0]);
