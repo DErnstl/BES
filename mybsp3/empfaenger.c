@@ -12,32 +12,39 @@
  *
  */
 
+/*
+ * -------------------------------------------------------------- includes --
+ */
+
 #ifndef MYBSP3_H
 #include "mybsp3.h"
 #endif
 
 int main(int argc, char* const argv[]) {
+	
+/*
+ * --------------------------------------------------------------- variables --
+ */
 
 	int ringbuffer;
 	char output;
 	int *shmaddr_init = NULL;
 
-	/* parameter abfragen */
+	/* Parameter abfragen */
 	ringbuffer = mygetopts(argc, argv);
 
-	/* semaphore anlegen */
+	/* Semaphoren anlegen */
 	semid_sender = mysemaphore(SENDERKEY, ringbuffer);
 	semid_empfaenger = mysemaphore(EMPFAENGERKEY, 0);
 
-	/* shm anlegen */
+	/* Shared Memory anlegen */
 	shmid = myshmcreate(ringbuffer);
 
-	/* shm einhaengen */
+	/* Shared Memory einhaengen und Anfangswert merken */
 	myshmmount(shmid, 1);
 	shmaddr_init = shmaddr;
 
-	/* P(semid) */
-        /* Process the read of the input */
+        /* Input lesen */
         do {
 		myp(semid_empfaenger);
 		output = *shmaddr;
@@ -50,17 +57,13 @@ int main(int argc, char* const argv[]) {
 
         } while (output != EOF);
 
-	/* daten rein schreiben (Modulo) */
-	/* semaphore empfaenger holen */
-	/* V(empfaengerid) */
-
-	/* shm aushaengen */
+	/* Shared Memory aushaengen */
 	myshmumount();
 
-	/* semaphore löschen */
+	/* Semaphore löschen */
 	del_semaphore(semid_sender);
 
-	/* wenn der andere Prozess keine Semaphore mehr hat: aufräumen */
+	/* Wenn der andere Prozess keine Semaphore mehr hat: aufräumen */
 	if (semgrab(EMPFAENGERKEY) != -1) {
 		cleanup();
 	}
