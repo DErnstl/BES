@@ -1,3 +1,17 @@
+/**
+ * @file mybsp3.c
+ * Betriebssysteme myfind
+ * Beispiel 3
+ *
+ * @author Adam Kerenyi <ic14b080@technikum-wien.at>
+ * @author Romeo Beck <ic14b037@technikum-wien.at>
+ * @author Thomas Zeitinger <ic14b033@technikum-wien.at>
+ * @date 2015/02/09
+ *
+ * @version 100
+ *
+ */
+
 #include "mybsp3.h"
 
 int semid_sender = -1;
