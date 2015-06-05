@@ -20,6 +20,10 @@
 #include "mybsp3.h"
 #endif
 
+/*
+ * -------------------------------------------------------------------- main--
+ */
+
 int main(int argc, char* const argv[]) {
 	
 /*
