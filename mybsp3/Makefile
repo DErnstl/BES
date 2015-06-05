@@ -1,7 +1,7 @@
 ##
 ## @file Makefile
 ## Betriebssysteme mybsp3 Makefile
-## Beispiel 1
+## Beispiel 3
 ##
 ## @author Adam Kerenyi <ic14b080@technikum-wien.at>
 ## @author Romeo Beck <ic14b037@technikum-wien.at>
