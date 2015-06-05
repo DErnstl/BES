@@ -128,10 +128,23 @@ int mygetopts(int argc, char* const argv[]) {
 	return ringbuffer;
 }
 
+/**
+ * 
+ * \brief creates semaphore
+ *
+ * \param key: unique number of the semaphore
+ * \param seminitvalue: initial value of semaphore
+ *
+ * \return senderid: id of semaphore
+ * 
+ * \global semid_sender: ID of sender's semaphore
+ * \global semid_empfaenger: ID of emppfaenger's semaphore
+ * 
+ */
+
 int mysemaphore(int key, int seminitvalue) {
 	int senderid = -1;
         if ((senderid = seminit(key, ACCESSMODE, seminitvalue)) == -1 ) {
-                /* FEHLERBEHANDLUNG */
                 /* -1 = semaphore existiert bereits */
                 if ((senderid = semgrab(key)) == -1) {
                         /* FEHLERBEHANDLUNG */
@@ -148,6 +161,15 @@ int mysemaphore(int key, int seminitvalue) {
 	return senderid;
 }
 
+
+/*
+ * \brief waits for semaphore
+ *
+ * \param semid: ID of semaphore
+ *
+ * \return void, no return value
+ * 
+ */
 void myp(int semid) {
 	errno = 0;
 	while (P(semid) == -1) {
@@ -157,11 +179,30 @@ void myp(int semid) {
 	}	
 }
 
+/*
+ * \brief signals the semaphore
+ *
+ * \param semid: ID of semaphore
+ *
+ * \return void, no return value
+ * 
+ */
+
 void myv(int semid) {
 	if (V(semid) == -1) {
 		cleanup();
 	}
 }
+
+/**
+ * 
+ * \brief creates shared memory
+ *
+ * \param ringbuffer: size of buffer
+ *
+ * \return shmid: ID of shared memory
+ * 
+ */
 
 int myshmcreate(int ringbuffer) {
         errno = 0;
@@ -176,6 +217,16 @@ int myshmcreate(int ringbuffer) {
         }
 	return shmid;
 }
+
+/**
+ * 
+ * \brief mounts shared memory
+ *
+ * \param shmid: ID of shared memory
+ *
+ * \return void, no return value, functions exits
+ * 
+ */
 
 /* der empfänger mountet ReadOnly!
  * readonlyflag: wir verwenden hier einfach 0 für den Empfänger,
@@ -196,10 +247,20 @@ void myshmmount(int shmid, int readonlyflag) {
         }
 }
 
+/**
+ * 
+ * \brief delete all ressources that were created by the program
+ *
+ * \param no parameters
+ *
+ * \return void, no return value, functions exits
+ * 
+ * \global shmaddr: address of shared memory
+ */
+
 void myshmumount(void) {
 	errno = 0;
 	if (shmdt(shmaddr) == -1) {
-		/* FEHLERBEHANDLUNG */
 		cleanup();
 	}
 }
