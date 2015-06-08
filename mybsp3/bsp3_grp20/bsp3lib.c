@@ -307,12 +307,15 @@ int get_buffer_size(const char *argv)
 	int buf_size = 0;
 	char *ende = NULL;
 
+	/* ### FB: ISNULLOREMPTY beinhaltet ISNULL, deshalb wird das doppelt abgefragt */
 	if (ISNULL(argv) || ISNULLOREMPTY(argv))
 	{
 		errno = EINVAL;
 		return ERROR;
 	}
 
+	/* ### FB: in der Angabe steht zwar nicht explizit das wir Dezimalzahlen verwenden sollen,
+	 * 	aber ob von Euch geplant war das man mit "021" z.B. Octalwerte übergibt, weiß ich nicht :) */
 	buf_size = strtol(argv, &ende, 0);
 		
 	if (errno == ERANGE)
@@ -320,6 +323,10 @@ int get_buffer_size(const char *argv)
 		return ERROR;
 	}
 	
+	/* ### FB: ich verstehe nicht was Ihr hier tun wolltet, aber die Schleife wird nie ausgefuehrt:
+	 * 	ISNULL(text) -> (pointer) == NULL -> NULL == NULL -> wahr
+	 * 	(*text == '\0') -> NULL == '\0' -> wahr
+	 * 	-> wahr || wahr -> wahr und dann die Verneinung -> falsch */
 	if (!ISNULLOREMPTY(ende))
 	{
 		errno = EINVAL;

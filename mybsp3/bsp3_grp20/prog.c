@@ -98,6 +98,8 @@ void print_usage(const char * usage_msg)
  */
 void print_error(const char * message)
 {
+	/* ##' FB: nur als Tipp: error() bringt den Programnamen schon mit und so
+	 * 	ist keine eigene Variable notwendig */
 	if (fprintf(stderr, "%s: %s: %s\n", progname, message, strerror(errno)) < 0)
 	{
 		exit(EXIT_FAILURE);
