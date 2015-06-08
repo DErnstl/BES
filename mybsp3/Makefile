@@ -1,14 +1,13 @@
 ##
 ## @file Makefile
-## Betriebssysteme mybsp3 Makefile
-## Beispiel 1
+## Betriebssysteme myfind
+## Beispiel 3
 ##
 ## @author Adam Kerenyi <ic14b080@technikum-wien.at>
 ## @author Romeo Beck <ic14b037@technikum-wien.at>
 ## @author Thomas Zeitinger <ic14b033@technikum-wien.at>
 ## @date 2015/06/05
-##
-## @version $Revision: 972 $
+## @version 100
 ##
 ##
 
@@ -52,7 +51,7 @@ empfaenger:
 	$(CC) $(CFLAGS) -o empfaenger empfaenger.c mybsp3.o -lsem182
 
 clean:
-	$(RM) *.o sender empfaenger
+##	$(RM) *.o sender empfaenger
 
 distclean: clean
 	$(RM) -r doc
@@ -70,7 +69,7 @@ pdf: html
 	make && \
 	$(MV) refman.pdf refman.save && \
 	$(RM) *.pdf *.html *.tex *.aux *.sty *.log *.eps *.out *.ind *.idx \
-		*.ilg *.toc *.tps Makefile && \
+	*.ilg *.toc *.tps Makefile && \
 	$(MV) refman.save refman.pdf
 
 ##
