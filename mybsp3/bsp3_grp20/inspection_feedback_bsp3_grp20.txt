@@ -1,4 +1,4 @@
 
 Das Konstrukt mit den Defines und die sender() empfänger() dann in eigene
-Funktionen zu packen finde ich sehr schön!
+Funktionen zu packen finden wir sehr schön!
 errno könnte öfter ausgewertet werden, es werden von euch ja auch fleissig errnos gesetzt
