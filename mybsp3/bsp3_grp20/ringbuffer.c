@@ -81,6 +81,7 @@ int get_ringbuffer_size(void)
 
 int set_ringbuffer_size(int size)
 {
+	/* ### FB: die size wurde schon in create_ringbuffer() gecheckt */
 	if (size <= 0)
  	{ 
  		errno = EINVAL; 
@@ -113,12 +114,19 @@ int create_ringbuffer(int size,key_t key)
 	}
    
 	/* get shared memory, or if not exist create shared memory */
+	/* ### FB: Ihr habe SEM_PERM mit den gleichen Rechten (0660) gesetzt,
+	 * 	das koenntet Ihr hier auch benutzen */
+	/* ### FB: nur mit IPC_CREAT Flag gibt es einen Fehler wenn der SHM schon mit
+	 * 	diesem Key existiert, ohne Flags wird nach einem bereits vorhandenem
+	 * 	geschaut */
 	if((ringbuffer.shm_id = shmget(key, sizeof(int) * size, 0660 | IPC_CREAT)) == ERROR)
 	{
 		return ERROR;
 	}
 
 	/* attach shared memory */
+	/* ### FB: der SHM koennte beim empfaenger nur Read-Only eingehaengt werden,
+	 * 	um unliebsames Verhalten zu vermeiden (Flag SHM_RDONLY) */
 	if((ringbuffer.shm_addr = shmat(ringbuffer.shm_id, NULL, 0)) == (int *)-1)
 	{
 		return ERROR;
@@ -165,6 +173,7 @@ int free_ringbuffer(void)
 
 int destroy_ringbuffer(void)
 {
+	/* ### FB: Einrueckung */
 	/* if no address and no id exist, nothing to do. */
 	if (ISNULL(ringbuffer.shm_addr) && ringbuffer.shm_id < 0)
 	{

@@ -34,6 +34,8 @@
 /*
  * --------------------------------------------------------------- defines --
  */
+
+/* ### FB: laut Angabe sollten wir die Keys dynamisch generieren */
 #define RINGBUF_KEY	10258006
 #define SEM_READ_KEY	10258053
 #define SEM_WRITE_KEY	10258013
@@ -100,6 +102,8 @@ static int create_sem(key_t sem_key, int pos)
 		/* if semaphore still exists, grab the semaphore */
 		if ((sem_id = semgrab(sem_key)) == ERROR)
 		{
+			/* ### FB: Warum ENOMEM? Koennte ja z.B. schon eine mit dem selben Key, aber anderen
+			 * 	Zugriffsrechten angelegt sein */
 			errno = ENOMEM;
 			return ERROR;
 		}
@@ -367,6 +371,7 @@ int sender(void)
 				print_error("fgetc");
 				return ERROR;
 			}
+			/* ### FB: Gut! */
 			if (feof(stdin))
 			{
 				/* make sure, that the value is really EOF. */
